@@ -20,9 +20,9 @@ export function ScoreBar({ label, score, icon, showBadge = false }: ScoreBarProp
   }
   
   const getVariant = (score: number) => {
-    if (score >= 90) return 'green'
-    if (score >= 70) return 'blue'
-    if (score >= 50) return 'yellow'
+    if (score >= 90) return 'success'
+    if (score >= 70) return 'info'
+    if (score >= 50) return 'warning'
     return 'destructive'
   }
   
