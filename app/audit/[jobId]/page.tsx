@@ -157,7 +157,7 @@ export default function AuditResultsPage() {
     let dead = false
     const poll = async () => {
       try {
-        const r    = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/audit/${params.jobId}`)
+        const r    = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/audit/${params.jobId}`)
         const data = await r.json()
         if (data.status === 'completed' && data.results) { console.log(data.results); setResults(data.results); setLoading(false) }
         else if (data.status === 'failed')                { setError(data.error || 'Audit failed'); setLoading(false) }
