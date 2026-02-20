@@ -18,7 +18,7 @@ export default function Home() {
     if (!url) return
 
     setIsLoading(true)
-    
+    console.log(`API URL: ${process.env.NEXT_PUBLIC_API_URL}`)
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/audit`, {
         method: 'POST',
