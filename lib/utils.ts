@@ -51,3 +51,33 @@ export function formatDate(date: string): string {
     minute: '2-digit'
   })
 }
+
+export function formatDateRelative(date: string): string {
+  const now = new Date()
+  const past = new Date(date)
+  const diffMs = now.getTime() - past.getTime()
+  const diffSeconds = Math.floor(diffMs / 1000)
+  const diffMinutes = Math.floor(diffSeconds / 60)
+  const diffHours = Math.floor(diffMinutes / 60)
+  const diffDays = Math.floor(diffHours / 24)
+
+  if (diffSeconds < 60) return `${diffSeconds} seconds ago`
+  if (diffMinutes < 60) return `${diffMinutes} minutes ago`
+  if (diffHours < 24) return `${diffHours} hours ago`
+  return `${diffDays} days ago`
+}
+
+export function formatDateDistanceToNow(date: string): string {
+  const now = new Date()
+  const past = new Date(date)
+  const diffMs = past.getTime() - now.getTime()
+  const diffSeconds = Math.floor(diffMs / 1000)
+  const diffMinutes = Math.floor(diffSeconds / 60)
+  const diffHours = Math.floor(diffMinutes / 60)
+  const diffDays = Math.floor(diffHours / 24)
+
+  if (diffSeconds < 60) return `${diffSeconds} seconds`
+  if (diffMinutes < 60) return `${diffMinutes} minutes`
+  if (diffHours < 24) return `${diffHours} hours`
+  return `${diffDays} days`
+}

@@ -732,3 +732,541 @@ export async function exportAuditPDF(
   const safeDate   = format(new Date(), 'yyyy-MM-dd')
   doc.save(`${config.agencyName.replace(/\s+/g, '_')}_audit_${safeClient}_${safeDate}.pdf`)
 }
+
+// ─── Crawl Results Type ───────────────────────────────────────────────────────
+
+interface CrawlResults {
+  summary: {
+    start_url: string
+    domain: string
+    total_pages_crawled: number
+    total_internal_links: number
+    total_external_links: number
+    unique_external_domains: number
+    avg_word_count: number
+    avg_load_time_ms: number
+    crawl_duration_sec: number
+    crawl_date: string
+  }
+  issues: {
+    duplicate_titles: Record<string, string[]>
+    duplicate_content: Array<{ urls: string[]; count: number }>
+    thin_content: Array<{ url: string; word_count: number }>
+    orphan_pages: Array<{ url: string; word_count: number }>
+    broken_pages: Array<{ url: string; status_code: number; error?: string }>
+    missing_meta_description: string[]
+    missing_h1: string[]
+    multiple_h1: Array<{ url: string; h1_count: number; h1_tags: string[] }>
+    slow_pages: Array<{ url: string; load_time_ms: number }>
+    large_pages: Array<{ url: string; size_kb: number }>
+  }
+  site_structure: Record<string, Array<{ url: string; title: string; word_count: number }>>
+  top_pages: {
+    most_linked: any[]
+    longest_content: any[]
+    slowest: any[]
+  }
+  pages: any[]
+}
+
+export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelConfig): Promise<void> {
+  const logo = await loadLogoData(config.agencyLogo)
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
+  const crawlDate = format(new Date(results.summary.crawl_date || Date.now()), 'dd MMM yyyy, HH:mm')
+  const totalPages = 6
+  const pt = { num: 1, total: totalPages }
+
+  // ─── PAGE 1: Cover ─────────────────────────────────────────────────────────
+  {
+    const [r, g, b] = hexToRgb(config.accentColor)
+
+    doc.setFillColor(r, g, b)
+    doc.rect(0, 0, PAGE_W, PAGE_H * 0.45, 'F')
+
+    doc.setFillColor(r - 15 < 0 ? 0 : r - 15, g - 15 < 0 ? 0 : g - 15, b + 20 > 255 ? 255 : b + 20)
+    doc.triangle(0, PAGE_H * 0.45, PAGE_W, PAGE_H * 0.38, PAGE_W, PAGE_H * 0.45, 'F')
+
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text(config.agencyName.toUpperCase(), MARGIN, 20)
+
+    doc.setFontSize(28)
+    doc.setFont('helvetica', 'bold')
+    doc.text('SITE CRAWL', MARGIN, 55)
+    doc.text('ANALYSIS REPORT', MARGIN, 69)
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.setFillColor(255, 255, 255, 0.18)
+    doc.roundedRect(MARGIN, 76, COL, 10, 2, 2, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.text(results.summary.domain || '—', MARGIN + 4, 82.5)
+
+    // Stats circle
+    const cx = PAGE_W - MARGIN - 22, cy = 60
+    doc.setFillColor(255, 255, 255)
+    doc.circle(cx, cy, 22, 'F')
+    doc.setTextColor(r, g, b)
+    doc.setFontSize(22)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`${results.summary.total_pages_crawled}`, cx, cy + 2, { align: 'center' })
+    doc.setFontSize(7)
+    doc.setTextColor(80, 80, 80)
+    doc.text('pages crawled', cx, cy + 12, { align: 'center' })
+
+    const contentY = PAGE_H * 0.45 + 10
+
+    doc.setTextColor(30, 30, 30)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Site Analysis For', MARGIN, contentY + 8)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(14)
+    doc.text(config.clientName || 'Client', MARGIN, contentY + 17)
+
+    if (config.preparedBy) {
+      doc.setFontSize(9)
+      doc.setTextColor(100, 100, 100)
+      doc.text(`Prepared by: ${config.preparedBy}`, MARGIN, contentY + 25)
+    }
+
+    doc.setFontSize(9)
+    doc.setTextColor(120, 120, 120)
+    doc.text(`Crawl date: ${crawlDate}`, MARGIN, contentY + 33)
+    doc.text(`Duration: ${Math.round(results.summary.crawl_duration_sec)}s`, MARGIN, contentY + 40)
+
+    // Key metrics grid
+    const gridY = contentY + 48
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(60, 60, 60)
+    doc.text('KEY METRICS', MARGIN, gridY)
+
+    const metrics = [
+      { label: 'Pages', value: results.summary.total_pages_crawled },
+      { label: 'Internal Links', value: results.summary.total_internal_links },
+      { label: 'External Links', value: results.summary.total_external_links },
+      { label: 'Ext. Domains', value: results.summary.unique_external_domains },
+    ]
+
+    metrics.forEach(({ label, value }, i) => {
+      const col = i % 2
+      const row = Math.floor(i / 2)
+      const cellX = MARGIN + col * (COL / 2 + 4)
+      const cellY = gridY + 6 + row * 18
+
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(cellX, cellY, COL / 2 - 4, 14, 2, 2, 'F')
+      doc.setFillColor(r, g, b)
+      doc.roundedRect(cellX, cellY, 3, 14, 1, 1, 'F')
+
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(80, 80, 80)
+      doc.text(label, cellX + 6, cellY + 5)
+
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(r, g, b)
+      doc.text(`${value}`, cellX + 6, cellY + 11)
+    })
+
+    footer(doc, config, crawlDate)
+  }
+
+  // ─── PAGE 2: Site Structure & Top Pages ────────────────────────────────────
+  {
+    doc.addPage()
+    brandedHeader(doc, config, 2, totalPages, logo)
+    footer(doc, config, crawlDate)
+    let y = BRAND_H + 10
+
+    y = sectionTitle(doc, 'Site Structure Overview', y, config.accentColor)
+
+    const structure = results.site_structure ?? {}
+    const sections = Object.keys(structure).slice(0, 5)
+
+    sections.forEach((section) => {
+      if (y > PAGE_H - 30) return
+      const pages = structure[section] ?? []
+      const pageCount = pages.length
+
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(30, 30, 30)
+      doc.text(section || '(root)', MARGIN + 4, y + 6.5)
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(120, 120, 120)
+      doc.text(`${pageCount} page${pageCount !== 1 ? 's' : ''}`, PAGE_W - MARGIN - 2, y + 6.5, { align: 'right' })
+      y += 12
+    })
+
+    y += 6
+
+    y = sectionTitle(doc, 'Top Pages', y, config.accentColor)
+
+    const topPages = results.top_pages?.most_linked ?? []
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.setTextColor(60, 60, 60)
+    doc.text('Most Linked', MARGIN, y)
+    y += 6
+
+    topPages.slice(0, 5).forEach((p: any) => {
+      if (y > PAGE_H - 20) return
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(80, 80, 80)
+      const urlText = (p.url ?? '').length > 70 ? (p.url ?? '').substring(0, 70) + '…' : (p.url ?? '')
+      doc.text(urlText, MARGIN + 3, y + 5.5)
+      doc.setTextColor(120, 120, 120)
+      doc.text(`${p.link_count ?? 0} links`, PAGE_W - MARGIN - 2, y + 5.5, { align: 'right' })
+      y += 9
+    })
+  }
+
+  // ─── PAGE 3: Content Issues ────────────────────────────────────────────────
+  {
+    doc.addPage()
+    brandedHeader(doc, config, 3, totalPages, logo)
+    footer(doc, config, crawlDate)
+    let y = BRAND_H + 10
+
+    const issues = results.issues ?? {}
+
+    y = sectionTitle(doc, 'Content Issues', y, config.accentColor)
+
+    // Summary counts
+    const issueCounts = [
+      { label: 'Duplicate Titles', count: Object.keys(issues.duplicate_titles ?? {}).length, severity: 'medium' },
+      { label: 'Thin Content', count: (issues.thin_content ?? []).length, severity: 'high' },
+      { label: 'Orphan Pages', count: (issues.orphan_pages ?? []).length, severity: 'medium' },
+      { label: 'Missing Meta Desc.', count: (issues.missing_meta_description ?? []).length, severity: 'low' },
+      { label: 'Missing H1', count: (issues.missing_h1 ?? []).length, severity: 'high' },
+    ]
+
+    const [r, g, b] = hexToRgb(config.accentColor)
+    issueCounts.forEach((issue, i) => {
+      const col = i % 2
+      const row = Math.floor(i / 2)
+      const cellX = MARGIN + col * (COL / 2 + 4)
+      const cellY = y + row * 16
+      const cellW = COL / 2 - 4
+
+      const severityColor: Record<string, [number, number, number]> = {
+        high: [239, 68, 68],
+        medium: [245, 158, 11],
+        low: [107, 114, 128],
+      }
+      const [cr, cg, cb] = severityColor[issue.severity] ?? [107, 114, 128]
+
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(cellX, cellY, cellW, 14, 2, 2, 'F')
+      doc.setFillColor(cr, cg, cb)
+      doc.roundedRect(cellX, cellY, 3, 14, 1, 1, 'F')
+
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(80, 80, 80)
+      doc.text(issue.label, cellX + 6, cellY + 5)
+
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(cr, cg, cb)
+      doc.text(`${issue.count}`, cellX + 6, cellY + 11)
+    })
+
+    y += Math.ceil(issueCounts.length / 2) * 16 + 8
+
+    // Thin content examples
+    if ((issues.thin_content ?? []).length > 0) {
+      y = sectionTitle(doc, 'Thin Content Pages (< 300 words)', y, config.accentColor)
+
+      issues.thin_content.slice(0, 4).forEach((page: any) => {
+        if (y > PAGE_H - 20) return
+        doc.setFillColor(254, 242, 242)
+        doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = (page.url ?? '').length > 70 ? (page.url ?? '').substring(0, 70) + '…' : (page.url ?? '')
+        doc.text(urlText, MARGIN + 4, y + 6)
+        doc.setTextColor(239, 68, 68)
+        doc.text(`${page.word_count ?? 0}w`, PAGE_W - MARGIN - 2, y + 6, { align: 'right' })
+        y += 11
+      })
+    }
+
+    // Orphan pages
+    if ((issues.orphan_pages ?? []).length > 0) {
+      y += 4
+      y = sectionTitle(doc, `Orphan Pages (${issues.orphan_pages.length})`, y, config.accentColor)
+
+      issues.orphan_pages.slice(0, 3).forEach((page: any) => {
+        if (y > PAGE_H - 20) return
+        doc.setFillColor(248, 249, 250)
+        doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = (page.url ?? '').length > 70 ? (page.url ?? '').substring(0, 70) + '…' : (page.url ?? '')
+        doc.text(urlText, MARGIN + 3, y + 5.5)
+        y += 9
+      })
+    }
+  }
+
+  // ─── PAGE 4: Technical Issues ──────────────────────────────────────────────
+  {
+    doc.addPage()
+    brandedHeader(doc, config, 4, totalPages, logo)
+    footer(doc, config, crawlDate)
+    let y = BRAND_H + 10
+
+    const issues = results.issues ?? {}
+
+    y = sectionTitle(doc, 'Technical Issues', y, config.accentColor)
+
+    // Broken pages
+    if ((issues.broken_pages ?? []).length > 0) {
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(60, 60, 60)
+      doc.text(`Broken Pages (${issues.broken_pages.length})`, MARGIN, y)
+      y += 6
+
+      issues.broken_pages.slice(0, 5).forEach((page: any) => {
+        if (y > PAGE_H - 30) return
+        doc.setFillColor(254, 242, 242)
+        doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = (page.url ?? '').length > 60 ? (page.url ?? '').substring(0, 60) + '…' : (page.url ?? '')
+        doc.text(urlText, MARGIN + 4, y + 4)
+        doc.setTextColor(239, 68, 68)
+        doc.text(`${page.status_code ?? 'Error'}`, PAGE_W - MARGIN - 2, y + 4, { align: 'right' })
+        y += 11
+      })
+
+      y += 6
+    }
+
+    // Slow pages
+    if ((issues.slow_pages ?? []).length > 0) {
+      y = sectionTitle(doc, 'Slow Pages', y, config.accentColor)
+
+      issues.slow_pages.slice(0, 5).forEach((page: any) => {
+        if (y > PAGE_H - 20) return
+        doc.setFillColor(255, 250, 235)
+        doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = (page.url ?? '').length > 60 ? (page.url ?? '').substring(0, 60) + '…' : (page.url ?? '')
+        doc.text(urlText, MARGIN + 3, y + 5.5)
+        doc.setTextColor(180, 100, 0)
+        doc.text(`${Math.round(page.load_time_ms ?? 0)}ms`, PAGE_W - MARGIN - 2, y + 5.5, { align: 'right' })
+        y += 9
+      })
+    }
+
+    // Missing H1
+    if ((issues.missing_h1 ?? []).length > 0) {
+      y += 4
+      y = sectionTitle(doc, `Missing H1 Tags (${issues.missing_h1.length})`, y, config.accentColor)
+
+      issues.missing_h1.slice(0, 4).forEach((url: string) => {
+        if (y > PAGE_H - 20) return
+        doc.setFillColor(248, 249, 250)
+        doc.roundedRect(MARGIN, y, COL, 7, 1.5, 1.5, 'F')
+        doc.setFontSize(6.5)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = url.length > 75 ? url.substring(0, 75) + '…' : url
+        doc.text(urlText, MARGIN + 3, y + 5)
+        y += 8
+      })
+    }
+  }
+
+  // ─── PAGE 5: Performance & Metrics ────────────────────────────────────────
+  {
+    doc.addPage()
+    brandedHeader(doc, config, 5, totalPages, logo)
+    footer(doc, config, crawlDate)
+    let y = BRAND_H + 10
+
+    y = sectionTitle(doc, 'Performance Metrics', y, config.accentColor)
+
+    const issues = results.issues ?? {}
+
+    // Key stats
+    const avgMetrics = [
+      { label: 'Avg Page Size', value: `${(results.summary.avg_word_count ?? 0).toFixed(0)} words` },
+      { label: 'Avg Load Time', value: `${Math.round(results.summary.avg_load_time_ms ?? 0)}ms` },
+      { label: 'Int. Links/Page', value: `${((results.summary.total_internal_links ?? 0) / (results.summary.total_pages_crawled ?? 1)).toFixed(1)}` },
+      { label: 'Ext. Domains', value: `${results.summary.unique_external_domains ?? 0}` },
+    ]
+
+    const halfW = (COL - 6) / 2
+    avgMetrics.forEach((m, i) => {
+      const col = i % 2
+      const row = Math.floor(i / 2)
+      const cellX = MARGIN + col * (halfW + 6)
+      const cellY = y + row * 16
+
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(cellX, cellY, halfW, 14, 2, 2, 'F')
+
+      const [r, g, b] = hexToRgb(config.accentColor)
+      doc.setFillColor(r, g, b)
+      doc.roundedRect(cellX, cellY, 2.5, 14, 1, 1, 'F')
+
+      doc.setFontSize(7)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(100, 100, 100)
+      doc.text(m.label, cellX + 5, cellY + 4.5)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(30, 30, 30)
+      doc.text(m.value, cellX + halfW - 3, cellY + 4.5, { align: 'right' })
+    })
+
+    y += 40
+
+    // Large pages
+    const largePages = issues.large_pages ?? []
+    if (largePages.length > 0) {
+      y = sectionTitle(doc, 'Large Pages (Slow Download)', y, config.accentColor)
+
+      largePages.slice(0, 6).forEach((page: any) => {
+        if (y > PAGE_H - 20) return
+        doc.setFillColor(248, 249, 250)
+        doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const urlText = (page.url ?? '').length > 65 ? (page.url ?? '').substring(0, 65) + '…' : (page.url ?? '')
+        doc.text(urlText, MARGIN + 3, y + 5.5)
+        doc.setTextColor(120, 120, 120)
+        doc.text(`${(page.size_kb ?? 0).toFixed(1)} KB`, PAGE_W - MARGIN - 2, y + 5.5, { align: 'right' })
+        y += 9
+      })
+    }
+
+    // Duplicate titles
+    const dupTitles = issues.duplicate_titles ?? {}
+    if (Object.keys(dupTitles).length > 0) {
+      y += 4
+      y = sectionTitle(doc, 'Duplicate Page Titles', y, config.accentColor)
+
+      Object.entries(dupTitles).slice(0, 3).forEach(([title, urls]: [string, string[]]) => {
+        if (y > PAGE_H - 25) return
+        doc.setFillColor(255, 250, 235)
+        doc.roundedRect(MARGIN, y, COL, 8, 2, 2, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(80, 80, 80)
+        const titleText = title.length > 60 ? title.substring(0, 60) + '…' : title
+        doc.text(titleText, MARGIN + 4, y + 5)
+        doc.setTextColor(180, 100, 0)
+        doc.text(`${urls.length} pages`, PAGE_W - MARGIN - 2, y + 5, { align: 'right' })
+        y += 10
+      })
+    }
+  }
+
+  // ─── PAGE 6: Recommendations & Action Plan ────────────────────────────────
+  {
+    doc.addPage()
+    brandedHeader(doc, config, 6, totalPages, logo)
+    footer(doc, config, crawlDate)
+    let y = BRAND_H + 10
+
+    y = sectionTitle(doc, 'Recommended Action Plan', y, config.accentColor)
+
+    const issues = results.issues ?? {}
+    const recommendations: { priority: string; task: string; impact: string }[] = []
+
+    if ((issues.broken_pages ?? []).length > 0)
+      recommendations.push({ priority: 'CRITICAL', task: `Fix ${issues.broken_pages.length} broken page(s) (4xx/5xx errors)`, impact: 'UX + SEO' })
+    if ((issues.missing_h1 ?? []).length > 0)
+      recommendations.push({ priority: 'HIGH', task: `Add H1 tags to ${issues.missing_h1.length} page(s)`, impact: 'SEO' })
+    if ((issues.thin_content ?? []).length > 0)
+      recommendations.push({ priority: 'HIGH', task: `Expand ${issues.thin_content.length} thin content page(s)`, impact: 'SEO + UX' })
+    if ((issues.orphan_pages ?? []).length > 0)
+      recommendations.push({ priority: 'MEDIUM', task: `Link orphan pages or canonicalize (${issues.orphan_pages.length} pages)`, impact: 'SEO' })
+    if (Object.keys(issues.duplicate_titles ?? {}).length > 0)
+      recommendations.push({ priority: 'MEDIUM', task: `Audit duplicate titles (${Object.keys(issues.duplicate_titles ?? {}).length} sets)`, impact: 'SEO' })
+    if ((issues.slow_pages ?? []).length > 3)
+      recommendations.push({ priority: 'MEDIUM', task: `Optimize load time on ${issues.slow_pages.length} slow page(s)`, impact: 'UX + SEO' })
+    if ((issues.missing_meta_description ?? []).length > 0)
+      recommendations.push({ priority: 'LOW', task: `Add meta descriptions to ${issues.missing_meta_description.length} page(s)`, impact: 'CTR' })
+
+    const priorityColor: Record<string, [number, number, number]> = {
+      CRITICAL: [239, 68, 68],
+      HIGH:     [245, 158, 11],
+      MEDIUM:   [6, 182, 212],
+      LOW:      [107, 114, 128],
+    }
+
+    recommendations.slice(0, 8).forEach((r) => {
+      if (y > PAGE_H - 30) return
+      const [pr, pg, pb] = priorityColor[r.priority] ?? [107, 114, 128]
+
+      doc.setFillColor(248, 249, 250)
+      doc.roundedRect(MARGIN, y, COL, 11, 2, 2, 'F')
+
+      doc.setFillColor(pr, pg, pb)
+      doc.roundedRect(MARGIN, y, 18, 11, 2, 2, 'F')
+      doc.setFontSize(6)
+      doc.setFont('helvetica', 'bold')
+      doc.setTextColor(255, 255, 255)
+      doc.text(r.priority, MARGIN + 9, y + 7, { align: 'center' })
+
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(30, 30, 30)
+      doc.text(r.task, MARGIN + 22, y + 4)
+      doc.setFontSize(7)
+      doc.setTextColor(120, 120, 120)
+      doc.text(r.impact, MARGIN + 22, y + 9)
+
+      y += 14
+    })
+
+    // Next steps
+    if (y < PAGE_H - 40) {
+      y += 6
+      y = sectionTitle(doc, 'Next Steps', y, config.accentColor)
+
+      const steps = [
+        '1. Review this report with your technical team',
+        '2. Prioritize actions based on business impact',
+        '3. Assign ownership and set completion deadlines',
+        '4. Track fixes and re-crawl site in 4–6 weeks',
+      ]
+
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(60, 60, 60)
+      steps.forEach((step) => {
+        if (y > PAGE_H - 20) return
+        doc.text(step, MARGIN + 4, y)
+        y += 6
+      })
+    }
+  }
+
+  // ─── Save ─────────────────────────────────────────────────────────────────
+  const safeClient = (config.clientName || 'crawl').replace(/\s+/g, '_').toLowerCase()
+  const safeDate = format(new Date(), 'yyyy-MM-dd')
+  doc.save(`${config.agencyName.replace(/\s+/g, '_')}_crawl_${safeClient}_${safeDate}.pdf`)
+}

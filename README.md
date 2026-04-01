@@ -1,4 +1,4 @@
-# AuditFlow Frontend
+# AuditSE Frontend
 
 Beautiful, modern Next.js frontend for the Website Auditor with professional UI built using shadcn/ui components.
 

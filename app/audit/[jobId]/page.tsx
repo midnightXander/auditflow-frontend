@@ -16,7 +16,7 @@ import {
   ArrowLeft, Zap, Search, Shield, Link2,
   ImageIcon, FileJson, FileText,
   CheckCircle2, AlertTriangle, XCircle,
-  Download, Settings2, Loader2,
+  Download, Settings2, Loader2, Share2
 } from 'lucide-react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
@@ -24,7 +24,8 @@ import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 import { ca } from 'date-fns/locale'
-
+import { fetchWithAuth } from '@/lib/auth-context'
+import ShareAuditModal from '@/components/share-audit-modal'
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AuditResults {
@@ -38,6 +39,7 @@ interface AuditResults {
       performance?: Record<string, { displayValue: string; score: number }>
     }
     opportunities?: Array<{ title: string; description: string; savings?: { ms: number } }>
+    audits : any
   }
   broken_links: { total_checked: number; broken_count: number; status: string; broken_links: any[] }
   image_optimization: { total_images: number; score: number; issues: any; recommendations: string[] }
@@ -152,17 +154,29 @@ export default function AuditResultsPage() {
   const [showWL,    setShowWL]    = useState(false)
   const [exporting, setExporting] = useState(false)
 
+  // Share modal state
+  const [showShare, setShowShare] = useState(false)
+  const [shareClient, setShareClient] = useState('')
+  const [shareLink, setShareLink] = useState<string | null>(null)
+  const [isGeneratingShare, setIsGeneratingShare] = useState(false)
+  const [copied, setCopied] = useState(false)
+
   /* poll backend */
   useEffect(() => {
     let dead = false
     const poll = async () => {
       try {
-        const r    = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/audit/${params.jobId}`)
+        const r    = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/audit/${params.jobId}`)
+        if(r.status == 404){
+          setError('Audit not found')
+          setLoading(false)
+          return
+        }
         const data = await r.json()
         if (data.status === 'completed' && data.results) { console.log(data.results); setResults(data.results); setLoading(false) }
         else if (data.status === 'failed')                { setError(data.error || 'Audit failed'); setLoading(false) }
         else { setProgress(data.progress || 0); if (!dead) setTimeout(poll, 2000) }
-      } catch { setError('Cannot reach server'); setLoading(false) }
+      } catch { console.log("error");setError('Cannot reach server'); setLoading(false) }
     }
     poll()
     return () => { dead = true }
@@ -173,6 +187,48 @@ export default function AuditResultsPage() {
     setExporting(true)
     try { await exportAuditPDF(results, config) }
     finally { setExporting(false) }
+  }
+
+  const generateShareLink = async () => {
+    if (!params?.jobId) return
+    setIsGeneratingShare(true)
+    setShareLink(null)
+    try {
+      // Try backend share endpoint
+      const api = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/audit/${params.jobId}/share`
+      const res = await fetchWithAuth(api, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ client_name: shareClient || undefined }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setShareLink(data.share_url || data.url || null)
+      } else {
+        const origin = typeof window !== 'undefined' ? window.location.origin : ''
+        const q = shareClient ? `?client=${encodeURIComponent(shareClient)}` : ''
+        setShareLink(`${origin}/share/audit/${params.jobId}${q}`)
+      }
+    } catch (err) {
+      console.error('Share link generation failed', err)
+      const origin = typeof window !== 'undefined' ? window.location.origin : ''
+      const q = shareClient ? `?client=${encodeURIComponent(shareClient)}` : ''
+      setShareLink(`${origin}/share/audit/${params.jobId}${q}`)
+    } finally {
+      setIsGeneratingShare(false)
+    }
+  }
+
+  const copyShareLink = async () => {
+    if (!shareLink) return
+    try {
+      await navigator.clipboard.writeText(shareLink)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Copy failed', err)
+      alert('Unable to copy link')
+    }
   }
 
   if (loading) return <LoadingScreen progress={progress} />
@@ -193,15 +249,17 @@ export default function AuditResultsPage() {
       </Card>
     </div>
   )
-
+  
   const { lighthouse, broken_links: bl, image_optimization: img, structured_data: sd,
           content_quality: cq, technical_seo: seo, security: sec } = results
-
+  
   const cats  = lighthouse?.categories ?? {}
   const cwv   = lighthouse?.metrics?.coreWebVitals ?? {}
   const perf  = lighthouse?.metrics?.performance   ?? {}
   const opps  = lighthouse?.opportunities ?? []
   const secH  = sec?.security_headers ?? {}
+
+  console.log(lighthouse)
   
 
   // Quick-wins alerts
@@ -216,6 +274,24 @@ export default function AuditResultsPage() {
     <div className="min-h-screen bg-[#F7F8FC]">
       {showWL && <WhiteLabelModal onClose={() => setShowWL(false)} />}
 
+      {showShare && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
+            <ShareAuditModal
+              open={showShare}
+              onClose={() => setShowShare(false)}
+              clientName={shareClient}
+              setClientName={setShareClient}
+              shareLink={shareLink}
+              isGenerating={isGeneratingShare}
+              generate={generateShareLink}
+              copy={copyShareLink}
+              copied={copied}
+            />
+          </div>
+        </div>
+      )}
+
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
@@ -228,6 +304,10 @@ export default function AuditResultsPage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <Button variant="ghost" size="sm" onClick={() => setShowShare(true)} className="text-gray-600 gap-1.5">
+              <Share2 className="w-4 h-4"/>
+              <span className="hidden sm:inline text-sm">Share</span>
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => setShowWL(true)} className="text-gray-600 gap-1.5">
               <Settings2 className="w-4 h-4"/>
               <span className="hidden sm:inline text-sm">Agency Settings</span>
@@ -318,7 +398,7 @@ export default function AuditResultsPage() {
 
         {/* ── Tabs ──────────────────────────────────────────────────────── */}
         <Tabs defaultValue="overview">
-          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-6 bg-white border border-gray-100 shadow-sm rounded-xl p-1 gap-1 h-auto">
+          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-7 bg-white border border-gray-100 shadow-sm rounded-xl p-1 pb-2 gap-1 h-auto">
             {[
               { v: 'overview',    l: 'Overview',    i: <Zap      className="w-3.5 h-3.5"/> },
               { v: 'performance', l: 'Performance', i: <Zap      className="w-3.5 h-3.5"/> },
@@ -326,6 +406,8 @@ export default function AuditResultsPage() {
               { v: 'images',     l: 'Images',       i: <ImageIcon className="w-3.5 h-3.5"/> },
               { v: 'content',    l: 'Content',      i: <FileText  className="w-3.5 h-3.5"/> },
               { v: 'security',   l: 'Security',     i: <Shield    className="w-3.5 h-3.5"/> },
+              { v: 'others',      l: 'Others',      i: <Settings2 className="w-3.5 h-3.5"/> },
+              
             ].map(t => (
               <TabsTrigger key={t.v} value={t.v}
                 className="flex items-center gap-1.5 text-xs py-2 rounded-lg data-[state=active]:bg-slate-900 data-[state=active]:text-white">
@@ -710,6 +792,89 @@ export default function AuditResultsPage() {
               </Card>
             </div>
           </TabsContent>
+
+          {/* Others - additional lighthouse audits */}
+          <TabsContent value="others" className="mt-4">
+            <Card className="shadow-sm border-gray-100">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Other Audits</CardTitle>
+                <CardDescription>Additional checks (render-blocking, unminified CSS, accessibility link-name, frame-title, etc.)</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {!(lighthouse?.audits) && (
+                  <p className="text-sm text-gray-500 text-center py-6">No additional audit data available.</p>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[
+                    { key: 'render-blocking-resources', label: 'Render-blocking resources' },
+                    { key: 'unminified-css',             label: 'Unminified CSS' },
+                    { key: 'link-name',                  label: 'Link name / accessible name' },
+                    { key: 'frame-title',                label: 'Frame title' },
+                    { key: 'first-meaningful-paint',     label: 'First meaningful paint' },
+                    { key: 'non-composited-animations',  label: 'Non-composited animations' },
+                    { key : 'viewport', label: 'Viewport' },
+                    { key: 'redirects', label : 'Redirects' },
+                    // add more keys here as needed
+                  ].map(({ key, label }) => {
+                    const a = lighthouse?.audits?.[key]
+                    if (!a) return null
+
+                    const scoreNum = typeof a.score === 'number' ? Math.round(a.score * 100) : null
+                    const ok = scoreNum !== null ? scoreNum >= 90 : (a.scoreDisplayMode === 'binary' ? !!a.score : false)
+
+                    return (
+                      <div key={key} className="p-3 rounded-xl bg-white border border-gray-100">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-800 truncate">{a.title ?? label}</p>
+                            {a.displayValue && <p className="text-xs text-gray-500 mt-1">{a.displayValue}</p>}
+
+                            {a.description && (
+                              <div className="mt-2 text-xs text-gray-600 prose max-w-none">
+                                <ReactMarkdown
+                                  remarkPlugins={[remarkGfm]}
+                                  rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                                  components={{
+                                  a: ({node, ...props}) => (
+                                    <a {...props} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline" />
+                                  ),
+                                  p: ({node, ...props}) => <p className="text-xs text-gray-600" {...props} />,
+                                  strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                  em: ({node, ...props}) => <em className="italic" {...props} />,
+                                  code: ({node, inline, className, children, ...props}: any) =>
+                                    inline ? <code className="bg-gray-100 px-1 rounded text-sm" {...props}>{children}</code> :
+                                    <code className="block p-2 bg-gray-100 rounded overflow-x-auto" {...props}>{children}</code>
+                                }}
+                                >
+                                  {a.description}
+                                </ReactMarkdown>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-col items-end gap-2 shrink-0 ml-2">
+                            <Badge variant={ok ? 'success' : 'destructive'} className="text-xs">
+                              {scoreNum !== null ? `${scoreNum}` : (ok ? 'OK' : 'Issue')}
+                            </Badge>
+                            {a.helpUrl && (
+                              <a href={a.helpUrl} target="_blank" rel="noopener noreferrer"
+                                 className="text-xs text-blue-600 underline">
+                                Learn
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+
+
         </Tabs>
 
         {/* ── Bottom export CTA ─────────────────────────────────────────── */}

@@ -13,7 +13,7 @@ export interface WhiteLabelConfig {
 }
 
 const defaults: WhiteLabelConfig = {
-  agencyName: 'AuditFlow',
+  agencyName: 'AuditSE',
   agencyLogo: null,
   agencyUrl: 'https://auditflow.io',
   accentColor: '#0075FF',

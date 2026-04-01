@@ -1,0 +1,205 @@
+---
+title: "How rstipower Delivered Client-Ready SEO Audits in 24 Hours with AuditFlow"
+summary: "A detailed use case showing how rstipower — a mid-sized digital marketing agency — standardized and accelerated SEO audit delivery using AuditFlow to increase conversions, reduce manual work, and deliver white‑label PDF reports to clients."
+image: "/public/file.svg"
+author: "Ngaikam Alex"
+publishedAt: '2026-03-22'
+tags: ["agency", "case-study", "seo", "audit", "white-label"]
+---
+
+# Executive summary
+
+rstipower is a mid-sized digital marketing agency servicing 35+ retainer clients across e-commerce and SaaS. They needed a fast, repeatable way to produce client‑facing SEO audits that were both technically accurate and presented in a brandable, executive-friendly format.
+
+Using AuditFlow, rstipower automated lighthouse runs, link checks and content analysis into a single report. Within 4 weeks they standardized the audit workflow, cut production time from ~6 hours to under 1 hour per client, and increased proposal conversion by 18% for new prospects who received an audit-led pitch.
+
+---
+
+## About rstipower
+
+- Headquartered in Manchester, UK
+- Team of 22 (including 7 SEOs and 4 developers)
+- Primary verticals: e-commerce (60%) and SaaS (40%)
+- Revenue model: monthly retainers + project-based proposals
+
+rstipower historically relied on manual lighthouse runs, spreadsheets for broken-link tracking, and a designer to stitch executive PDFs together — a slow and error-prone process.
+
+---
+
+## Client background (example: Acme Retail Co.)
+
+Acme Retail Co. is a national retailer with an online catalog of 15k SKUs, experiencing year-over-year traffic stagnation. They engaged rstipower for a technical and content audit to identify quick wins and a prioritized roadmap.
+
+Key constraints:
+- No internal SEO team
+- Regular site updates from multiple vendors
+- Limited access to server logs
+
+KPIs for the engagement:
+- Improve Core Web Vitals (LCP/CLS/TBT) by 20% in 3 months
+- Reduce broken links by 90% in 8 weeks
+- Increase organic sessions to category pages by 15% in 6 months
+
+---
+
+## Challenges
+
+1. Time-to-delivery: Manual audits took 4–8 hours to produce, limiting the number of proposals.
+2. Consistency: Different SEOs produced reports with varying levels of detail and tone.
+3. White-labeling: Clients expected branded PDFs that matched rstipower’s design system.
+4. Prioritization: Technical teams needed concise, implementable tickets rather than long prose.
+
+---
+
+## Goals
+
+- Automate the data collection (Lighthouse, link checks, image checks, structured data)
+- Produce a single client-ready PDF (white-labelled) with executive summary, prioritized recommendations and a developer-friendly appendix
+- Reduce project completion time and increase proposal throughput
+
+---
+
+## AuditFlow approach
+
+rstipower configured AuditFlow to run an end‑to‑end audit per domain with the following checks:
+
+- Lighthouse (performance, accessibility, best-practices, SEO)
+- Core Web Vitals snapshot (LCP, CLS, FID/TBT)
+- Broken link crawler (internal & external)
+- Image optimisation scan (missing alt, dimensions, format)
+- Structured data detection (JSON-LD, OpenGraph, Twitter cards)
+- Content quality heuristics (word counts, heading balance, readability)
+
+They then created two templates in AuditFlow:
+
+- Executive PDF (2 pages): high-level score, top 5 quick wins, and next steps for stakeholders
+- Implementation appendix (developer handoff): prioritized list with code hints, sample snippets, and audit references
+
+---
+
+## Implementation: step-by-step
+
+### 1) Preparation
+
+- rstipower added clients to their agency account and configured agency branding (logo, colors, preparedBy).
+- They defined a default audit profile: desktop + mobile Lighthouse, crawl depth 3, and 10 concurrent link checks.
+
+### 2) Running the audit
+
+- The SEO lead started an audit in AuditFlow and selected the client profile.
+- AuditFlow queued the tasks and returned a consolidated results object (lighthouse categories, broken_links, image_optimization, structured_data, content_quality).
+- The team used the live preview to quickly inspect top opportunities.
+
+### 3) Interpreting results
+
+- Executive summary: overall score, category breakdown, and 3 one-line recommendations were reviewed by the account lead.
+- Developer appendix: the team exported full audit JSON and created GitHub issues for the top 8 engineering tickets.
+
+### 4) Prioritization playbook
+
+rstipower used a simple impact/effort scoring matrix inside AuditFlow’s priorities view:
+
+- High impact, low effort: critical JS/CSS deferral, image compression, missing alt attributes
+- High impact, high effort: server-side image rewriting, component lazy-loading
+- Low impact, low effort: meta-description fixes, small heading cleanups
+
+Each recommended item included estimated hours and a checklist for QA after deployment.
+
+### 5) Branded deliverable
+
+- They used the Export PDF feature to generate a 2-page executive report with rstipower branding and client name in the header.
+- The Account Manager attached the PDF to a proposal email and scheduled a 30-minute walkthrough call.
+
+---
+
+## Results
+
+After three months across 12 audited clients in similar verticals, rstipower reported:
+
+- Average audit production time reduced from ~6 hours to 45 minutes (setup + review).
+- Proposal conversion for audit-led outreach increased by 18% (baseline conversion: 22% → 40% for prospects receiving a tailored audit snapshot).
+- Core Web Vitals improved: mean LCP decreased by 28% across audited sites.
+- Broken links reduced by 92% within 8 weeks for tracked clients.
+- Average client satisfaction (NPS-like internal measure) improved by 12 points.
+
+Money saved (conservative estimate): time savings and faster proposals led to an estimated £45k additional revenue opportunity in the first quarter after adoption.
+
+---
+
+## Example deliverables
+
+### Executive email template (use when sending audit snapshot)
+
+Subject: Quick SEO audit: top opportunities for {ClientName}
+
+Hi {ClientContactName},
+
+I ran a quick technical audit of {ClientDomain} and attached a short, client‑friendly summary highlighting immediate wins and long‑term improvements.
+
+Top takeaways:
+- Page speed opportunities: defer render-blocking JS, compress hero images
+- Content: several category pages under 300 words; recommend enriching product descriptions
+- Technical: fix broken internal links (approx. {broken_count}) and add missing JSON‑LD where relevant
+
+I’ve attached a 2‑page PDF for your review — happy to walk through these findings in a quick 20‑30 minute call.
+
+Best,
+
+{Your name}
+{rstipower}
+
+### Executive PDF outline
+
+- Cover: client name, rstipower branding, date
+- Page 1: overall score, quick wins (top 5), CWV snapshot, key metrics
+- Page 2: prioritized roadmap (top 8 items) and next steps
+- Appendix (separate): developer tickets + raw audit links
+
+---
+
+## Reusable checklists & templates
+
+### Quick Audit Checklist
+
+- Run Lighthouse mobile & desktop
+- Capture Core Web Vitals snapshot
+- Crawl site for broken links (internal & external)
+- Check image alt attributes and dimensions
+- Inspect structured data presence (JSON-LD, OG)
+- Measure content length on category/product pages
+- Export JSON and PDF for client and engineering teams
+
+### Developer Handoff Template (GitHub issue body)
+
+- Title: Fix render-blocking JS on /category/*
+- Severity: High
+- Steps to reproduce: run Lighthouse; see opportunity id: render-blocking-resources
+- Suggested fix: defer or async non-essential scripts, inline critical CSS
+- Expected outcome: LCP improvement > 20%
+
+---
+
+## Lessons learned
+
+- Standardize audit profiles: consistent input parameters (emulate mobile/desktop, crawl depth) ensure comparable scores across clients.
+- Keep executive reports short: stakeholders want 1–2 pages; hide the heavy detail behind a developer appendix.
+- Automate the repetitive: AuditFlow’s white-label PDF export saved designers ~4–6 hours per report.
+- Track outcomes: connect audit actions to measurable KPIs (LCP, broken links removed, organic sessions) to demonstrate ROI.
+
+---
+
+## Appendix: full audit checklist (copyable)
+
+- [ ] Run Lighthouse (mobile)
+- [ ] Run Lighthouse (desktop)
+- [ ] Take CWV snapshot (LCP, CLS, TBT)
+- [ ] Crawl site for broken links
+- [ ] Export missing-alt examples
+- [ ] Export missing-dimensions examples
+- [ ] Map structured data presence
+- [ ] Generate executive PDF and developer appendix
+
+---
+
+If you'd like, rstipower can share a template audit for your domain — contact the team at hello@rstipower.example
+
