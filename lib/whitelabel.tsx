@@ -13,9 +13,9 @@ export interface WhiteLabelConfig {
 }
 
 const defaults: WhiteLabelConfig = {
-  agencyName: 'AuditSE',
+  agencyName: 'OUTAudits',
   agencyLogo: null,
-  agencyUrl: 'https://auditflow.io',
+  agencyUrl: 'https://outaudits.com',
   accentColor: '#0075FF',
   reportFooter: 'Confidential — prepared exclusively for the client named above.',
   preparedBy: '',

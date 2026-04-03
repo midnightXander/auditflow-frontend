@@ -35,7 +35,7 @@ export default async function UseCases(){
                 <section className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10 items-start">
                     <div className="lg:col-span-2">
                         <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">Use Cases</h1>
-                        <p className="mt-3 text-lg text-slate-600 max-w-2xl">Real examples of how agencies and in-house teams use AuditSE to deliver fast, client-ready SEO audits that convert. Browse case studies, templates and practical workflows.</p>
+                        <p className="mt-3 text-lg text-slate-600 max-w-2xl">Real examples of how agencies and in-house teams use OUTAudits to deliver fast, client-ready SEO audits that convert. Browse case studies, templates and practical workflows.</p>
 
                         <div className="mt-6 flex flex-col sm:flex-row gap-3">
                             <div className="flex-1">
@@ -47,14 +47,14 @@ export default async function UseCases(){
                             </div>
 
                             <div className="flex gap-2">
-                                <Link href="/register" className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold shadow hover:opacity-95">Try AuditSE</Link>
+                                <Link href="/register" className="inline-flex items-center gap-2 px-4 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-semibold shadow hover:opacity-95">Try OUTAudits</Link>
                                 <Link href="/pricing" className="inline-flex items-center gap-2 px-4 py-3 rounded-lg border border-gray-200 bg-white text-sm">View pricing</Link>
                             </div>
                         </div>
                     </div>
 
                     <aside className="hidden lg:block p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                        <h3 className="text-sm font-semibold text-gray-900">Why AuditSE for agencies</h3>
+                        <h3 className="text-sm font-semibold text-gray-900">Why OUTAudits for agencies</h3>
                         <p className="text-xs text-gray-600 mt-2">Ship branded audits in minutes, automate repetitive checks and generate PDF reports your clients love.</p>
 
                         <ul className="mt-4 space-y-3 text-sm">

@@ -150,27 +150,27 @@ export default function DashboardPage() {
       href: '/compare',
       color: 'from-purple-500 to-purple-600',
     },
-    {
-      label: 'Rank Tracking',
-      description: 'Track your keyword rankings',
-      icon: <TrendingUp className="w-6 h-6" />,
-      href: '/rank-tracking',
-      color: 'from-green-500 to-green-600',
-    },
-    {
-      label: 'Backlink Analysis',
-      description: 'Analyze your backlinks',
-      icon: <LinkIcon className="w-6 h-6" />,
-      href: '/backlinks',
-      color: 'from-orange-500 to-orange-600',
-    },
-    {
-      label: 'Keyword Analysis',
-      description: 'Research keywords',
-      icon: <KeySquare className="w-6 h-6" />,
-      href: '/keywords',
-      color: 'from-pink-500 to-pink-600',
-    },
+    // {
+    //   label: 'Rank Tracking',
+    //   description: 'Track your keyword rankings',
+    //   icon: <TrendingUp className="w-6 h-6" />,
+    //   href: '/rank-tracking',
+    //   color: 'from-green-500 to-green-600',
+    // },
+    // {
+    //   label: 'Backlink Analysis',
+    //   description: 'Analyze your backlinks',
+    //   icon: <LinkIcon className="w-6 h-6" />,
+    //   href: '/backlinks',
+    //   color: 'from-orange-500 to-orange-600',
+    // },
+    // {
+    //   label: 'Keyword Analysis',
+    //   description: 'Research keywords',
+    //   icon: <KeySquare className="w-6 h-6" />,
+    //   href: '/keywords',
+    //   color: 'from-pink-500 to-pink-600',
+    // },
   ]
 
   if (loading) {

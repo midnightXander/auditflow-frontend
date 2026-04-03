@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { fetchWithAuth } from '@/lib/auth-context'
+import { fetchWithAuth, useAuth } from '@/lib/auth-context'
 import {
   Zap,
   ArrowRight,
@@ -15,11 +15,18 @@ import {
 } from 'lucide-react'
 
 export default function WebsiteAuditPage() {
+  const { user } = useAuth()
   const [url, setUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const router = useRouter()
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    router.push('/signin')
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

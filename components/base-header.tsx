@@ -4,20 +4,14 @@ import { Search, Zap, Shield, TrendingUp, CheckCircle, Globe, KeySquare, LinkIco
 import Link from 'next/link'
 import { fetchWithAuth, useAuth} from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
+import Logo from './logo'
 
 export default function BaseHeader({user}:any){
     
     return (
         <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-600 rounded-lg flex items-center justify-center">
-                <Search className="w-6 h-6 text-white" />
-              </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-ransparent">
-              AuditSE
-            </span>
-          </div>
+          <Logo />
           <nav className="hidden md:flex items-center gap-6">
             
             <Link href="#features" className="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">

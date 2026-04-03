@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter, JetBrains_Mono, Lexend } from 'next/font/google'
+import Script from 'next/script'
 import { WhiteLabelProvider } from '@/lib/whitelabel'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
@@ -30,13 +31,35 @@ const lexend = Lexend({
 })
 
 export const metadata: Metadata = {
-  title: 'AuditFlow — White-Label Website Auditing',
-  description: 'Professional website auditing for agencies. Powered by Google Lighthouse.',
+  title: 'OUTAudits — White-Label Website Auditing and SEO tools',
+  description: 'Professional website auditing and SEO tools for agencies.',
+  icons: {
+    icon: '/logo.svg',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}> 
+      <head>
+        {/* Google Analytics 4 */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-5VPDD8M1GY`}
+          strategy="afterInteractive"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-5VPDD8M1GY');
+            `,
+          }}
+        />
+      </head>
       <body className={lexend.className}>
         <AuthProvider>
           <WhiteLabelProvider>

@@ -46,11 +46,17 @@ export default function Home() {
         body: JSON.stringify({ url }),
       })
 
+      if(response.status == 401){
+        setIsLoading(false)
+        //push to signin
+        router.push('/signin')
+      }
       const data = await response.json()
       
       if (data.job_id) {
         router.push(`/audit/${data.job_id}`)
       }
+      
     } catch (error) {
       console.error('Error starting audit:', error)
       setIsLoading(false)
@@ -70,6 +76,11 @@ export default function Home() {
         },
         body: JSON.stringify({ url, max_pages: 500 }),
       })
+
+      if(response.status == 401){
+        setIsLoading(false)
+        router.push('/signin')
+      }
  
       const data = await response.json()
       
@@ -764,15 +775,15 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials - How They Use AuditFlow */}
+      {/* Testimonials - How They Use OUTAudits */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">
-              How They Use AuditFlow
+              How They Use OUTAudits
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Join thousands of professionals using AuditFlow to grow their business
+              Join thousands of professionals using OUTAudits to grow their business
             </p>
           </div>
 
@@ -790,7 +801,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  "AuditFlow saves me hours every week. I run audits on all our client websites and use the reports to pitch additional services. The white-label PDFs make us look like we have a huge team."
+                  "OUTAudits saves me hours every week. I run audits on all our client websites and use the reports to pitch additional services. The white-label PDFs make us look like we have a huge team."
                 </p>
                 <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-2">
                   <div className="flex gap-1">
@@ -842,7 +853,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  "As a solo freelancer, AuditFlow makes me look like a full-service agency. I generate audits in seconds and deliver them to prospects. It's closed so many deals for me."
+                  "As a solo freelancer, OUTAudits makes me look like a full-service agency. I generate audits in seconds and deliver them to prospects. It's closed so many deals for me."
                 </p>
                 <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-2">
                   <div className="flex gap-1">
@@ -868,7 +879,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  "I use AuditFlow to give my development clients ongoing recommendations. The deep crawl report shows technical issues I might have missed, and now I offer audits as a service."
+                  "I use OUTAudits to give my development clients ongoing recommendations. The deep crawl report shows technical issues I might have missed, and now I offer audits as a service."
                 </p>
                 <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-2">
                   <div className="flex gap-1">
@@ -894,7 +905,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  "We white-labeled AuditFlow and now offer it as a standalone service to our clients. The API access lets us integrate audits directly into our platform. Game changer."
+                  "We white-labeled OUTAudits and now offer it as a standalone service to our clients. The API access lets us integrate audits directly into our platform. Game changer."
                 </p>
                 <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-2">
                   <div className="flex gap-1">
@@ -920,7 +931,7 @@ export default function Home() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed">
-                  "I use the keyword analysis tool to validate content ideas and the rank tracking to monitor our blog performance. AuditFlow connects everything I need in one place."
+                  "I use the keyword analysis tool to validate content ideas and the rank tracking to monitor our blog performance. OUTAudits connects everything I need in one place."
                 </p>
                 <div className="mt-6 pt-6 border-t border-gray-100 flex items-center gap-2">
                   <div className="flex gap-1">
@@ -985,7 +996,7 @@ export default function Home() {
                   <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center">S</div>
                   <div>
                     <p className="font-semibold text-gray-900">Self-hosting option</p>
-                    <p className="text-sm text-gray-600">Run AuditFlow on your infrastructure for extra control and data residency.</p>
+                    <p className="text-sm text-gray-600">Run OUTAudits on your infrastructure for extra control and data residency.</p>
                   </div>
                 </li>
               </ul>
@@ -1039,28 +1050,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-20 bg-gray-50">
+      {/* Final CTA Section */}
+      <section className="py-20 bg-gradient-to-r from-slate-900 to-slate-800">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">How It Works</h2>
-            <p className="text-xl text-gray-600">Get insights in three simple steps</p>
-          </div>
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Ready to win more clients?
+            </h2>
+            <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+              Start generating professional SEO audit reports in seconds. Join thousands of agencies, freelancers, and consultants who are already using OUTAudits to grow their business.
+            </p>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              { step: '1', title: 'Enter URL', desc: 'Paste your website URL into the input field' },
-              { step: '2', title: 'We Audit', desc: 'Our system runs 10+ comprehensive checks' },
-              { step: '3', title: 'Get Results', desc: 'View detailed reports and recommendations' }
-            ].map((item, i) => (
-              <div key={i} className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4">
-                  {item.step}
-                </div>
-                <h3 className="font-semibold text-xl mb-2">{item.title}</h3>
-                <p className="text-gray-600">{item.desc}</p>
-              </div>
-            ))}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Link href="/audit">
+                <Button className="bg-white text-slate-900 hover:bg-gray-100 font-semibold px-8 py-6 text-base">
+                  Start Free Audit
+                </Button>
+              </Link>
+              <Link href="/pricing">
+                <Button variant="outline" className="border-white text-white bg-slate-900 hover:bg-white/10 font-semibold px-8 py-6 text-base">
+                  View Pricing
+                </Button>
+              </Link>
+            </div>
+
+            <p className="text-sm text-white/80">
+              No credit card required • Free tier available • Start in seconds
+            </p>
           </div>
         </div>
       </section>
@@ -1075,7 +1091,7 @@ export default function Home() {
                 <div className="w-6 h-6 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
                   <Search className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-lg font-bold text-white">AuditFlow</span>
+                <span className="text-lg font-bold text-white">OUTAudits</span>
               </div>
               <p className="text-sm text-gray-400">
                 Professional website auditing powered by Google Lighthouse

@@ -59,7 +59,7 @@ export default async function Post({params} : {params: {slug: string}} ){
                             <header>
                                 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">{title}</h1>
                                 <div className="mt-3 flex items-center gap-3 text-sm text-gray-500">
-                                    <span>{author || 'AuditSE'}</span>
+                                    <span>{author || 'OUTAudits'}</span>
                                     {publishedAt && <span>· {formatDate(publishedAt ?? '')}</span>}
                                     <span>· {readingTime} min read</span>
                                 </div>
@@ -116,7 +116,7 @@ export default async function Post({params} : {params: {slug: string}} ){
                             <footer className="mt-10 border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="text-sm text-gray-600">Enjoyed this use case? Share it with a colleague.</div>
                                 <div className="flex items-center gap-3">
-                                    <Link href="/register" className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md text-sm">Try AuditSE</Link>
+                                    <Link href="/register" className="inline-flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded-md text-sm">Try OUTAudits</Link>
                                     <a href="#" className="text-sm text-gray-500 underline">Print</a>
                                 </div>
                             </footer>
@@ -127,7 +127,7 @@ export default async function Post({params} : {params: {slug: string}} ){
                         <div className="sticky top-24 space-y-4">
                             <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
                                 <h4 className="text-sm font-semibold">About the author</h4>
-                                <p className="mt-2 text-xs text-gray-600">{author || 'AuditSE team'}</p>
+                                <p className="mt-2 text-xs text-gray-600">{author || 'OUTAudits team'}</p>
                             </div>
 
                             <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
@@ -141,7 +141,7 @@ export default async function Post({params} : {params: {slug: string}} ){
 
                             <div className="p-4 bg-gradient-to-r from-blue-50 to-white rounded-xl border border-gray-100">
                                 <h4 className="text-sm font-semibold">Need this for a client?</h4>
-                                <p className="text-xs text-gray-600 mt-2">Use AuditSE to quickly create a branded audit and deliver it as a PDF report.</p>
+                                <p className="text-xs text-gray-600 mt-2">Use OUTAudits to quickly create a branded audit and deliver it as a PDF report.</p>
                                 <div className="mt-3">
                                     <Link href="/pricing" className="block text-center text-sm font-semibold bg-blue-600 text-white px-3 py-2 rounded-lg">Get started</Link>
                                 </div>

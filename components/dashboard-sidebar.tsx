@@ -90,9 +90,9 @@ export function DashboardSidebar() {
             </div>
             <div>
               <h2 className="text-lg font-bold group-hover:text-primary-400 transition">
-                AuditSE
+                OUTAudits
               </h2>
-              <p className="text-xs text-gray-400">SEO Tools</p>
+              <p className="text-xs text-gray-400">White labeled SEO tools</p>
             </div>
           </Link>
         </div>

@@ -12,14 +12,23 @@ import {
   Plus,
   X,
 } from 'lucide-react'
+import { fetchWithAuth, useAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
 
 export default function RankTrackingPage() {
+  const { user } = useAuth()
   const [website, setWebsite] = useState('')
   const [keywords, setKeywords] = useState([''])
   const [country, setCountry] = useState('US')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const router = useRouter()
+
+  if (!user) {
+    router.push('/signin')
+    return null
+  }
 
   const handleAddKeyword = () => {
     if (keywords.length < 50) {

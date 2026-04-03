@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { fetchWithAuth } from '@/lib/auth-context'
+import { fetchWithAuth, useAuth } from '@/lib/auth-context'
 import {
   Globe,
   ArrowRight,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 
 export default function DeepCrawlPage() {
+  const { user } = useAuth()
   const [url, setUrl] = useState('')
   const [maxPages, setMaxPages] = useState('50')
   const [isLoading, setIsLoading] = useState(false)
@@ -23,6 +24,11 @@ export default function DeepCrawlPage() {
   const [success, setSuccess] = useState('')
   const [advancedSettings, setAdvancedSettings] = useState(false)
   const router = useRouter()
+
+  if (!user) {
+    router.push('/signin')
+    return null
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

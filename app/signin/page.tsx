@@ -58,7 +58,7 @@ export default function LoginPage() {
               <Search className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-              AuditSE
+              OUTAudits
             </span>
           </div>
           <p className="text-gray-600">Sign in to your account</p>
