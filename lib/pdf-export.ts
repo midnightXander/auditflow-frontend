@@ -2,6 +2,10 @@ import jsPDF from 'jspdf'
 import { WhiteLabelConfig } from './whitelabel'
 import { format } from 'date-fns'
 
+// ─── Font Setup ───────────────────────────────────────────────────────────────
+// PDF reports use Courier (monospace) font for a modern, clean Lexend-inspired appearance
+// Courier provides good readability in PDF exports while maintaining consistent spacing
+
 // ─── Colour helpers ───────────────────────────────────────────────────────────
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -93,23 +97,30 @@ function brandedHeader(
 
   doc.setTextColor(255, 255, 255)
   doc.setFontSize(11)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont('courier', 'bold')
   doc.text(config.agencyName, nameX, 14)
   
 
   // page number right-aligned
   doc.setFontSize(8)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont('courier', 'normal')
   doc.text(`Page ${pageNum} of ${totalPages}`, PAGE_W - MARGIN, 14, { align: 'right' })
 }
 
 function footer(doc: jsPDF, config: WhiteLabelConfig, auditDate: string) {
   const y = PAGE_H - 10
   doc.setFontSize(7)
-  doc.setFont('helvetica', 'normal')
+  doc.setFont('courier', 'normal')
   doc.setTextColor(150, 150, 150)
   doc.text(config.reportFooter, MARGIN, y)
-  doc.text(`Generated ${auditDate}`, PAGE_W - MARGIN, y, { align: 'right' })
+  // clickable agency url
+  if(config.agencyUrl){
+    doc.setTextColor(30, 30, 30)
+    doc.text(config.agencyUrl, PAGE_W - MARGIN, y, { align: 'right' })
+  }else{
+    doc.setTextColor(150, 150, 150)
+    doc.text(`Generated ${auditDate}`, PAGE_W - MARGIN, y, { align: 'right' })
+  }
   // thin rule above footer
   doc.setDrawColor(220, 220, 220)
   doc.line(MARGIN, y - 4, PAGE_W - MARGIN, y - 4)
@@ -120,7 +131,7 @@ function sectionTitle(doc: jsPDF, label: string, y: number, accentColor: string)
   doc.setFillColor(r, g, b)
   doc.rect(MARGIN, y, 3, 6, 'F')
   doc.setFontSize(11)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont('courier', 'bold')
   doc.setTextColor(30, 30, 30)
   doc.text(label, MARGIN + 6, y + 5)
   return y + 12
@@ -133,7 +144,7 @@ function scorePill(doc: jsPDF, score: number, x: number, y: number) {
   doc.setFillColor(r, g, b)
   doc.roundedRect(x, y - 6, pillW, pillH, 2, 2, 'F')
   doc.setFontSize(9)
-  doc.setFont('helvetica', 'bold')
+  doc.setFont('courier', 'bold')
   doc.setTextColor(255, 255, 255)
   doc.text(`${score}`, x + pillW / 2, y - 0.5, { align: 'center' })
   return x + pillW + 2
@@ -160,10 +171,12 @@ function statusIcon(doc: jsPDF, pass: boolean, x: number, y: number) {
   if (pass) {
     doc.setTextColor(16, 185, 129)
     doc.setFontSize(9)
+    doc.setFont('courier', 'bold')
     doc.text('✓', x, y)
   } else {
     doc.setTextColor(239, 68, 68)
     doc.setFontSize(9)
+    doc.setFont('courier', 'bold')
     doc.text('✗', x, y)
   }
 }
@@ -213,18 +226,18 @@ export async function exportAuditPDF(
     // agency name (top-left of cover)
     doc.setTextColor(255, 255, 255)
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text(config.agencyName.toUpperCase(), MARGIN, 20)
 
     // big report heading
     doc.setFontSize(28)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text('WEBSITE', MARGIN, 55)
     doc.text('AUDIT REPORT', MARGIN, 69)
 
     // URL chip
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setFillColor(255, 255, 255, 0.18)
     doc.roundedRect(MARGIN, 76, COL, 10, 2, 2, 'F')
     doc.setTextColor(255, 255, 255)
@@ -237,7 +250,7 @@ export async function exportAuditPDF(
     const [sr, sg, sb] = scoreColour(results.overall_score ?? 0)
     doc.setTextColor(sr, sg, sb)
     doc.setFontSize(22)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text(`${results.overall_score ?? 0}`, cx, cy + 2, { align: 'center' })
     doc.setFontSize(7)
     doc.setTextColor(80, 80, 80)
@@ -252,9 +265,9 @@ export async function exportAuditPDF(
     // Prepared for / by
     doc.setTextColor(30, 30, 30)
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text('Prepared for', MARGIN, contentY + 8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setFontSize(14)
     doc.text(config.clientName || 'Client', MARGIN, contentY + 17)
 
@@ -272,7 +285,7 @@ export async function exportAuditPDF(
     const cats = Object.entries(results.lighthouse?.categories ?? {})
     const gridY = contentY + 48
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.setTextColor(60, 60, 60)
     doc.text('LIGHTHOUSE SCORES', MARGIN, gridY)
 
@@ -292,11 +305,11 @@ export async function exportAuditPDF(
 
       doc.setTextColor(30, 30, 30)
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.text(cat.title, cellX + 6, cellY + 5)
 
       doc.setFontSize(11)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(cr2, cg2, cb2)
       doc.text(`${cat.score}`, cellX + 6, cellY + 11)
     })
@@ -337,17 +350,17 @@ export async function exportAuditPDF(
       doc.roundedRect(cx2, y, cardW, 2.5, 1, 1, 'F')
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(100, 100, 100)
       doc.text(v.label, cx2 + 5, y + 8)
 
       doc.setFontSize(14)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(cr2, cg2, cb2)
       doc.text(data.displayValue ?? '—', cx2 + 5, y + 18)
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(120, 120, 120)
       doc.text((data.rating ?? '').replace('-', ' ').toUpperCase(), cx2 + 5, y + 24)
     })
@@ -368,10 +381,10 @@ export async function exportAuditPDF(
       const col = i % 2
       const mx = MARGIN + col * (COL / 2 + 4)
       const my = y + row * 12
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(90, 90, 90)
       doc.text(m.label, mx, my)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(30, 30, 30)
       doc.text(m.val, mx + COL / 2 - 4, my, { align: 'right' })
     })
@@ -388,15 +401,15 @@ export async function exportAuditPDF(
         doc.setFillColor(255, 250, 235)
         doc.roundedRect(MARGIN, y, COL, 13, 2, 2, 'F')
         doc.setFontSize(8)
-        doc.setFont('helvetica', 'bold')
+        doc.setFont('courier', 'bold')
         doc.setTextColor(40, 40, 40)
         doc.text(opp.title, MARGIN + 4, y + 5)
         if (opp.savings?.ms) {
-          doc.setFont('helvetica', 'normal')
+          doc.setFont('courier', 'normal')
           doc.setTextColor(180, 100, 0)
           doc.text(`Save ~${Math.round(opp.savings.ms)}ms`, PAGE_W - MARGIN - 2, y + 5, { align: 'right' })
         }
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const desc = doc.splitTextToSize(opp.description?.substring(0, 120) ?? '', COL - 8)
         doc.text(desc[0], MARGIN + 4, y + 10)
@@ -429,11 +442,11 @@ export async function exportAuditPDF(
       doc.roundedRect(MARGIN, y, COL, 10, 2, 2, 'F')
       statusIcon(doc, item.pass, MARGIN + 4, y + 7)
       doc.setFontSize(9)
-      doc.setFont('helvetica', item.pass ? 'normal' : 'bold')
+      doc.setFont('courier', item.pass ? 'normal' : 'bold')
       doc.setTextColor(30, 30, 30)
       doc.text(item.label, MARGIN + 11, y + 7)
       if (item.note) {
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(120, 120, 120)
         doc.setFontSize(7)
         doc.text(item.note, PAGE_W - MARGIN - 2, y + 7, { align: 'right' })
@@ -449,7 +462,7 @@ export async function exportAuditPDF(
     const sd = results.structured_data ?? {}
     scorePill(doc, sd.score ?? 0, MARGIN, y + 5)
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setTextColor(80, 80, 80)
     doc.text(`Status: ${sd.status ?? '—'}`, MARGIN + 28, y + 2)
     y += 12
@@ -466,7 +479,7 @@ export async function exportAuditPDF(
       doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
       statusIcon(doc, item.pass, MARGIN + 4, y + 6.5)
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(30, 30, 30)
       doc.text(item.label, MARGIN + 11, y + 6.5)
       if (item.note) {
@@ -482,13 +495,13 @@ export async function exportAuditPDF(
     if (sd.recommendations?.length > 0) {
       y += 4
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(60, 60, 60)
       doc.text('Recommendations', MARGIN, y)
       y += 6
       sd.recommendations.slice(0, 4).forEach((rec: string) => {
         doc.setFontSize(8)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         doc.text('•', MARGIN + 2, y)
         const wrapped = doc.splitTextToSize(rec, COL - 10)
@@ -513,7 +526,7 @@ export async function exportAuditPDF(
 
     scorePill(doc, cqScore, MARGIN, y + 5)
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setTextColor(80, 80, 80)
     doc.text(cq.reading_level ?? '—', MARGIN + 28, y + 2)
     doc.text(`${cq.word_count ?? 0} words`, MARGIN + 28, y + 8)
@@ -548,10 +561,10 @@ export async function exportAuditPDF(
       doc.roundedRect(cx2, cy2, 2.5, 10, 1, 1, 'F')
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(100, 100, 100)
       doc.text(s.label, cx2 + 5, cy2 + 4.5)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(30, 30, 30)
       doc.text(s.val, cx2 + halfW - 3, cy2 + 4.5, { align: 'right' })
     })
@@ -567,7 +580,7 @@ export async function exportAuditPDF(
 
     scorePill(doc, imgScore, MARGIN, y + 5)
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setTextColor(80, 80, 80)
     doc.text(`${img.total_images ?? 0} images found`, MARGIN + 28, y + 5)
     y += 14
@@ -584,10 +597,10 @@ export async function exportAuditPDF(
       doc.setFillColor(isIssue ? 254 : 248, isIssue ? 242 : 249, isIssue ? 242 : 250)
       doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(isIssue ? 180 : 60, 40, 40)
       doc.text(s.label, MARGIN + 4, y + 6.5)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(isIssue ? 239 : 16, isIssue ? 68 : 185, isIssue ? 68 : 129)
       doc.text(`${s.val}`, PAGE_W - MARGIN - 2, y + 6.5, { align: 'right' })
       y += 11
@@ -625,7 +638,7 @@ export async function exportAuditPDF(
       doc.roundedRect(cx2, cy2, secHalf, 10, 2, 2, 'F')
       statusIcon(doc, s.pass, cx2 + 4, cy2 + 7)
       doc.setFontSize(7.5)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(30, 30, 30)
       doc.text(s.label, cx2 + 11, cy2 + 7)
     })
@@ -641,18 +654,18 @@ export async function exportAuditPDF(
     const pillLabel = blStatus === 'pass' ? 'PASS' : blStatus === 'warning' ? 'WARNING' : 'FAIL'
     doc.roundedRect(MARGIN, y, 22, 8, 2, 2, 'F')
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.setTextColor(255, 255, 255)
     doc.text(pillLabel, MARGIN + 11, y + 5.5, { align: 'center' })
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setTextColor(60, 60, 60)
     doc.text(`${bl.total_checked ?? 0} links checked — ${bl.broken_count ?? 0} broken`, MARGIN + 26, y + 5.5)
     y += 14
 
     if ((bl.broken_count ?? 0) > 0 && bl.broken_links?.length > 0) {
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(100, 100, 100)
       doc.text('BROKEN LINKS', MARGIN, y)
       y += 5
@@ -661,7 +674,7 @@ export async function exportAuditPDF(
         doc.setFillColor(254, 242, 242)
         doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (link.url ?? '').length > 70 ? (link.url ?? '').substring(0, 70) + '…' : (link.url ?? '')
         doc.text(urlText, MARGIN + 4, y + 6)
@@ -710,12 +723,12 @@ export async function exportAuditPDF(
         doc.setFillColor(pr, pg, pb)
         doc.roundedRect(MARGIN, y, 18, 10, 2, 2, 'F')
         doc.setFontSize(6)
-        doc.setFont('helvetica', 'bold')
+        doc.setFont('courier', 'bold')
         doc.setTextColor(255, 255, 255)
         doc.text(a.priority, MARGIN + 9, y + 6.5, { align: 'center' })
 
         doc.setFontSize(8)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(30, 30, 30)
         doc.text(a.task, MARGIN + 22, y + 4)
         doc.setFontSize(7)
@@ -789,16 +802,16 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
 
     doc.setTextColor(255, 255, 255)
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text(config.agencyName.toUpperCase(), MARGIN, 20)
 
     doc.setFontSize(28)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text('SITE CRAWL', MARGIN, 55)
     doc.text('ANALYSIS REPORT', MARGIN, 69)
 
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setFillColor(255, 255, 255, 0.18)
     doc.roundedRect(MARGIN, 76, COL, 10, 2, 2, 'F')
     doc.setTextColor(255, 255, 255)
@@ -810,7 +823,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
     doc.circle(cx, cy, 22, 'F')
     doc.setTextColor(r, g, b)
     doc.setFontSize(22)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text(`${results.summary.total_pages_crawled}`, cx, cy + 2, { align: 'center' })
     doc.setFontSize(7)
     doc.setTextColor(80, 80, 80)
@@ -820,9 +833,9 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
 
     doc.setTextColor(30, 30, 30)
     doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.text('Site Analysis For', MARGIN, contentY + 8)
-    doc.setFont('helvetica', 'normal')
+    doc.setFont('courier', 'normal')
     doc.setFontSize(14)
     doc.text(config.clientName || 'Client', MARGIN, contentY + 17)
 
@@ -840,7 +853,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
     // Key metrics grid
     const gridY = contentY + 48
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.setTextColor(60, 60, 60)
     doc.text('KEY METRICS', MARGIN, gridY)
 
@@ -863,12 +876,12 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.roundedRect(cellX, cellY, 3, 14, 1, 1, 'F')
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(80, 80, 80)
       doc.text(label, cellX + 6, cellY + 5)
 
       doc.setFontSize(11)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(r, g, b)
       doc.text(`${value}`, cellX + 6, cellY + 11)
     })
@@ -896,11 +909,11 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.setFillColor(248, 249, 250)
       doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(30, 30, 30)
       doc.text(section || '(root)', MARGIN + 4, y + 6.5)
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(120, 120, 120)
       doc.text(`${pageCount} page${pageCount !== 1 ? 's' : ''}`, PAGE_W - MARGIN - 2, y + 6.5, { align: 'right' })
       y += 12
@@ -912,7 +925,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
 
     const topPages = results.top_pages?.most_linked ?? []
     doc.setFontSize(8)
-    doc.setFont('helvetica', 'bold')
+    doc.setFont('courier', 'bold')
     doc.setTextColor(60, 60, 60)
     doc.text('Most Linked', MARGIN, y)
     y += 6
@@ -922,7 +935,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.setFillColor(248, 249, 250)
       doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(80, 80, 80)
       const urlText = (p.url ?? '').length > 70 ? (p.url ?? '').substring(0, 70) + '…' : (p.url ?? '')
       doc.text(urlText, MARGIN + 3, y + 5.5)
@@ -973,12 +986,12 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.roundedRect(cellX, cellY, 3, 14, 1, 1, 'F')
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(80, 80, 80)
       doc.text(issue.label, cellX + 6, cellY + 5)
 
       doc.setFontSize(12)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(cr, cg, cb)
       doc.text(`${issue.count}`, cellX + 6, cellY + 11)
     })
@@ -994,7 +1007,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(254, 242, 242)
         doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (page.url ?? '').length > 70 ? (page.url ?? '').substring(0, 70) + '…' : (page.url ?? '')
         doc.text(urlText, MARGIN + 4, y + 6)
@@ -1014,7 +1027,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(248, 249, 250)
         doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (page.url ?? '').length > 70 ? (page.url ?? '').substring(0, 70) + '…' : (page.url ?? '')
         doc.text(urlText, MARGIN + 3, y + 5.5)
@@ -1037,7 +1050,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
     // Broken pages
     if ((issues.broken_pages ?? []).length > 0) {
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(60, 60, 60)
       doc.text(`Broken Pages (${issues.broken_pages.length})`, MARGIN, y)
       y += 6
@@ -1047,7 +1060,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(254, 242, 242)
         doc.roundedRect(MARGIN, y, COL, 9, 2, 2, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (page.url ?? '').length > 60 ? (page.url ?? '').substring(0, 60) + '…' : (page.url ?? '')
         doc.text(urlText, MARGIN + 4, y + 4)
@@ -1068,7 +1081,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(255, 250, 235)
         doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (page.url ?? '').length > 60 ? (page.url ?? '').substring(0, 60) + '…' : (page.url ?? '')
         doc.text(urlText, MARGIN + 3, y + 5.5)
@@ -1088,7 +1101,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(248, 249, 250)
         doc.roundedRect(MARGIN, y, COL, 7, 1.5, 1.5, 'F')
         doc.setFontSize(6.5)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = url.length > 75 ? url.substring(0, 75) + '…' : url
         doc.text(urlText, MARGIN + 3, y + 5)
@@ -1131,10 +1144,10 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.roundedRect(cellX, cellY, 2.5, 14, 1, 1, 'F')
 
       doc.setFontSize(7)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(100, 100, 100)
       doc.text(m.label, cellX + 5, cellY + 4.5)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(30, 30, 30)
       doc.text(m.value, cellX + halfW - 3, cellY + 4.5, { align: 'right' })
     })
@@ -1151,7 +1164,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(248, 249, 250)
         doc.roundedRect(MARGIN, y, COL, 8, 1.5, 1.5, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const urlText = (page.url ?? '').length > 65 ? (page.url ?? '').substring(0, 65) + '…' : (page.url ?? '')
         doc.text(urlText, MARGIN + 3, y + 5.5)
@@ -1172,7 +1185,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
         doc.setFillColor(255, 250, 235)
         doc.roundedRect(MARGIN, y, COL, 8, 2, 2, 'F')
         doc.setFontSize(7)
-        doc.setFont('helvetica', 'normal')
+        doc.setFont('courier', 'normal')
         doc.setTextColor(80, 80, 80)
         const titleText = title.length > 60 ? title.substring(0, 60) + '…' : title
         doc.text(titleText, MARGIN + 4, y + 5)
@@ -1227,12 +1240,12 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       doc.setFillColor(pr, pg, pb)
       doc.roundedRect(MARGIN, y, 18, 11, 2, 2, 'F')
       doc.setFontSize(6)
-      doc.setFont('helvetica', 'bold')
+      doc.setFont('courier', 'bold')
       doc.setTextColor(255, 255, 255)
       doc.text(r.priority, MARGIN + 9, y + 7, { align: 'center' })
 
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(30, 30, 30)
       doc.text(r.task, MARGIN + 22, y + 4)
       doc.setFontSize(7)
@@ -1255,7 +1268,7 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
       ]
 
       doc.setFontSize(8)
-      doc.setFont('helvetica', 'normal')
+      doc.setFont('courier', 'normal')
       doc.setTextColor(60, 60, 60)
       steps.forEach((step) => {
         if (y > PAGE_H - 20) return
