@@ -19,6 +19,7 @@ import { exportCrawlPDF } from '@/lib/pdf-export'
 
 
 interface CrawlResults {
+  client_name: string
   summary: {
     start_url: string
     domain: string

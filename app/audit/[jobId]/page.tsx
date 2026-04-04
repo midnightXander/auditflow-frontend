@@ -29,7 +29,8 @@ import ShareAuditModal from '@/components/share-audit-modal'
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AuditResults {
-  url: string
+  url: string,
+  client_name: string,
   audit_date: string
   overall_score: number
   lighthouse: {
@@ -173,7 +174,7 @@ export default function AuditResultsPage() {
           return
         }
         const data = await r.json()
-        if (data.status === 'completed' && data.results) { console.log(data.results); setResults(data.results); setLoading(false) }
+        if (data.status === 'completed' && data.results) { setResults(data.results); setLoading(false) }
         else if (data.status === 'failed')                { setError(data.error || 'Audit failed'); setLoading(false) }
         else { setProgress(data.progress || 0); if (!dead) setTimeout(poll, 2000) }
       } catch { console.log("error");setError('Cannot reach server'); setLoading(false) }
@@ -339,8 +340,8 @@ export default function AuditResultsPage() {
                       style={{ background: config.accentColor }}>
                       {config.agencyName}
                     </span>
-                    {config.clientName && (
-                      <span className="text-xs text-gray-400">Report for <strong className="text-gray-700">{config.clientName}</strong></span>
+                    {results.client_name && (
+                      <span className="text-xs text-gray-400">Report for <strong className="text-gray-700">{results.client_name}</strong></span>
                     )}
                   </div>
                 )}

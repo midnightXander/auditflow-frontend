@@ -14,10 +14,14 @@ import {
   Loader,
   X,
 } from 'lucide-react'
+import { useWhiteLabel, WhiteLabelConfig } from '@/lib/whitelabel'
 
 export default function CompetitorComparePage() {
   const { user } = useAuth()
   const [primaryUrl, setPrimaryUrl] = useState('')
+  const [clientName, setClientName] = useState('')
+  const { config, setConfig } = useWhiteLabel()
+  const [form, setForm] = useState<WhiteLabelConfig>({ ...config })
   const [competitors, setCompetitors] = useState(['', '', ''])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -28,6 +32,12 @@ export default function CompetitorComparePage() {
     router.push('/signin')
     return null
   }
+
+  const handleInputChange = (field: keyof WhiteLabelConfig, value: string) => {
+      setClientName(value)
+      setForm((prev) => ({ ...prev, [field]: value }))
+      setConfig({ ...form, [field]: value })
+    }
 
   const handleAddCompetitor = () => {
     if (competitors.length < 5) {
@@ -79,6 +89,7 @@ export default function CompetitorComparePage() {
             competitor_urls: validCompetitors.map((c) =>
               c.startsWith('http') ? c : `https://${c}`
             ),
+            client_name: clientName || undefined 
           }),
         }
       )
@@ -123,6 +134,18 @@ export default function CompetitorComparePage() {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Setup comparison</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Target Business Name</label>
+                <Input
+                  type="text"
+                  placeholder="Enter client/business name"
+                  value={form.clientName}
+                  onChange={(e) => handleInputChange('clientName', e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              
               {/* Primary URL */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Your Website URL</label>

@@ -6,6 +6,7 @@ import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { fetchWithAuth, useAuth } from '@/lib/auth-context'
+import { useWhiteLabel, WhiteLabelConfig } from '@/lib/whitelabel'
 import {
   Globe,
   ArrowRight,
@@ -18,6 +19,9 @@ import {
 export default function DeepCrawlPage() {
   const { user } = useAuth()
   const [url, setUrl] = useState('')
+  const [clientName, setClientName] = useState('')
+  const { config, setConfig } = useWhiteLabel()
+  const [form, setForm] = useState<WhiteLabelConfig>({ ...config })
   const [maxPages, setMaxPages] = useState('50')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -29,6 +33,12 @@ export default function DeepCrawlPage() {
     router.push('/signin')
     return null
   }
+
+  const handleInputChange = (field: keyof WhiteLabelConfig, value: string) => {
+      setClientName(value)
+      setForm((prev) => ({ ...prev, [field]: value }))
+      setConfig({ ...form, [field]: value })
+    }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -58,6 +68,7 @@ export default function DeepCrawlPage() {
           body: JSON.stringify({
             url: url.startsWith('http') ? url : `https://${url}`,
             max_pages: parseInt(maxPages),
+            client_name: clientName || undefined 
           }),
         }
       )
@@ -100,6 +111,18 @@ export default function DeepCrawlPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Configure your crawl</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Client/Business Name</label>
+                <Input
+                  type="text"
+                  placeholder="Enter client/business name"
+                  value={form.clientName}
+                  onChange={(e) => handleInputChange('clientName', e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+              
               {/* URL Input */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Website URL</label>

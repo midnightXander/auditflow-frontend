@@ -23,6 +23,7 @@ import {
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { fail } from 'assert'
+import { OnboardingModal } from '@/components/onboarding-modal'
 
 interface QuickAction {
   label: string
@@ -74,33 +75,7 @@ export default function DashboardPage() {
             const data = await response.json()
             // console.log('Fetched activity:', data)
       
-      const mockActivity: ActivityItem[] = [
-        {
-          id: '1',
-          type: 'audit',
-          title: 'Website Audit',
-          description: 'Audited example.com',
-          created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          status: 'completed',
-        },
-        {
-          id: '2',
-          type: 'crawl',
-          title: 'Deep Crawl',
-          description: 'Crawled example.com',
-          created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-          status: 'completed',
-        },
-        {
-          id: '3',
-          type: 'comparison',
-          title: 'Competitor Comparison',
-          description: 'Compared 3 websites',
-          created_at: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
-          status: 'completed',
-        },
-      ]
-      setActivity(data.activities || mockActivity)
+      setActivity(data.activities || [])
     } catch (error) {
       console.error('Failed to fetch activity:', error)
     }
@@ -226,6 +201,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen  bg-gray-50">
+      <OnboardingModal />
       {/* Sidebar */}
       <DashboardSidebar />
 
@@ -343,7 +319,7 @@ export default function DashboardPage() {
                   <p className="text-gray-600">No activity yet. Start by running an audit!</p>
                 </div>
               ) : (
-                activity.map((item) => (
+                activity.slice(0, 5).map((item) => (
                   <Link key={item.id} href= {"/"+item.type+"/"+item.activity_id} className="p-6 flex items-center justify-between hover:bg-gray-50 transition">
                   
                     <div className="flex items-center gap-4 flex-1">

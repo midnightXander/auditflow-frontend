@@ -6,6 +6,7 @@ import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { fetchWithAuth, useAuth } from '@/lib/auth-context'
+import { useWhiteLabel, WhiteLabelConfig } from '@/lib/whitelabel'
 import {
   Zap,
   ArrowRight,
@@ -14,9 +15,13 @@ import {
   Loader,
 } from 'lucide-react'
 
+
 export default function WebsiteAuditPage() {
   const { user } = useAuth()
   const [url, setUrl] = useState('')
+  const [clientName, setClientName] = useState('')
+  const { config, setConfig } = useWhiteLabel()
+  const [form, setForm] = useState<WhiteLabelConfig>({ ...config })
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -26,6 +31,12 @@ export default function WebsiteAuditPage() {
   if (!user) {
     router.push('/signin')
     return null
+  }
+
+  const handleInputChange = (field: keyof WhiteLabelConfig, value: string) => {
+    setClientName(value)
+    setForm((prev) => ({ ...prev, [field]: value }))
+    setConfig({ ...form, [field]: value })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,7 +65,7 @@ export default function WebsiteAuditPage() {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url: url.startsWith('http') ? url : `https://${url}` }),
+          body: JSON.stringify({ url: url.startsWith('http') ? url : `https://${url}`, client_name: clientName || undefined }),
         }
       )
 
@@ -103,6 +114,18 @@ export default function WebsiteAuditPage() {
             <h2 className="text-xl font-bold text-gray-900 mb-6">Enter website URL</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Client/Business Name</label>
+                <Input
+                  type="text"
+                  placeholder="Enter client/business name"
+                  value={form.clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  disabled={isLoading}
+                />
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Website URL</label>
                 <div className="relative">
@@ -119,6 +142,8 @@ export default function WebsiteAuditPage() {
                   </div>
                 </div>
               </div>
+
+              
 
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
