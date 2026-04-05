@@ -106,7 +106,7 @@ export default function DashboardPage() {
   const quickActions: QuickAction[] = [
     {
       label: 'Website Audit',
-      description: 'Analyze your website performance',
+      description: 'Analyze a website performance',
       icon: <Zap className="w-6 h-6" />,
       href: '/audit',
       color: 'from-blue-500 to-blue-600',
@@ -213,7 +213,7 @@ export default function DashboardPage() {
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Welcome back, {user.full_name || user.email.split('@')[0]}!
             </h1>
-            <p className="text-gray-600">Here's what's happening with your SEO tools</p>
+            <p className="text-gray-600">Here's what's happening with your  tools</p>
           </div>
 
           {/* Credits & Stats */}

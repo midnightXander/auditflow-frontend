@@ -120,7 +120,7 @@ export default function WebsiteAuditPage() {
                 <Input
                   type="text"
                   placeholder="Enter client/business name"
-                  value={form.clientName}
+                  value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   disabled={isLoading}
                 />
