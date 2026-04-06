@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import matter from 'gray-matter'
 
-const postsDirectory = path.join(process.cwd(), 'content','posts')
+const postsDirectory = path.join(process.cwd(), 'content')
 
 export type Post = {
     metadata : PostMetaData

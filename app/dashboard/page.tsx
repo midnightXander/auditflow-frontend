@@ -224,7 +224,7 @@ export default function DashboardPage() {
                 <p className="text-sm font-medium text-gray-600">Credits Remaining</p>
                 <Zap className="w-5 h-5 text-amber-500" />
               </div>
-              <p className="text-3xl font-bold text-gray-900">{user.credits_remaining}</p>
+              <p className="text-3xl font-bold text-gray-900">{user.plan == 'free' ? user.credits_remaining : 'Unlimited'}</p>
               <p className="text-xs text-gray-500 mt-2">
                 {user.plan === 'pro' ? 'Unlimited' :` Renews in ${formatDateDistanceToNow(user.credits_reset_date)} `}
               </p>
@@ -244,7 +244,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-3xl font-bold text-gray-900 capitalize">{user.plan}</p>
               <p className="text-xs text-gray-500 mt-2">
-                {user.plan === 'premium' ? 'All features included' : 'Limited features'}
+                {user.plan === 'pro' ? 'All features included' : 'Limited features'}
               </p>
               <Button size="sm" onClick={()=>{router.push('/pricing')}} className="w-full mt-4" variant="outline">
                 Upgrade Plan

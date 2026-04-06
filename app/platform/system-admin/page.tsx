@@ -163,11 +163,13 @@ export default function AdminDashboardPage() {
   async function saveEdit(userId: string) {
     try {
       const payload = { ...editValues }
+      console.log('Saving user update with payload:', payload)
       const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/admin/users/${userId}`, {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       })
+      
       if (!res.ok) throw new Error('Update failed')
       // refresh
       setEditingUserId(null)
