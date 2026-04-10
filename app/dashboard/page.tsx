@@ -47,6 +47,21 @@ export default function DashboardPage() {
   const router = useRouter()
   const [activity, setActivity] = useState<any[]>([])
   const [stats, setStats] = useState({ total: 0, completed: 0, failed: 0, by_type:{} })
+  // Banner visibility for promotional playbook
+  const [showWorkflowsBanner, setShowWorkflowsBanner] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const dismissed = localStorage.getItem('outaudits_workflows_banner')
+      if (!dismissed) setShowWorkflowsBanner(true)
+    }
+  }, [])
+
+  const dismissWorkflowsBanner = (persist = true) => {
+    setShowWorkflowsBanner(false)
+    if (persist && typeof window !== 'undefined') localStorage.setItem('outaudits_workflows_banner', '1')
+  }
+
   console.log(user)
   const maxCredits = user?.plan == 'free' ? 10 : user?.plan == 'pro' ? 100 : user?.plan == 'agency' ? 1000 : 10
   useEffect(() => {
@@ -215,6 +230,32 @@ export default function DashboardPage() {
             </h1>
             <p className="text-gray-600">Here's what's happening with your  tools</p>
           </div>
+
+          {/* Promotional Banner: Proven Workflows Playbook */}
+          {showWorkflowsBanner && (
+            <div className="mb-8">
+              <div className="rounded-2xl overflow-hidden shadow-lg bg-gradient-to-r from-slate-900 to-slate-700 text-white p-6 flex items-center justify-between gap-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-lg bg-white/10 flex items-center justify-center text-2xl font-bold">💼</div>
+                  <div>
+                    <h3 className="text-2xl font-semibold">Proven Workflows to Win More Clients</h3>
+                    <p className="text-sm text-white/90 mt-1 max-w-2xl">Read three actionable systems agencies and freelancers use to generate leads, retain clients, and create new revenue streams with OUTAudits.</p>
+                    <div className="mt-4 flex gap-3">
+                      <Link href="/blog/proven-workflows-to-win-more-clients-and-scale-revenue-with-outaudits" target="_blank">
+                        <Button className="bg-white text-slate-900 font-semibold">Read the Playbook</Button>
+                      </Link>
+                      <Button variant="outline" className="text-white border-white/30" onClick={() => dismissWorkflowsBanner()}>Remind me later</Button>
+                      <Button variant="ghost" className="text-white/80" onClick={() => dismissWorkflowsBanner(true)}>Dismiss</Button>
+                    </div>
+                  </div>
+                </div>
+                <div className="hidden md:block text-right text-sm text-white/80">
+                  <div className="font-medium">Quick, repeatable workflows</div>
+                  <div className="text-xs mt-2">30s audits • White-label PDF • Scalable playbooks</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Credits & Stats */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

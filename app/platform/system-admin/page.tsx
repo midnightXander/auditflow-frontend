@@ -63,6 +63,10 @@ export default function AdminDashboardPage() {
   const [loadingStats, setLoadingStats] = useState(false)
   const [activity, setActivity] = useState<ActivityItem[]>([])
   const [loadingActivity, setLoadingActivity] = useState(false)
+  const [visitorsLoading, setVisitorsLoading] = useState(false)
+  const [visitors, setVisitors] = useState<any | null>(null)
+  const [visitorDays, setVisitorDays] = useState<number>(30)
+  const [referrerFilter, setReferrerFilter] = useState<string>('')
   const [editingUserId, setEditingUserId] = useState<string | null>(null)
   const [editValues, setEditValues] = useState<Partial<User>>({})
   const router = useRouter()
@@ -80,6 +84,8 @@ export default function AdminDashboardPage() {
     fetchStats()
     fetchUsers(page, pageSize)
     fetchActivity()
+    fetchVisitors()
+
   }
 
   async function fetchStats() {
@@ -127,6 +133,27 @@ export default function AdminDashboardPage() {
       setLoadingActivity(false)
     }
   }
+
+  async function fetchVisitors() {
+    setVisitorsLoading(true)
+    try {
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/visitors/analytics?days=${visitorDays}`)
+      if (!res.ok) throw new Error('Failed to load visitors analytics')
+      const data = await res.json()
+      // expected shape: { analytics: { ... }, period, generated_at }
+      setVisitors(data.analytics || null)
+    } catch (err) {
+      console.error(err)
+      setVisitors(null)
+    } finally {
+      setVisitorsLoading(false)
+    }
+  }
+
+  // refresh visitor analytics when days filter changes
+  useEffect(() => {
+    if (user && user.is_admin) fetchVisitors()
+  }, [user, visitorDays])
 
   async function handleDeleteUser(userId: string) {
     const ok = confirm('Are you sure you want to delete this user? This action cannot be undone.')
@@ -353,8 +380,104 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          {/* Activity Feed */}
+          
+
+          
           <div>
+          {/* Visitor Analytics */}
+            <div className="mt-6">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="text-lg font-semibold">Visitor Analytics</h2>
+                <div className="flex items-center gap-2">
+                  <select value={visitorDays} onChange={(e) => setVisitorDays(Number(e.target.value))} className="text-sm border rounded px-2 py-1">
+                    <option value={7}>Last 7 days</option>
+                    <option value={30}>Last 30 days</option>
+                    <option value={90}>Last 90 days</option>
+                  </select>
+                  <Input placeholder="Filter referrer or country" value={referrerFilter} onChange={(e)=>setReferrerFilter(e.target.value)} className="h-9" />
+                </div>
+              </div>
+
+              <Card>
+                <CardContent>
+                  {visitorsLoading ? (
+                    <div className="p-4 text-gray-500">Loading analytics...</div>
+                  ) : !visitors ? (
+                    <div className="p-4 text-gray-500">No analytics available</div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gray-50 p-4 rounded">
+                          <div className="text-sm text-gray-500">Total Visits</div>
+                          <div className="text-2xl font-bold">{visitors.total_visits}</div>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded">
+                          <div className="text-sm text-gray-500">Unique Visitors</div>
+                          <div className="text-2xl font-bold">{visitors.unique_visitors}</div>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded">
+                          <div className="text-sm text-gray-500">Conversions</div>
+                          <div className="text-2xl font-bold">{visitors.conversions}</div>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded">
+                          <div className="text-sm text-gray-500">Conversion Rate</div>
+                          <div className="text-2xl font-bold">{visitors.conversion_rate}%</div>
+                        </div>
+                      </div>
+
+                      {/* Top countries */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-sm font-medium">Top Countries</h3>
+                          <div className="text-xs text-gray-500">Period: {visitors.period_days} days</div>
+                        </div>
+                        <div className="space-y-2">
+                          {(visitors.top_countries || []).filter((c: any) => !referrerFilter || c.country.toLowerCase().includes(referrerFilter.toLowerCase()) || c.code.toLowerCase().includes(referrerFilter.toLowerCase())).map((c: any, idx: number) => {
+                            const max = Math.max(...(visitors.top_countries||[]).map((x:any)=>x.count)) || 1
+                            const pct = Math.round((c.count / max) * 100)
+                            return (
+                              <div key={idx}>
+                                <div className="flex items-center justify-between text-sm">
+                                  <div>{c.country} <span className="text-xs text-gray-500 ml-2">{c.code}</span></div>
+                                  <div className="font-semibold">{c.count}</div>
+                                </div>
+                                <div className="w-full bg-gray-200 h-2 rounded mt-1">
+                                  <div className="h-2 bg-primary-600 rounded" style={{ width: `${pct}%` }} />
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Top referrers */}
+                      <div>
+                        <h3 className="text-sm font-medium mb-2">Top Referrers</h3>
+                        <div className="space-y-2">
+                          {(visitors.top_referrers || []).filter((r:any)=> !referrerFilter || r.referrer.toLowerCase().includes(referrerFilter.toLowerCase())).map((r:any, idx:number) => {
+                            const max = Math.max(...(visitors.top_referrers||[]).map((x:any)=>x.count)) || 1
+                            const pct = Math.round((r.count / max) * 100)
+                            return (
+                              <div key={idx}>
+                                <div className="flex items-center justify-between text-sm">
+                                  <div className="truncate">{r.referrer}</div>
+                                  <div className="font-semibold">{r.count}</div>
+                                </div>
+                                <div className="w-full bg-gray-200 h-2 rounded mt-1">
+                                  <div className="h-2 bg-primary-600 rounded" style={{ width: `${pct}%` }} />
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Activity Feed */}
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold">Recent Activity</h2>
               <div className="text-sm text-gray-600">{activity.length} items</div>
@@ -384,6 +507,8 @@ export default function AdminDashboardPage() {
                 ))
               )}
             </div>
+
+            
           </div>
         </div>
       </div>
