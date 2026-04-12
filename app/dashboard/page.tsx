@@ -1,5 +1,12 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Dashboard - OUTAudits',
+//   description: 'Manage your website audits, track credits, and view recent activity on your OUTAudits dashboard.',
+// }
+
 import { useState, useEffect } from 'react'
 import { useAuth, fetchWithAuth } from '@/lib/auth-context'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

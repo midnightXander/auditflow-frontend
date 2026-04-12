@@ -1,5 +1,13 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Website Audit - OUTAudits',
+//   description: 'Run a professional website SEO audit. Get detailed insights on performance, SEO, accessibility, and security in 30 seconds.',
+// }
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

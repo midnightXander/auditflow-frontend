@@ -1,0 +1,53 @@
+# robots.txt for OUTAudits
+# Allow search engines to crawl all public pages
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/settings
+Disallow: /history
+Disallow: /platform/system-admin
+Disallow: /audit/
+Disallow: /crawl/
+Disallow: /compare/
+Disallow: /rank-tracking
+Disallow: /keywords
+Disallow: /backlinks
+
+# Specific rules for common crawlers
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/settings
+Disallow: /history
+Disallow: /platform/system-admin
+Disallow: /audit/
+Disallow: /crawl/
+Disallow: /compare/
+Disallow: /rank-tracking
+Disallow: /keywords
+Disallow: /backlinks
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /dashboard/settings
+Disallow: /history
+Disallow: /platform/system-admin
+Disallow: /audit/
+Disallow: /crawl/
+Disallow: /compare/
+Disallow: /rank-tracking
+Disallow: /keywords
+Disallow: /backlinks
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://outaudits.io/sitemap.xml

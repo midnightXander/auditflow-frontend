@@ -1,5 +1,12 @@
 "use client";
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Activity History - OUTAudits',
+//   description: 'View your complete audit history. Filter by category, date, and website to track your SEO analysis activity.',
+// }
+
 import { useEffect, useState } from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth-context";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";

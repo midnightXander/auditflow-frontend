@@ -20,6 +20,9 @@ export default function BaseHeader({user}:any){
             <Link href="/pricing" className="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
               Pricing
             </Link>
+            <Link href="/blog" className="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
+              Blog
+            </Link>
             <Link href="/use-cases" className="text-sm font-medium text-gray-600 hover:text-primary-600 transition-colors">
               Use cases
             </Link>

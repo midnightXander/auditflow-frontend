@@ -13,12 +13,32 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
+
 export const generateStaticParams = async () => {
-    const posts = await getAllPosts()
+    const posts = await getAllPosts('blog-posts')
     return posts.map((post) => ({
         slug: post.slug,
     }))
 }
+
+export const generateMetadata = async ({params}: {params: {slug: string}}): Promise<Metadata> => {
+    const {slug} = await params
+    const post = await getPostBySlug(slug, 'blog-posts')
+    
+    if (!post) {
+        return {
+            title: 'Not Found - OUTAudits Blog',
+            description: 'This blog article could not be found.'
+        }
+    }
+    
+    const {title, summary} = post.metadata
+    return {
+        title: `${title} - OUTAudits Blog`,
+        description: summary || 'Read insights and strategies for growing your agency or freelance SEO business with OUTAudits.'
+    }
+}
+
 import MDXContent from "@/components/mdxContent"
 
 

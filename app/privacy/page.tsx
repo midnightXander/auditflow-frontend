@@ -1,6 +1,10 @@
-'use client'
+import type { Metadata } from 'next'
 
-import { DashboardSidebar } from '@/components/dashboard-sidebar'
+export const metadata: Metadata = {
+  title: 'Privacy Policy - OUTAudits',
+  description: 'Learn how OUTAudits protects your privacy. Read our data privacy policy and understand how we handle your information.',
+}
+
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
@@ -52,10 +56,10 @@ export default function PrivacyPage() {
           <section id="introduction">
             <h2 className="text-2xl font-bold mt-12 mb-4">1. Introduction</h2>
             <p>
-              AuditFlow ("we", "us", "our", or "Company") operates the AuditFlow website and services. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
+              OutAudits ("we", "us", "our", or "Company") operates the OutAudits website and services. This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
             </p>
             <p className="mt-4">
-              We use your data to provide and improve the Service. By using AuditFlow, you agree to the collection and use of information in accordance with this policy.
+              We use your data to provide and improve the Service. By using OutAudits, you agree to the collection and use of information in accordance with this policy.
             </p>
           </section>
 
@@ -92,7 +96,7 @@ export default function PrivacyPage() {
 
             <h3 className="text-xl font-bold mt-8 mb-3">Audit Data</h3>
             <p>
-              When you use AuditFlow to audit websites, we collect:
+              When you use OutAudits to audit websites, we collect:
             </p>
             <ul className="list-disc list-inside space-y-2 mt-4 ml-4">
               <li>URLs of websites audited</li>
@@ -118,7 +122,7 @@ export default function PrivacyPage() {
           <section id="how-we-use">
             <h2 className="text-2xl font-bold mt-12 mb-4">3. How We Use Your Information</h2>
             <p>
-              AuditFlow uses the collected data for various purposes:
+              OutAudits uses the collected data for various purposes:
             </p>
             <ul className="list-disc list-inside space-y-2 mt-4 ml-4">
               <li><strong>Providing Services:</strong> To provide, maintain, and improve the Service</li>
@@ -136,7 +140,7 @@ export default function PrivacyPage() {
           <section id="data-sharing">
             <h2 className="text-2xl font-bold mt-12 mb-4">4. Data Sharing & Third Parties</h2>
             <p>
-              AuditFlow does not sell, trade, or rent your personal information. However, we may share your information in the following circumstances:
+              OutAudits does not sell, trade, or rent your personal information. However, we may share your information in the following circumstances:
             </p>
             
             <h3 className="text-xl font-bold mt-8 mb-3">Service Providers</h3>
@@ -156,18 +160,18 @@ export default function PrivacyPage() {
 
             <h3 className="text-xl font-bold mt-8 mb-3">Legal Requirements</h3>
             <p>
-              AuditFlow may disclose your personal information if required to do so by law or if we have a good faith belief that disclosure is necessary to:
+              OutAudits may disclose your personal information if required to do so by law or if we have a good faith belief that disclosure is necessary to:
             </p>
             <ul className="list-disc list-inside space-y-2 mt-4 ml-4">
               <li>Comply with applicable laws or regulations</li>
               <li>Enforce our Terms of Service and other agreements</li>
-              <li>Protect the safety, rights, and property of AuditFlow, our users, or the public</li>
+              <li>Protect the safety, rights, and property of OutAudits, our users, or the public</li>
               <li>Prevent or investigate possible wrongdoing</li>
             </ul>
 
             <h3 className="text-xl font-bold mt-8 mb-3">Business Transfers</h3>
             <p>
-              If AuditFlow is involved in a merger, acquisition, bankruptcy, or asset sale, your information may be transferred as part of that transaction. We will provide notice before your information becomes subject to a different privacy policy.
+              If OutAudits is involved in a merger, acquisition, bankruptcy, or asset sale, your information may be transferred as part of that transaction. We will provide notice before your information becomes subject to a different privacy policy.
             </p>
           </section>
 
@@ -229,14 +233,14 @@ export default function PrivacyPage() {
             </p>
 
             <p className="mt-6">
-              To exercise any of these rights, please contact us at legal@auditflow.io. We will respond to your request within 30 days (or as required by applicable law).
+              To exercise any of these rights, please contact us at legal@outaudits.com. We will respond to your request within 30 days (or as required by applicable law).
             </p>
           </section>
 
           <section id="cookies">
             <h2 className="text-2xl font-bold mt-12 mb-4">7. Cookies & Tracking</h2>
             <p>
-              AuditFlow uses cookies and similar tracking technologies to:
+              OutAudits uses cookies and similar tracking technologies to:
             </p>
             <ul className="list-disc list-inside space-y-2 mt-4 ml-4">
               <li>Remember your preferences and login information</li>
@@ -261,17 +265,17 @@ export default function PrivacyPage() {
           <section id="children">
             <h2 className="text-2xl font-bold mt-12 mb-4">8. Children's Privacy</h2>
             <p>
-              AuditFlow is not intended for individuals under the age of 18. We do not knowingly collect personal data from children under 18. If we become aware that we have collected personal data from a child under 18, we will take steps to delete such data and terminate the child's account.
+              OutAudits is not intended for individuals under the age of 18. We do not knowingly collect personal data from children under 18. If we become aware that we have collected personal data from a child under 18, we will take steps to delete such data and terminate the child's account.
             </p>
             <p className="mt-4">
-              If you believe we have collected information from a child under 18, please contact us immediately at legal@auditflow.io.
+              If you believe we have collected information from a child under 18, please contact us immediately at legal@outaudits.com.
             </p>
           </section>
 
           <section id="retention">
             <h2 className="text-2xl font-bold mt-12 mb-4">9. Data Retention</h2>
             <p>
-              AuditFlow retains your personal data for as long as necessary to provide the Service and fulfill the purposes outlined in this Privacy Policy. Retention periods vary depending on the type of data and the purposes for which we use it.
+              OutAudits retains your personal data for as long as necessary to provide the Service and fulfill the purposes outlined in this Privacy Policy. Retention periods vary depending on the type of data and the purposes for which we use it.
             </p>
             <ul className="list-disc list-inside space-y-2 mt-4 ml-4">
               <li><strong>Account Information:</strong> Retained while your account is active and for a reasonable period after account termination for business and legal reasons</li>
@@ -298,7 +302,7 @@ export default function PrivacyPage() {
               <li>Adequate level of protection in the recipient country</li>
             </ul>
             <p className="mt-4">
-              By using AuditFlow, you consent to the transfer of your information to countries outside your country of residence.
+              By using OutAudits, you consent to the transfer of your information to countries outside your country of residence.
             </p>
           </section>
 
@@ -309,16 +313,16 @@ export default function PrivacyPage() {
             </p>
             <div className="bg-gray-100 rounded-lg p-6 mt-4 space-y-3">
               <p>
-                <strong>AuditFlow Privacy Team</strong>
+                <strong>OutAudits Privacy Team</strong>
               </p>
               <p>
-                Email: <strong>privacy@auditflow.io</strong>
+                Email: <strong>privacy@outaudits.com</strong>
               </p>
               <p>
-                Legal Email: <strong>legal@auditflow.io</strong>
+                Legal Email: <strong>legal@outaudits.com</strong>
               </p>
               <p>
-                Website: www.auditflow.io
+                Website: www.outaudits.com
               </p>
             </div>
 

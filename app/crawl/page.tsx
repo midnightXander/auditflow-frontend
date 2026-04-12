@@ -1,5 +1,12 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Deep Crawl - OUTAudits',
+//   description: 'Crawl and analyze up to 500 pages of your website. Discover broken links, duplicate content, and technical SEO issues.',
+// }
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

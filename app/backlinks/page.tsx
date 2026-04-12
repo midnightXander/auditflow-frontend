@@ -1,5 +1,14 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Backlink Analysis - OUTAudits',
+//   description: 'Analyze your backlink profile, discover link opportunities, and evaluate domain authority and link quality.',
+// }
+
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

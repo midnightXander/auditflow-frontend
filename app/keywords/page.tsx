@@ -1,5 +1,13 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Keyword Research - OUTAudits',
+//   description: 'Research and analyze keywords with search volume data, difficulty scores, and CPC analysis for your SEO strategy.',
+// }
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

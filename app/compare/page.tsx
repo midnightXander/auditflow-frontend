@@ -1,5 +1,14 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Competitor Compare - OUTAudits',
+//   description: 'Compare your website against up to 5 competitors. Identify gaps and quick wins in SEO, performance, and technical metrics.',
+// }
+
+
+
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'

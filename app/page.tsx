@@ -1142,9 +1142,18 @@ export default function Home() {
               <h4 className="text-white font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-sm">
                 <li><Link href="/dashboard" className="hover:text-primary-400 transition">Dashboard</Link></li>
-                <li><a href="#how-it-works" className="hover:text-primary-400 transition">How It Works</a></li>
-                <li><a href="#features" className="hover:text-primary-400 transition">Features</a></li>
-                <li><a href="mailto:support@auditflow.io" className="hover:text-primary-400 transition">Support</a></li>
+                <li><Link href="#how-it-works" className="hover:text-primary-400 transition">How It Works</Link></li>
+                <li><Link href="#features" className="hover:text-primary-400 transition">Features</Link></li>
+                <li><Link href="mailto:support@outaudits.com" className="hover:text-primary-400 transition">Support</Link></li>
+              </ul>
+            </div>
+
+            {/* Resources */}
+            <div>
+              <h4 className="text-white font-semibold mb-4">Resources</h4>
+              <ul className="space-y-2 text-sm">
+                <li><Link href="/blog" className="hover:text-primary-400 transition">Blog</Link></li>
+                <li><Link href="/use-cases" className="hover:text-primary-400 transition">Use Cases</Link></li>
               </ul>
             </div>
 
@@ -1154,14 +1163,14 @@ export default function Home() {
               <ul className="space-y-2 text-sm">
                 <li><Link href="/terms" className="hover:text-primary-400 transition">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="hover:text-primary-400 transition">Privacy Policy</Link></li>
-                <li><a href="mailto:legal@auditflow.io" className="hover:text-primary-400 transition">Contact Legal</a></li>
+                <li><Link href="mailto:legal@outaudits.com" className="hover:text-primary-400 transition">Contact Legal</Link></li>
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 pt-8 text-center">
             <p className="text-xs">
-              © {new Date().getFullYear()} AuditFlow. All rights reserved. Built with Next.js and Tailwind CSS.
+              © {new Date().getFullYear()} OutAudits. All rights reserved.
             </p>
           </div>
         </div>

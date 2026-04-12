@@ -4,15 +4,13 @@ import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
 import BaseHeader from '@/components/base-header'
 import { Metadata } from 'next'
-// import { useAuth } from '@/lib/auth-context'
 
-// export const metadata: Metadata = {
-//     title: 'Use Cases - AuditFlow',
-//     description: 'Discover how to leverage AuditFlow for your business growth with our comprehensive use cases.',
-// }
+export const metadata: Metadata = {
+    title: 'Use Cases - OUTAudits',
+    description: 'Discover how to leverage OUTAudits for your business growth. Read case studies and success stories from agencies and freelancers.',
+}
 
-export default async function UseCases(){
-    // const {user} = useAuth() 
+export default async function UseCases(){ 
     const posts = await getAllPosts('use-cases')
     
     // Sort so featured/latest come first (if your posts include `featured` flag, otherwise by date)

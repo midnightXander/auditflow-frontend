@@ -1,5 +1,14 @@
 'use client'
 
+// import type { Metadata } from 'next'
+
+// export const metadata: Metadata = {
+//   title: 'Rank Tracking - OUTAudits',
+//   description: 'Track your keyword rankings daily across search engines. Monitor your SEO progress with historical trending data.',
+// }
+
+
+
 import { useState } from 'react'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { Button } from '@/components/ui/button'

@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={lexend.className}>
+      <body className={jetbrainsMono.className}>
         <AuthProvider>
           <WhiteLabelProvider>
             {children}
