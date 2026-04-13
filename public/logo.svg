@@ -1,20 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#334155;stop-opacity:1" />
+      <stop offset="0" style="stop-color:#0f172a;stop-opacity:1"/>
+      <stop offset="1" style="stop-color:#334155;stop-opacity:1"/>
     </linearGradient>
   </defs>
-  
-  <!-- Rounded square background -->
-  <rect width="40" height="40" rx="8" fill="url(#logoGradient)" />
-  
-  <!-- Search icon -->
-  <g transform="translate(7, 7)">
-    <!-- Circle (search lens) -->
-    <circle cx="8" cy="8" r="6" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    
-    <!-- Handle (search stick) -->
-    <line x1="12.5" y1="12.5" x2="18" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+  <rect width="40" height="40" rx="8" fill="url(#logoGradient)" x="-0.098" y="0.098"/>
+  <g transform="matrix(1.03682, 0, 0, 1.03861, 7.797582, 8.678196)" style="">
+    <circle cx="6.971" cy="6.971" r="6" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="" transform="matrix(1.58415, 0, 0, 1.543301, -0.56721, -0.527545)"/>
+    <line x1="16.716" y1="16.961" x2="20.941" y2="21.285" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style=""/>
   </g>
 </svg>
