@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import BaseHeader from '@/components/base-header'
@@ -8,7 +8,7 @@ import Footer from '@/components/footer'
 import { useAuth } from '@/lib/auth-context'
 import { CheckCircle } from 'lucide-react'
 
-export default function StartTrialPage() {
+function StartTrialContent() {
   const router = useRouter()
   const search = useSearchParams()
   const planParam = search?.get('plan') || 'pro'
@@ -167,3 +167,16 @@ export default function StartTrialPage() {
     </div>
   )
 }
+
+export default function StartTrialPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-white text-slate-900 flex items-center justify-center">
+        <div className="text-slate-500">Loading...</div>
+      </div>
+    }>
+      <StartTrialContent />
+    </Suspense>
+  )
+}
+

@@ -38,7 +38,6 @@ export async function getPostBySlug(slug: string, type: string = 'blog-posts') :
         console.log('Reading file:', filepath)
         const fileContent = await fs.readFileSync(filepath,{ encoding : 'utf-8'})
         const { data, content } = matter(fileContent)
-        console.log('Parsed front matter:', data)
         return { metadata : { ...data, slug, type }, content }
     }catch(error){
         console.error('Error reading post:', error)
