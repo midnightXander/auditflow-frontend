@@ -9,6 +9,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { useAuth, fetchWithAuth } from '@/lib/auth-context'
 import { formatDate } from '@/lib/utils'
 import { Check, CreditCard, Truck, X } from 'lucide-react'
+import DashboardLayout from '@/components/dashboardLayout'
 
 export default function BillingManagementPage() {
   const { user } = useAuth()
@@ -41,10 +42,11 @@ export default function BillingManagementPage() {
   }
 
   return (
+    <DashboardLayout>
     <div className="flex min-h-screen bg-gray-50">
-      <DashboardSidebar />
+      
       <div className="flex-1">
-        <DashboardHeader />
+        
         <main className="p-6 max-w-7xl mx-auto">
           <div className="mb-6 flex items-center justify-between">
             <h1 className="text-2xl font-bold">Billing & Subscription</h1>
@@ -160,5 +162,6 @@ export default function BillingManagementPage() {
         </main>
       </div>
     </div>
+    </DashboardLayout>
   )
 }

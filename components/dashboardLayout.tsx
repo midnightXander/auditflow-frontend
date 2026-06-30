@@ -20,6 +20,8 @@ import {
   ChevronRight,
   Code,
   TrendingUp,
+  createLucideIcon,
+  LucideCreditCard
 } from 'lucide-react';
 
 import { Badge } from './badge';
@@ -32,6 +34,7 @@ const sidebarLinks = [
   { icon: TrendingUp, label: 'Rank Tracking', path: '/rank-tracking', badge: 'New' },
   { icon: Code, label: 'Widget', path: '/audit/embed', badge: 'New' },
   { icon: BarChart3, label: 'Reports', path: '#' },
+  { icon: LucideCreditCard, label: 'Billing', path: '/account/billing' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
