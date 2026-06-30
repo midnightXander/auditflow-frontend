@@ -18,6 +18,7 @@ export function useProtectedRoute(redirectTo?: string) {
     if (loading) return // Still loading auth state
 
     if (!user) {
+      console.log("use protected")
       // Not authenticated, redirect to signin
       const redirect = redirectTo || (typeof window !== 'undefined' ? window.location.pathname : '')
       router.push(`/signin?redirect=${encodeURIComponent(redirect)}`)

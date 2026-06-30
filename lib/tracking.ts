@@ -4,6 +4,7 @@ export const trackVisitor = async () => {
       try {
 
         if (typeof window !== "undefined") {
+          console.log("tracking")
           const href = window.location.href;
           const searchUrl = window.location.search
           await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {

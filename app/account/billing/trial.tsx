@@ -36,6 +36,7 @@ export default function ActivateTrialPage() {
       // refresh
       
       if (typeof window !== "undefined") {
+        console.log("trial")
         window.location.reload()
     }
     } catch (e) {

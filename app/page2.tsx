@@ -62,6 +62,7 @@ function ScreenshotPlaceholder({ label = 'Screenshot', size = 'md' }: { label?: 
 
     try {
       if (typeof window !== "undefined") {
+        console.log("page2")
       const wHref = window.location.href
       const wSearch = window.location.search
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {

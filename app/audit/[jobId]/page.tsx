@@ -207,6 +207,7 @@ export default function AuditResultsPage() {
         const data = await res.json()
         setShareLink(data.share_url || data.url || null)
       } else {
+        console.log("jobid")
         const origin = typeof window !== 'undefined' ? window.location.origin : ''
         const q = shareClient ? `?client=${encodeURIComponent(shareClient)}` : ''
         setShareLink(`${origin}/share/audit/${params.jobId}${q}`)
