@@ -39,16 +39,21 @@ export default function Pricing() {
   const trackVisitor = async () => {
 
     try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          page_url: window.location.href,
-          utm_source: new URLSearchParams(window.location.search).get('utm_source'),
-          utm_medium: new URLSearchParams(window.location.search).get('utm_medium'),
-          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign')
-        })
-      });
+      if (typeof window !== "undefined") {
+          const href = window.location.href;
+          const searchUrl = window.location.search
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            page_url: href,
+            utm_source: new URLSearchParams(searchUrl).get('utm_source'),
+            utm_medium: new URLSearchParams(searchUrl).get('utm_medium'),
+            utm_campaign: new URLSearchParams(searchUrl).get('utm_campaign')
+          })
+        });
+      }
+      
     } catch (error) {
       console.error('Error tracking visitor:', error)
     }
@@ -77,7 +82,7 @@ export default function Pricing() {
   const handleUpgrade = async (planTier: string) => {
     if (!user || currentPlan === planTier) {
       // Redirect to login
-      window.location.href = '/signin';
+      router.push('/signin');
       return;
     }
 
@@ -98,7 +103,7 @@ export default function Pricing() {
       const data = await response.json();
       toast.success("You are being redirected to checkout")
       // Redirect to Whop checkout
-      window.location.href = data.checkout_url;
+      router.push(data.checkout_url);
     } catch (error) {
       console.error('Error creating checkout:', error);
       alert('Failed to create checkout. Please try again.');

@@ -18,7 +18,7 @@ import BaseHeader from '@/components/base-header'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { fetchWithAuth, useAuth } from '@/lib/auth-context'
-import './globals.css'
+// import '../globals.css'
 
 export default function Home() {
   const [url, setUrl] = useState('')
@@ -61,16 +61,22 @@ function ScreenshotPlaceholder({ label = 'Screenshot', size = 'md' }: { label?: 
   const trackVisitor = async () => {
 
     try {
+      if (typeof window !== "undefined") {
+      const wHref = window.location.href
+      const wSearch = window.location.search
       await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          page_url: window.location.href,
-          utm_source: new URLSearchParams(window.location.search).get('utm_source'),
-          utm_medium: new URLSearchParams(window.location.search).get('utm_medium'),
-          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign')
+          page_url: wHref,
+          utm_source: new URLSearchParams(wSearch).get('utm_source'),
+          utm_medium: new URLSearchParams(wSearch).get('utm_medium'),
+          utm_campaign: new URLSearchParams(wSearch).get('utm_campaign')
         })
       });
+      }
+      
+      
     } catch (error) {
       console.error('Error tracking visitor:', error)
     }

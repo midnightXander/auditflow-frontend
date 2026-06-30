@@ -8,14 +8,16 @@ import { Card, CardContent } from '@/components/ui/card'
 import DashboardHeader from '@/components/dashboard-header'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export default function ActivateTrialPage() {
   const { user } = useAuth()
   const [processing, setProcessing] = useState(false)
+  const router = useRouter()
 
   const activateTrial = async (planTier: string) => {
     if (!user) {
-      window.location.href = '/signin'
+      router.push('/signin')
       return
     }
     setProcessing(true)
@@ -32,7 +34,10 @@ export default function ActivateTrialPage() {
       }
       toast.success('Trial activated')
       // refresh
-      window.location.reload()
+      
+      if (typeof window !== "undefined") {
+        window.location.reload()
+    }
     } catch (e) {
       console.error(e)
       toast.error('Failed to activate trial')
