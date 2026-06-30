@@ -79,7 +79,7 @@ export default async function Post({params} : {params: {slug: string}} ){
                             <header>
                                 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">{title}</h1>
                                 <div className="mt-3 flex items-center gap-3 text-sm text-gray-500">
-                                    <span>{author || 'OUTAudits'}</span>
+                                    <span>{author?.name || 'OUTAudits'}</span>
                                     {publishedAt && <span>· {formatDate(publishedAt ?? '')}</span>}
                                     <span>· {readingTime} min read</span>
                                 </div>
@@ -147,7 +147,7 @@ export default async function Post({params} : {params: {slug: string}} ){
                         <div className="sticky top-24 space-y-4">
                             <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
                                 <h4 className="text-sm font-semibold">About the author</h4>
-                                <p className="mt-2 text-xs text-gray-600">{author || 'OUTAudits team'}</p>
+                                <p className="mt-2 text-xs text-gray-600">{author?.name || 'OUTAudits team'}</p>
                             </div>
 
                             <div className="p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
