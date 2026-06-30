@@ -12,6 +12,7 @@ import { ScoreBar } from '@/components/scoreBar'
 import { WhiteLabelModal } from '@/components/whiteLabelModal'
 import { useWhiteLabel } from '@/lib/whitelabel'
 import { exportAuditPDF } from '@/lib/pdf-export'
+import DashboardLayout from '@/components/dashboardLayout'
 import {
   ArrowLeft, Zap, Search, Shield, Link2,
   ImageIcon, FileJson, FileText,
@@ -91,7 +92,7 @@ function LoadingScreen({ progress }: { progress: number }) {
   const active = Math.min(Math.floor(progress / 17), steps.length - 1)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#141e27]  flex items-center justify-center p-4">
       <div className="w-full max-w-sm text-center">
 
         {/* ring */}
@@ -272,6 +273,7 @@ export default function AuditResultsPage() {
   ].filter(Boolean) as { label: string; color: string; icon: React.ReactNode }[]
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-[#F7F8FC]">
       {showWL && <WhiteLabelModal onClose={() => setShowWL(false)} />}
 
@@ -296,7 +298,7 @@ export default function AuditResultsPage() {
       {/* ── Top bar ─────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors shrink-0">
+          <Link href="/audit" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors shrink-0">
             <ArrowLeft className="w-4 h-4"/><span className="text-sm font-medium hidden sm:inline">Back</span>
           </Link>
 
@@ -898,5 +900,6 @@ export default function AuditResultsPage() {
 
       </div>
     </div>
+    </DashboardLayout>
   )
 }

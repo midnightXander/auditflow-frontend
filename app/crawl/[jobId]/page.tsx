@@ -16,7 +16,7 @@ import ShareAuditModal from '@/components/share-audit-modal'
 import { WhiteLabelModal } from '@/components/whiteLabelModal'
 import { useWhiteLabel } from '@/lib/whitelabel'
 import { exportCrawlPDF } from '@/lib/pdf-export'
-
+import DashboardLayout from '@/components/dashboardLayout'
 
 interface CrawlResults {
   client_name: string
@@ -55,7 +55,7 @@ interface CrawlResults {
 
 function LoadingScreen({ progress }: { progress: number }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#141e27] flex items-center justify-center p-4">
       <div className="w-full max-w-md text-center">
         <div className="relative inline-block mb-8">
           <svg className="w-40 h-40 -rotate-90" viewBox="0 0 100 100">
@@ -230,6 +230,7 @@ export default function CrawlResultsPage() {
   )
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-[#F7F8FC]">
       {showWL && <WhiteLabelModal onClose={() => setShowWL(false)} />}
       
@@ -254,7 +255,7 @@ export default function CrawlResultsPage() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors shrink-0">
+          <Link href="/crawl" className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors shrink-0">
             <ArrowLeft className="w-4 h-4"/>
             <span className="text-sm font-medium">Back</span>
           </Link>
@@ -509,5 +510,6 @@ export default function CrawlResultsPage() {
 
       </div>
     </div>
+     </DashboardLayout>
   )
 }

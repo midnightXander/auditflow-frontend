@@ -9,11 +9,14 @@
 
 import { useEffect, useState } from "react";
 import { useAuth, fetchWithAuth } from "@/lib/auth-context";
+import { useProtectedRoute } from "@/lib/protected-route";
 import { DashboardSidebar } from "@/components/dashboard-sidebar";
+import DashboardHeader from "@/components/dashboard-header";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Check, Clock, Filter, Search } from "lucide-react";
 import Link from "next/link";
+import DashboardLayout from "@/components/dashboardLayout";
 
 const CATEGORY_OPTIONS = [
   { label: "All", value: "" },
@@ -27,6 +30,7 @@ const CATEGORY_OPTIONS = [
 
 export default function ActivityHistoryPage() {
   const { user, loading } = useAuth();
+  const { isProtected } = useProtectedRoute();
   const [activity, setActivity] = useState<any[]>([]);
   const [filtered, setFiltered] = useState<any[]>([]);
   const [category, setCategory] = useState("");
@@ -93,9 +97,9 @@ export default function ActivityHistoryPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <DashboardSidebar />
-      <main className="flex-1 h-screen overflow-y-auto pt-16 px-4 sm:px-6 lg:px-8 py-8">
+    <DashboardLayout>
+      <main className="flex-1 h-screen overflow-y-auto">
+        <div className="pt-16 px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
@@ -204,7 +208,9 @@ export default function ActivityHistoryPage() {
             </div>
           </div>
         </div>
+        </div>
       </main>
-    </div>
+    </DashboardLayout>
+    
   );
 }

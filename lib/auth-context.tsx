@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
+import Cookies from 'js-cookie'
 
 interface User {
   id: number
@@ -11,6 +12,9 @@ interface User {
   credits_remaining: number
   credits_reset_date: string 
   agency_name: string
+  agency_logo: string | null
+  agency_url: string
+  accent_color: string
   is_active: boolean
   is_admin: boolean
 }
@@ -99,6 +103,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('access_token', data.access_token)
     localStorage.setItem('refresh_token', data.refresh_token)
 
+    Cookies.set('access_token', data.access_token, {
+      path: '/',
+      expires: 7 // 7 days
+    })
+
     await loadUser()
     router.push('/dashboard')
   }
@@ -126,7 +135,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('refresh_token', data.refresh_token)
 
     await loadUser()
-    router.push('/dashboard')
+    router.push('/start-trial')
   }
 
   const loginWithGoogle = async (token: string) => {

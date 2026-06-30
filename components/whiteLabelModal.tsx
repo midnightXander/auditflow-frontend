@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useWhiteLabel, WhiteLabelConfig } from '@/lib/whitelabel'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -14,7 +14,12 @@ export function WhiteLabelModal({ onClose }: WhiteLabelModalProps) {
   const { config, setConfig } = useWhiteLabel()
   const [form, setForm] = useState<WhiteLabelConfig>({ ...config })
   const fileRef = useRef<HTMLInputElement>(null)
+  console.log(config)
 
+  // Sync form with config when it changes (e.g., after database load)
+  useEffect(() => {
+    setForm({ ...config })
+  }, [config])
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -168,34 +173,50 @@ export function WhiteLabelModal({ onClose }: WhiteLabelModalProps) {
               <Palette className="w-4 h-4" style={{ color: form.accentColor }} />
               Brand Colour
             </div>
-            <div className="grid grid-cols-6 gap-2">
-              {presetColors.map(color => (
-                <button
-                  key={color}
-                  onClick={() => setForm(p => ({ ...p, accentColor: color }))}
-                  className="w-full aspect-square rounded-lg border-2 transition-all hover:scale-110"
-                  style={{
-                    backgroundColor: color,
-                    borderColor: form.accentColor === color ? '#1F2937' : 'transparent',
-                    boxShadow: form.accentColor === color ? '0 0 0 2px white, 0 0 0 3px #1F2937' : 'none',
-                  }}
-                />
-              ))}
+            
+            {/* Preset Colors */}
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Preset colours:</p>
+              <div className="grid grid-cols-6 gap-2">
+                {presetColors.map(color => (
+                  <button
+                    key={color}
+                    onClick={() => setForm(p => ({ ...p, accentColor: color }))}
+                    className="w-full aspect-square rounded-lg border-2 transition-all hover:scale-110"
+                    style={{
+                      backgroundColor: color,
+                      borderColor: form.accentColor === color ? '#1F2937' : 'transparent',
+                      boxShadow: form.accentColor === color ? '0 0 0 2px white, 0 0 0 3px #1F2937' : 'none',
+                    }}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div
-                className="w-8 h-8 rounded-lg border border-gray-200 flex-shrink-0"
-                style={{ backgroundColor: form.accentColor }}
-              />
-              <Input
-                value={form.accentColor}
-                onChange={e => {
-                  const v = e.target.value
-                  if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) setForm(p => ({ ...p, accentColor: v }))
-                }}
-                placeholder="#0075FF"
-                className="font-mono text-sm"
-              />
+
+            {/* Custom Color Picker */}
+            <div>
+              <p className="text-xs text-gray-500 mb-2">Custom colour:</p>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <input
+                    type="color"
+                    value={form.accentColor}
+                    onChange={e => setForm(p => ({ ...p, accentColor: e.target.value }))}
+                    className="w-12 h-12 rounded-lg border border-gray-300 cursor-pointer"
+                    title="Pick a custom color"
+                  />
+                </div>
+                <Input
+                  value={form.accentColor}
+                  onChange={e => {
+                    const v = e.target.value.toUpperCase()
+                    if (/^#[0-9A-Fa-f]{0,6}$/.test(v)) setForm(p => ({ ...p, accentColor: v }))
+                  }}
+                  placeholder="#0075FF"
+                  className="font-mono text-sm flex-1"
+                  maxLength={7}
+                />
+              </div>
             </div>
           </section>
 

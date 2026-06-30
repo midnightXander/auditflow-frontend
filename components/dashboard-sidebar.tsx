@@ -34,6 +34,7 @@ const navItems: NavItem[] = [
   { label: 'Website Audit', href: '/audit', icon: <Zap className="w-5 h-5" /> },
   { label: 'Deep Crawl', href: '/crawl', icon: <Globe className="w-5 h-5" /> },
   { label: 'Competitor Compare', href: '/compare', icon: <Trello className="w-5 h-5" /> },
+  { label: 'Embed Audit', href: '/audit/embed', icon: <LinkIcon className="w-5 h-5" /> },
   { label: 'Rank Tracking', href: '#rt', icon: <TrendingUp className="w-5 h-5" />, badge: 'Soon' },
   { label: 'Backlink Analysis', href: '#ba', icon: <LinkIcon className="w-5 h-5" />, badge: 'Soon' },
   { label: 'Keyword Analysis', href: '#ka', icon: <KeySquare className="w-5 h-5" />, badge: 'Soon' },
@@ -73,7 +74,7 @@ export function DashboardSidebar() {
       {/* Sidebar */}
       <aside
         className={`
-          fixed h-screen overflow-y-hidden inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white
+          fixed h-screen overflow-y-hidden inset-y-0 left-0 z-40 min-w-64 bg-slate-900 text-white
           transform transition-transform duration-300 ease-in-out
           lg:relative lg:translate-x-0 flex flex-col
           ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}

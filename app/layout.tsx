@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
-import { Inter, JetBrains_Mono, Lexend } from 'next/font/google'
+import { Inter, JetBrains_Mono, Lexend, DM_Sans } from 'next/font/google'
 import Script from 'next/script'
 import { WhiteLabelProvider } from '@/lib/whitelabel'
 import { AuthProvider } from '@/lib/auth-context'
 import './globals.css'
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = Inter({
   subsets: ['latin'],
@@ -13,6 +14,11 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-jetbrains-mono',
+})
+
+const dmSans = DM_Sans({
+  subsets: ['latin'],
+  variable: '--font-dm-sans',
 })
 
 // const montserrat = Montserrat({
@@ -31,16 +37,16 @@ const lexend = Lexend({
 })
 
 export const metadata: Metadata = {
-  title: 'OUTAudits — White-Label Website Auditing and SEO tools',
+  title: 'OUTAUDITS — White-Label Website Auditing and SEO tools',
   description: 'Professional website auditing and SEO tools for agencies.',
   icons: {
-    icon: '/logo.svg',
+    icon: '/logo2.svg',
   },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}> 
+    <html lang="en" className={`${inter.variable} ${lexend.variable}`}> 
       <head>
         {/* Google Analytics 4 */}
         <Script
@@ -60,12 +66,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className={jetbrainsMono.className}>
+      <body className={dmSans.className}>
         <AuthProvider>
           <WhiteLabelProvider>
             {children}
           </WhiteLabelProvider>
         </AuthProvider>
+        <Toaster />
       </body>
     </html>
   )

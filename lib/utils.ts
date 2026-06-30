@@ -52,6 +52,19 @@ export function formatDate(date: string): string {
   })
 }
 
+export const formatTime = (timestamp: string) => {
+    const now = new Date()
+    const date = new Date(timestamp)
+    const diff = now.getTime() - date.getTime()
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+
+    if (hours < 1) return 'Just now'
+    if (hours < 24) return `${hours}h ago`
+    if (days < 30) return `${days}d ago`
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
+
 export function formatDateRelative(date: string): string {
   const now = new Date()
   const past = new Date(date)

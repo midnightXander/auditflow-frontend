@@ -12,6 +12,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
+import DashboardHeader from '@/components/dashboard-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { fetchWithAuth, useAuth } from '@/lib/auth-context'
@@ -87,7 +88,9 @@ export default function BacklinksPage() {
     <div className="flex min-h-screen bg-gray-50">
       <DashboardSidebar />
 
-      <main className="flex-1 h-screen overflow-y-auto lg:ml-0 pt-16 px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 h-screen overflow-y-auto lg:ml-0">
+        <DashboardHeader />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-2xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -178,6 +181,7 @@ export default function BacklinksPage() {
               Backlinks are links from other websites to your site. Quality backlinks from authoritative domains improve your SEO and search rankings.
             </p>
           </div>
+        </div>
         </div>
       </main>
     </div>

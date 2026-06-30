@@ -1,0 +1,200 @@
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 15px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #00a4c6;
+}
+
+.card-shadow {
+  box-shadow: 0px 14px 28px rgba(0, 0, 0, 0.05), 0px 10px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card-shadow-elevated {
+  box-shadow: 0px 19px 38px rgba(0, 0, 0, 0.15), 0px 15px 12px rgba(0, 0, 0, 0.1);
+}
+
+.content-container {
+  max-width: 1230px;
+  margin: 0 auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.btn-primary {
+  background-color: #00a4c6;
+  color: #141e27;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  padding: 14px 32px;
+  border-radius: 6px;
+  transition: background-color 200ms ease, transform 200ms ease;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #008fad;
+  transform: scale(1.02);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: #00a4c6;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  padding: 14px 32px;
+  border-radius: 6px;
+  border: 1px solid #00a4c6;
+  transition: background-color 200ms ease, color 200ms ease, transform 200ms ease;
+  display: inline-block;
+  text-align: center;
+  cursor: pointer;
+}
+
+.btn-outline:hover {
+  background-color: #00a4c6;
+  color: #141e27;
+  transform: scale(1.02);
+}
+
+/* === WIDGET LANDING PAGE SPECIFICS === */
+
+/* Code block styling */
+.widget-code-block {
+  background: #0a1017;
+  border: 1px solid #374c63;
+  border-radius: 8px;
+  padding: 24px 28px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 24px;
+  color: #c1cfda;
+  position: relative;
+  overflow-x: auto;
+}
+
+.widget-code-block .code-tag {
+  color: #00a4c6;
+}
+
+.widget-code-block .code-attr {
+  color: #ffc107;
+}
+
+.widget-code-block .code-string {
+  color: #7ec699;
+}
+
+.widget-code-block .code-comment {
+  color: #44576a;
+  font-style: italic;
+}
+
+/* Stat counter */
+.stat-counter {
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+
+.stat-counter:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 164, 198, 0.15);
+}
+
+/* Step card */
+.step-card {
+  transition: all 300ms ease;
+}
+
+.step-card:hover {
+  border-color: rgba(0, 164, 198, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Widget preview mockup */
+.widget-preview-shell {
+  background: linear-gradient(135deg, #1a2a38 0%, #0d1318 100%);
+  border: 1px solid #374c63;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.widget-preview-shell .browser-dots {
+  display: flex;
+  gap: 6px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #374c63;
+}
+
+.widget-preview-shell .browser-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.widget-preview-shell .browser-dots span:nth-child(1) { background: #ff5f57; }
+.widget-preview-shell .browser-dots span:nth-child(2) { background: #ffbd2e; }
+.widget-preview-shell .browser-dots span:nth-child(3) { background: #28c840; }
+
+/* Floating badge animation */
+@keyframes floatBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.float-badge {
+  animation: floatBadge 3s ease-in-out infinite;
+}
+
+/* Glow ring */
+@keyframes glowRing {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 164, 198, 0.3); }
+  50% { box-shadow: 0 0 0 16px rgba(0, 164, 198, 0); }
+}
+
+.glow-ring {
+  animation: glowRing 2.5s ease-in-out infinite;
+}
+
+/* Comparison table */
+.comparison-row {
+  transition: background-color 200ms ease;
+}
+
+.comparison-row:hover {
+  background-color: rgba(0, 164, 198, 0.04);
+}
+
+/* CMS logo grid */
+.cms-logo {
+  transition: all 200ms ease;
+  opacity: 0.4;
+}
+
+.cms-logo:hover {
+  opacity: 0.9;
+  transform: scale(1.05);
+}
+
+/* Pulse dot for "live" indicator */
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.pulse-dot {
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #00a4c6 0%, #00d4aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

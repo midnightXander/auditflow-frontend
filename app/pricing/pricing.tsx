@@ -5,17 +5,107 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Check, X, AlertCircle, TrendingDown, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { useAuth, fetchWithAuth } from '@/lib/auth-context'
+import { useRouter } from 'next/navigation'
+import { toast } from "sonner"
+import BaseHeader from '@/components/base-header'
+import Footer from '@/components/footer'
+
+
+interface Plan {
+  name: string;
+  price: number;
+  credits: number;
+}
 
 export default function Pricing() {
   const [daysUntilPriceChange, setDaysUntilPriceChange] = useState(0)
+  const [loading, setLoading] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<string>('free');
+  const {user} = useAuth();
+  const router = useRouter();
+
+  const API_URL = process.env.NEXT_PUBLIC_API_URL
 
   useEffect(() => {
-    const today = new Date(2026, 2, 9) // March 9, 2026
-    const priceChangeDate = new Date(2026, 4, 1) // June 1, 2026
+    const today = new Date()
+    const priceChangeDate = new Date(2026, 7, 20) // July 1, 2026
     const diffTime = priceChangeDate.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     setDaysUntilPriceChange(diffDays)
+    trackVisitor()
   }, [])
+
+  const trackVisitor = async () => {
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/track/visitor`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page_url: window.location.href,
+          utm_source: new URLSearchParams(window.location.search).get('utm_source'),
+          utm_medium: new URLSearchParams(window.location.search).get('utm_medium'),
+          utm_campaign: new URLSearchParams(window.location.search).get('utm_campaign')
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking visitor:', error)
+    }
+  }
+
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch('/api/billing/plans');
+      const data = await response.json();
+    } catch (error) {
+      console.error('Error fetching plans:', error);
+    }
+  };
+
+  const fetchCurrentPlan = async () => {
+    if (!user) return;
+    try {
+      const response = await fetchWithAuth(`${API_URL}/billing/subscription`);
+      const data = await response.json();
+      setCurrentPlan(data.plan);
+    } catch (error) {
+      console.error('Error fetching subscription :', error);
+    }
+  };
+
+  const handleUpgrade = async (planTier: string) => {
+    if (!user || currentPlan === planTier) {
+      // Redirect to login
+      window.location.href = '/signin';
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchWithAuth(`${API_URL}/billing/checkout-link`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan_tier: planTier })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        toast.error(`Error: ${error.detail}`,{ position: "top-center"  });
+        return;
+      }
+
+      const data = await response.json();
+      toast.success("You are being redirected to checkout")
+      // Redirect to Whop checkout
+      window.location.href = data.checkout_url;
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      alert('Failed to create checkout. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const plans = [
     {
@@ -41,25 +131,27 @@ export default function Pricing() {
     },
     {
       name: 'Pro',
-      price: '$9',
+      price: '$19',
       originalPrice: '$39',
       period: '/month',
       description: 'For agencies scaling their SEO services',
       credits: 'Unlimited',
       features: [
         'Everything in Free',
-        'Priority support',
+        'Embeddable Widget',
         'Rank tracking',
-        'Backlink analysis',
+        // 'Backlink analysis',
         'Keyword research',
+        'Custom branding',
         // 'Up to 5 team members',
         'Advanced PDF customization',
         'Monthly reports',
+        'Priority Support'
       ],
       cta: 'Start Free Trial',
       highlighted: true,
       link: '/register',
-      badge: `Save $30/mo until June 1st`,
+      badge: `Save $20/mo until July 20th`,
       badgeColor: 'bg-green-100 text-green-800',
     },
     {
@@ -70,9 +162,8 @@ export default function Pricing() {
       credits: 'Unlimited',
       features: [
         'Everything in Pro',
-        'Full white-label solution',
         'Client portal access',
-        'Custom branding & domain',
+        'Custom domain',
         'Unlimited team members',
         'REST API access',
         'Webhooks & integrations',
@@ -84,7 +175,7 @@ export default function Pricing() {
       ],
       cta: 'Contact Sales',
       highlighted: false,
-      link: '/contact',
+      link: 'mailto:sales@outaudits.com',
     },
   ]
 
@@ -92,21 +183,21 @@ export default function Pricing() {
     {
       name: 'Price',
       free: '$0',
-      pro: '$9/mo*',
+      pro: '$19/mo*',
       agency: '$99/mo',
       category: 'pricing',
     },
     {
       name: 'Monthly Credits',
-      free: '10',
-      pro: '100',
+      free: '20',
+      pro: 'Unlimited',
       agency: 'Unlimited',
       category: 'pricing',
     },
     {
       name: 'White-Label Solution',
       free: false,
-      pro: false,
+      pro: true,
       agency: true,
       category: 'features',
     },
@@ -237,30 +328,14 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">AF</span>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent hidden sm:inline">
-              AuditFlow
-            </span>
-          </Link>
-          <Link href="/">
-            <Button variant="outline" size="sm">
-              Back to Home
-            </Button>
-          </Link>
-        </div>
-      </header>
+      <BaseHeader />
 
       {/* Hero Section */}
       <section className="py-16 md:py-24">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
             Simple, Transparent{' '}
-            <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
+            <span className="text-[#00a4c6]">
               Pricing
             </span>
           </h1>
@@ -270,10 +345,10 @@ export default function Pricing() {
           
           {/* Promotional Banner */}
           {daysUntilPriceChange > 0 && (
-            <div className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-green-100 text-green-800 text-sm font-medium mb-8">
+            <div className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-[#141e27] text-white text-sm font-medium mb-8">
               <TrendingDown className="w-4 h-4" />
               <span>
-                Pro plan is <strong>$9/month</strong> until June 1st (then $39/month). Save $30/mo while you can!
+                Pro plan is <strong className="text-[#00a4c6]">$19/month</strong> until July 20th (then $39/month). Save $20/mo while you can!
               </span>
             </div>
           )}
@@ -292,7 +367,7 @@ export default function Pricing() {
               <div key={index} className={`relative`}>
                 {plan.badge && (
                   <div className={`absolute -top-4 left-0 right-0 flex justify-center`}>
-                    <span className={`${plan.badgeColor} px-4 py-2 rounded-full text-xs font-bold`}>
+                    <span className={`${plan.badgeColor} px-4 py-2  rounded-full text-xs font-bold`}>
                       {plan.badge}
                     </span>
                   </div>
@@ -301,17 +376,17 @@ export default function Pricing() {
                 <Card
                   className={`flex flex-col h-full transition-all duration-300 ${
                     plan.highlighted
-                      ? 'md:scale-105 shadow-2xl border-2 border-primary-500 bg-gradient-to-br from-primary-50 to-white'
+                      ? 'md:scale-105 shadow-2xl border-2 border-[#00a4c6] bg-[#00a4c6]  text-white'
                       : 'shadow-lg hover:shadow-xl border-gray-200'
                   }`}
                 >
                   <CardContent className="p-8 flex flex-col h-full">
                     {/* Plan Name */}
                     <div className="mb-6">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                      <h3 className={`text-2xl font-bold mb-2 ${plan.highlighted ? 'text-white' : 'text-gray-900'}`}>
                         {plan.name}
                       </h3>
-                      <p className="text-gray-600 text-sm">
+                      <p className={`${plan.highlighted ? 'text-[#e6f9f8]' : 'text-gray-600'} text-sm`}>
                         {plan.description}
                       </p>
                     </div>
@@ -319,49 +394,45 @@ export default function Pricing() {
                     {/* Pricing */}
                     <div className="mb-6">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-extrabold text-gray-900">
-                          {plan.price}
-                        </span>
-                        <span className="text-gray-600">{plan.period}</span>
+                        <span className={`${plan.highlighted ? 'text-white text-5xl font-extrabold' : 'text-5xl font-extrabold text-gray-900'}`}>{plan.price}</span>
+                        <span className={`${plan.highlighted ? 'text-[#e6f9f8]' : 'text-gray-600'}`}>{plan.period}</span>
                       </div>
                       {plan.originalPrice && (
-                        <p className="text-sm text-gray-500 mt-2">
+                        <p className={`${plan.highlighted ? 'text-[#e6f9f8] opacity-80' : 'text-sm text-gray-500'} mt-2`}>
                           Regular price: <span className="line-through">{plan.originalPrice}</span>
                         </p>
                       )}
                     </div>
 
                     {/* Credits */}
-                    <div className="mb-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <p className="text-sm text-gray-600">Monthly Credits</p>
-                      <p className="text-2xl font-bold text-primary-600">
+                    <div className={`mb-8 p-4 rounded-lg border ${plan.highlighted ? 'bg-white/10 border-white/20' : 'bg-gray-50 border-gray-200'}`}>
+                      <p className={`${plan.highlighted ? 'text-[#e6f9f8]' : 'text-sm text-gray-600'}`}>Monthly Credits</p>
+                      <p className={`text-2xl font-bold ${plan.highlighted ? 'text-white' : 'text-[#00a4c6]'}`}>
                         {plan.credits}
                       </p>
                     </div>
 
                     {/* CTA */}
-                    <Link href={plan.link} className="w-full mb-8">
-                      <Button
-                        className={`w-full h-12 text-base font-semibold ${
+                      <Button onClick={()=>{handleUpgrade(plan.name.toLocaleLowerCase())}} disabled={loading} size="lg"
+                        className={`w-full h-12 mb-8 text-base font-semibold ${
                           plan.highlighted
-                            ? 'bg-gradient-to-r from-slate-900 to-slate-700 hover:from-slate-700 hover:to-slate-600 text-white'
-                            : 'bg-gray-900 hover:bg-gray-800 text-white'
+                            ? 'bg-white text-[#072026] hover:opacity-95'
+                            : 'bg-[#00a4c6] hover:bg-[#00a4c6cc] text-white'
                         }`}
                       >
                         {plan.cta}
                       </Button>
-                    </Link>
 
                     {/* Features */}
                     <div className="space-y-4 flex-1">
-                      <p className="font-semibold text-gray-900 text-sm uppercase tracking-wide">
+                      <p className={`${plan.highlighted ? 'text-[#e6f9f8]' : 'font-semibold text-gray-900 text-sm'} uppercase tracking-wide`}>
                         Includes:
                       </p>
                       <ul className="space-y-3">
                         {plan.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className="flex items-start gap-3">
-                            <Check className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                            <span className="text-gray-700 text-sm">{feature}</span>
+                            <Check className={`w-5 h-5 ${plan.highlighted ? 'text-white' : 'text-green-500'} shrink-0 mt-0.5`} />
+                            <span className={`${plan.highlighted ? 'text-[#e6f9f8]' : 'text-gray-700'} text-sm`}>{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -375,12 +446,13 @@ export default function Pricing() {
           {/* Info Text */}
           <div className="text-center mt-12">
             <p className="text-gray-600 text-sm max-w-2xl mx-auto">
-              * Pro plan pricing: <strong>$9/month until June 1st, 2026</strong>, then increases to $39/month.
-              Lock in the special price now and keep it forever if you subscribe before June 1st!
+              * Pro plan pricing: <strong>$19/month until July 20th, 2026</strong>, then increases to $39/month.
+              Lock in the special price now and keep it forever if you subscribe before July 20th!
             </p>
           </div>
         </div>
       </section>
+      
 
       {/* Features Comparison Table */}
       <section className="py-20 bg-white border-t border-gray-200">
@@ -409,13 +481,12 @@ export default function Pricing() {
                     key={index}
                     className={`border-b border-gray-100 ${
                       feature.category === 'pricing' ? 'bg-gray-50 font-semibold' : ''
-                    }`}
-                  >
+                    }`}>
                     <td className="py-4 px-6 text-gray-900">{feature.name}</td>
                     <td className="text-center py-4 px-6">
                       {typeof feature.free === 'boolean' ? (
                         feature.free ? (
-                          <Check className="w-5 h-5 text-green-500 mx-auto" />
+                          <Check className="w-5 h-5 text-[#00a4c6] mx-auto" />
                         ) : (
                           <X className="w-5 h-5 text-gray-300 mx-auto" />
                         )
@@ -426,7 +497,7 @@ export default function Pricing() {
                     <td className="text-center py-4 px-6">
                       {typeof feature.pro === 'boolean' ? (
                         feature.pro ? (
-                          <Check className="w-5 h-5 text-green-500 mx-auto" />
+                          <Check className="w-5 h-5 text-[#00a4c6] mx-auto" />
                         ) : (
                           <X className="w-5 h-5 text-gray-300 mx-auto" />
                         )
@@ -437,7 +508,7 @@ export default function Pricing() {
                     <td className="text-center py-4 px-6">
                       {typeof feature.agency === 'boolean' ? (
                         feature.agency ? (
-                          <Check className="w-5 h-5 text-green-500 mx-auto" />
+                          <Check className="w-5 h-5 text-[#00a4c6] mx-auto" />
                         ) : (
                           <X className="w-5 h-5 text-gray-300 mx-auto" />
                         )
@@ -476,7 +547,7 @@ export default function Pricing() {
                         <span>
                           {typeof value === 'boolean' ? (
                             value ? (
-                              <Check className="w-5 h-5 text-green-500" />
+                              <Check className="w-5 h-5 text-[#00a4c6]" />
                             ) : (
                               <X className="w-5 h-5 text-gray-300" />
                             )
@@ -490,6 +561,25 @@ export default function Pricing() {
                 </div>
               </div>
             ))}
+
+            {/* Key Advantage */}
+            <div className="mt-8 bg-white rounded-2xl p-6 border-2 border-[#00a4c6]">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-7 h-7 text-[#00a4c6] shrink-0" />
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    🎯 Key Advantage
+                  </h3>
+                  <p className="text-sm text-gray-700 font-semibold mb-1">
+                    White-label + self-hosted at a fraction of the cost
+                  </p>
+                  <p className="text-gray-600 text-sm">
+                    Unlike Ahrefs, SEMrush, and Moz, AuditFlow offers full white-label and self-hosted capabilities starting at just
+                    $99/month. Competitors charge $299-$999/month and don't provide white-label options.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -619,9 +709,9 @@ export default function Pricing() {
           </div>
 
           {/* Key Advantage */}
-          <div className="mt-16 bg-white rounded-2xl p-8 border-2 border-primary-500 max-w-2xl mx-auto">
+          <div className="mt-16 bg-white rounded-2xl p-8 border-2 border-[#00a4c6] max-w-2xl mx-auto">
             <div className="flex items-start gap-4">
-              <AlertCircle className="w-8 h-8 text-primary-600 shrink-0 mt-1" />
+              <AlertCircle className="w-8 h-8 text-[#00a4c6] shrink-0 mt-1" />
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-3">
                   🎯 Key Advantage
@@ -688,7 +778,7 @@ export default function Pricing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-slate-900 to-slate-700 text-white">
+      <section className="py-20 bg-[#141e27] text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-6">
             Ready to start auditing websites?
@@ -698,15 +788,15 @@ export default function Pricing() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
-              <Button size="lg" className="bg-white text-primary-600 bg-slate-900 hover:bg-gray-100 font-semibold">
+              <Button size="lg" className="bg-[#00a4c6] text-[#072026] hover:opacity-95 font-semibold">
                 Start Free Trial
               </Button>
             </Link>
-            <Link href="/contact">
+            <Link href="mailto:sales@outaudits.com">
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white bg-white text-black hover:bg-white/10 font-semibold"
+                className="border-[#00a4c6] bg-[#00a4c6] text-black hover:bg-[#00a4c6]/10 font-semibold"
               >
                 Contact Sales
               </Button>
@@ -719,93 +809,7 @@ export default function Pricing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            {/* Brand */}
-            <div>
-              <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-slate-900 to-slate-600 rounded-lg flex items-center justify-center">
-              <Search className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold text-white bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent">
-              AuditSE
-            </span>
-          </div>
-              <p className="text-sm text-gray-400">
-                Professional website auditing powered by Google Lighthouse
-              </p>
-            </div>
-
-            {/* Product */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/" className="hover:text-primary-400 transition">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/pricing" className="hover:text-primary-400 transition">
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="hover:text-primary-400 transition">
-                    Dashboard
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Company */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <a href="#" className="hover:text-primary-400 transition">
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a href="mailto:support@auditflow.io" className="hover:text-primary-400 transition">
-                    Support
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-primary-400 transition">
-                    Status
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            {/* Legal */}
-            <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/terms" className="hover:text-primary-400 transition">
-                    Terms of Service
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy" className="hover:text-primary-400 transition">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-xs">
-              © {new Date().getFullYear()} AuditFlow. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

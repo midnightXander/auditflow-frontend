@@ -12,6 +12,7 @@ import {
   Zap, Shield, FileText, Search, Award, XCircle, Loader2, Target
 } from 'lucide-react'
 import Link from 'next/link'
+import DashboardLayout from '@/components/dashboardLayout'
 
 interface ComparisonResults {
   target_url: string
@@ -54,7 +55,7 @@ interface ComparisonResults {
 
 function LoadingScreen({ progress, status }: { progress: number; status: string }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-950 via-fuchsia-950 to-violet-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#141e27] flex items-center justify-center p-4">
       <div className="w-full max-w-md text-center">
         <div className="relative inline-block mb-8">
           <svg className="w-40 h-40 -rotate-90" viewBox="0 0 100 100">
@@ -109,7 +110,7 @@ export default function ComparisonResultsPage() {
     let stopped = false
     const poll = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/compare/${jobId}`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'}/comparisons/${jobId}`)
         const data = await res.json()
         
         if (data.status === 'completed' && data.results) {
@@ -158,6 +159,7 @@ export default function ComparisonResultsPage() {
   const targetWins = winners.win_counts[overall_scores.target.url] || 0
 
   return (
+    <DashboardLayout>
     <div className="min-h-screen bg-[#F7F8FC]">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-100 shadow-sm">
@@ -374,5 +376,6 @@ export default function ComparisonResultsPage() {
 
       </div>
     </div>
+    </DashboardLayout>
   )
 }

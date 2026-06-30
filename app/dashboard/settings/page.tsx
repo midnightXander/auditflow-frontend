@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import { DashboardSidebar } from '@/components/dashboard-sidebar'
+import DashboardHeader from '@/components/dashboard-header'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -13,8 +14,11 @@ import {
   EyeOff,
   Save,
   AlertCircle,
-  CheckCircle,
+  CheckCircle, Settings2
 } from 'lucide-react'
+import { WhiteLabelModal } from '@/components/whiteLabelModal'
+import DashboardLayout from '@/components/dashboardLayout'
+
 
 export default function SettingsPage() {
   const { user } = useAuth()
@@ -28,7 +32,7 @@ export default function SettingsPage() {
     newPassword: '',
     confirmPassword: '',
   })
-
+  const [showWL,    setShowWL]    = useState(false)
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     auditAlerts: true,
@@ -83,10 +87,13 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <DashboardSidebar />
+     <DashboardLayout>
+      {showWL && <WhiteLabelModal onClose={() => setShowWL(false)} />}
+      {/* <DashboardSidebar /> */}
 
-      <main className="flex-1 h-screen overflow-y-auto lg:ml-0 pt-16  px-4 sm:px-6 lg:px-8 py-8">
+      <main className="flex-1 h-screen overflow-y-auto lg:ml-0">
+        <DashboardHeader />
+        <div className="pt-16 px-4 sm:px-6 lg:px-8 py-8">
         <div className="max-w-3xl mx-auto">
           {/* Header */}
           <div className="mb-8">
@@ -151,11 +158,18 @@ export default function SettingsPage() {
                   />
                 </div>
 
+                <Button onClick={() => setShowWL(true)} type="button" className="my-2 bg-slate-50 shadow-md hover:bg-white text-gray-900 w-full">
+                  <Settings2 className="w-4 h-4"/>
+                  Update Agency Settings
+                </Button>
+                
                 <Button type="submit" className="w-full">
                   <Save className="w-4 h-4 mr-2" />
                   Save Profile
                 </Button>
               </form>
+              
+              
             </div>
 
             {/* Password Settings */}
@@ -281,7 +295,8 @@ export default function SettingsPage() {
             </div>
           </div>
         </div>
+        </div>
       </main>
-    </div>
+     </DashboardLayout>
   )
 }
