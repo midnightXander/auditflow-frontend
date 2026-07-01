@@ -153,7 +153,7 @@ export default function Audits() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
             { label: 'Total Audits', value: totalAudits.toString(), icon: FileSearch, color: '#00a4c6' },
-            { label: 'Avg Score', value: Math.round(recentAudits.reduce((a, b) => a + b.overall_score, 0) / recentAudits.length).toString(), icon: CheckCircle2, color: '#34d399' },
+            { label: 'Avg Score', value: recentAudits.length > 0 ? Math.round(recentAudits.reduce((a, b) => a + b.overall_score, 0) / recentAudits.length) : 0 , icon: CheckCircle2, color: '#34d399' },
             { label: 'Critical Issues', value: '6', icon: XCircle, color: '#ef4444' },
             { label: 'This Month', value: recentAudits.filter((a)=> new Date(a.created_at).getMonth() == new Date().getMonth()).length.toString(), icon: Zap, color: '#6366f1' },
           ].map((stat) => (

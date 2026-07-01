@@ -3,6 +3,11 @@ import { HeroDistortion } from '@/lib/HeroDistortion';
 import gsap from 'gsap';
 import { ChevronDown, Star, ArrowRight, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation'
+import AnonAuditForm from '../anonAuditForm';
+
+
+
+
 export default function Hero() {
   const router = useRouter()
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -11,6 +16,9 @@ export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null)
   const [auditUrl, setAuditUrl] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+
+
+
 
   const handleAuditSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -163,11 +171,19 @@ export default function Hero() {
           required. Impress prospects, retain clients, and scale your agency.
         </p>
 
-        <form
+        <div className='hero-cta'>
+        <AnonAuditForm />
+        </div>  
+        
+
+        {/* <form
           onSubmit={handleAuditSubmit}
           className="hero-cta mt-10 opacity- w-full max-w-[600px] mx-auto px-4"
         >
           <div className="flex flex-col sm:flex-row gap-3 items-stretch">
+            
+            
+
             <input
               type="url"
               placeholder="Enter your website URL (e.g., https://example.com)"
@@ -207,7 +223,7 @@ export default function Hero() {
           <p className="text-xs text-[#44576a] text-center mt-3">
             Takes ~30 seconds • No credit card required
           </p>
-        </form>
+        </form> */}
         
 
         <div

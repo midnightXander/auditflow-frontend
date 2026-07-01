@@ -38,8 +38,6 @@ const plans = [
         'Priority support',
         'Embeddable Widget',
         'Rank tracking',
-        'Backlink analysis',
-        'Keyword research',
 
         // 'Up to 5 team members',
         'Advanced PDF customization',
@@ -55,7 +53,10 @@ const plans = [
     monthlyPrice: 99,
     annualPrice: 59,
     features: [
-      'Unlimited audits',
+      'Everything in Pro',
+      'Backlink analysis',
+      'Keyword research',
+      'Customer portal',
       'Full white-label & custom domain',
       'All locations & keywords',
       'Full API access',

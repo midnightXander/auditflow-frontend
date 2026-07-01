@@ -13,6 +13,7 @@ interface User {
   credits_reset_date: string 
   agency_name: string
   agency_logo: string | null
+  avatar: string | null
   agency_url: string
   accent_color: string
   is_active: boolean

@@ -102,7 +102,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Link href="/dashboard" className="flex items-center text-center gap-0 text-white text-lg">
             <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-[#00a4c6] rounded-lg flex items-center justify-center">
-                <Search className="w-6 h-6 text-white" />
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                  <rect width="28" height="28" rx="6" fill="#00A4C6" />
+                  <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="2.5"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="21" cy="8" r="2.5" fill='#0DD3B6' />
+                </svg>
                 </div>
                 <span className="text-xl font-bold text-white">
                 OUTAUDITS
@@ -290,9 +295,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
             {/* Avatar */}
             
-            {user?.agency_logo ?
+            {user?.avatar?
             <img
-              src={user?.agency_logo || '/logo.svg'}
+              src={user?.avatar}
               alt="User"
               className="w-8 h-8 rounded-full object-cover ring-2 ring-[#e4e9ed] cursor-pointer"
             />
@@ -301,7 +306,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 {user?.email?.[0]?.toUpperCase() || 'U'}
               </div>
              }
-            
           </div>
         </header>
 

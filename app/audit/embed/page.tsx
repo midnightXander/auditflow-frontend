@@ -28,6 +28,7 @@ import { toast } from "sonner"
 import gsap from 'gsap';
 import Link from 'next/link'
 import DashboardLayout from '@/components/dashboardLayout'
+import EmptyState from '@/components/emptyState'
 
 
 export default function EmbedWidgetPage() {
@@ -613,7 +614,7 @@ function darkenHex(hex: string, percent: number = 20): string {
                   
                 </CardContent>
               </Card>
-            )}
+            )} 
           </TabsContent>
 
           {/* Customize Tab */}
@@ -626,7 +627,7 @@ function darkenHex(hex: string, percent: number = 20): string {
                         <p className="text-sm mt-0.5" style={{ color: '#44576a' }}>Configure and embed a white-label SEO audit form on any website</p>
                       </div>
                     </div>
-            
+                  {apiKey && (
                     <div ref={previewRef} className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6 widget-section">
                       {/* Preview Area */}
                       <div className="space-y-4">
@@ -861,6 +862,18 @@ function darkenHex(hex: string, percent: number = 20): string {
                         </button>
                       </div>
                     </div>
+                  )}
+                  {!apiKey && (
+                    <EmptyState 
+                    headline='No API Key Found'
+                    subText='Generate your Embed API Key to start customizing your widget'
+                    buttonText='Generate Key'
+                    icon={<Code className="w-5 h-5 text-[#00a4c6]"/>}
+                    onNew={()=>{}}
+
+                    />
+                  )}
+                  
                   </div>
           </TabsContent>
 
