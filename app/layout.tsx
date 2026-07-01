@@ -3,9 +3,10 @@ import { Inter, JetBrains_Mono, Lexend, DM_Sans } from 'next/font/google'
 import Script from 'next/script'
 import { WhiteLabelProvider } from '@/lib/whitelabel'
 import { AuthProvider } from '@/lib/auth-context'
+// @ts-ignore: CSS imports are handled by Next.js
 import './globals.css'
 import { Toaster } from "@/components/ui/sonner"
-
+import { Analytics } from "@vercel/analytics/next"
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </WhiteLabelProvider>
         </AuthProvider>
         <Toaster />
+        <Analytics />
       </body>
     </html>
   )
