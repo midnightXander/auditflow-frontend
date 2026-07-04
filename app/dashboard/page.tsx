@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useAuth, fetchWithAuth } from '@/lib/auth-context'
-import { useProtectedRoute } from '@/lib/protected-route'
+// import { useProtectedRoute } from '@/lib/protected-route'
 
 import DashboardLayout from '@/components/dashboardLayout'
 // import { differenceInDays, distanceInWordsToNow } from 'date-fns'
@@ -56,7 +56,7 @@ import {
 } from 'recharts';
 
 import {
-  auditTrendData,
+  
   siteHealthData,
   keywordRankingData,
   recentAudits,
@@ -125,18 +125,48 @@ interface OverallScores {
 const PRIMARY = '#00A4C6'
 const ACCENT = '#0DD3B6'
 
+function cls(...a: (string | false | null | undefined)[]) { return a.filter(Boolean).join(' ') }
 
+// ── Credits bar ────────────────────────────────────────────────────────────────
+function CreditsBar({ used, limit }: { used: number; limit: number }) {
+  const remaining = used
+  const pct       = Math.min((remaining / limit) * 100, 100)
+  const low       = pct < 20
+  return (
+    <div className="space-y-1.5">
+      <div className="flex justify-between text-xs">
+        <span className="text-gray-500">Credits remaining</span>
+        <span className={cls('font-bold tabular-nums', low ? 'text-red-500' : 'text-gray-700')}>
+          {remaining} / {limit}
+        </span>
+      </div>
+      <div className="w-full h-2 bg-gray-100 rounded overflow-hidden">
+        <div
+          className="h-full rounded transition-all duration-500"
+          style={{
+            width: `${pct}%`,
+            background: low
+              ? '#EF4444'
+              : `linear-gradient(90deg, ${PRIMARY}, ${ACCENT})`,
+          }}
+        />
+      </div>
+    </div>
+  )
+}
 
 export default function DashboardPage() {
   const { user, loading } = useAuth()
-  const { isProtected } = useProtectedRoute()
+  // const { isProtected } = useProtectedRoute()
   const router = useRouter()
   const [activity, setActivity] = useState<any[]>([])
   const [recentAudits, setRecentAudits] = useState<any[]>([])
   const [leads, setLeads] = useState<any[]>([])
   const [leadsChange, setLeadsChange] = useState(0)
-  const [stats, setStats] = useState({ total: 0, completed: 0, failed: 0, percent_diff: 0, average_audit_score : { current : 0, previous:0, change:0}, by_type: {} as Record<string, number> })
+  const [totalAudits, setTotalAudits] = useState(0)
+  const [stats, setStats] = useState({ total: 0, completed: 0, failed: 0, percent_diff: 0, average_audit_score : { current : 0, previous:0, change:0}, audits : { current:0, previous:0, change:0}, by_type: {} as Record<string, number> })
   const [siteData, setSiteData] = useState<any>({})
+  const [auditTrendData, setAuditTrendData] = useState<any>([])
   const [siteHealthData, setSiteHealthData] = useState<any[]>([])
   const [siteRecommandations, setSiteRecommandations] = useState<any[]>([])
   const [competitorData, setCompetitorData] = useState<ComparisonSummary | null>(null)
@@ -193,7 +223,6 @@ export default function DashboardPage() {
             }
       
             const data = await response.json()
-            console.log('Fetched activity:', data)
       
       setActivity(data.activities || [])
     } catch (error) {
@@ -238,7 +267,10 @@ export default function DashboardPage() {
       
             const data = await response.json()
       setRecentAudits(data.items)
-      console.log(data)
+      setTotalAudits(data.total)
+      
+      const monthlyAudits = data.metadata.monthly_audits.map((a: any) => ({ month: new Date(`${a.month}-01`).toLocaleString('en-US',{month:'short'}), avg_score: a.avg_score, count: a.count }))
+     setAuditTrendData(monthlyAudits) 
     } catch (error) {
       console.error('Failed to fetch audits:', error)
     }
@@ -292,7 +324,7 @@ export default function DashboardPage() {
         setSiteRecommandations(recommandations)
         setCompetitorData(compData)
         setKeywordRankingData(data.top_keywords)
-        console.log(data.comparison_summary)
+        
         
       } catch (error) {
         console.error('Failed to fetch site data:', error)
@@ -307,6 +339,13 @@ export default function DashboardPage() {
     }
     setSelectedSite(site)
     fetchSiteData(site)
+  }
+
+  // Plan display
+  const planColors: Record<string, string> = {
+    free:   'text-gray-500',
+    pro:    'text-[#00A4C6]',
+    agency: 'text-[#0DD3B6]',
   }
 
 
@@ -438,10 +477,10 @@ const activityIcon = (type: string) => {
 
 const kpiData = [
   {
-    label: 'Total Audits',
-    value: stats.total,
-    change: (stats.percent_diff > 0 ? '+' : '')+String(stats.percent_diff)+'%',
-    changeType: stats.percent_diff > 0 ? 'up' : 'down' as const,
+    label: 'Audits this month',
+    value: stats.audits.current,
+    change: (stats.audits.change > 0 ? '+' : '')+String(stats.audits.change)+'%',
+    changeType: stats.audits.change > 0 ? 'up' : 'down' as const,
     icon: 'FileText',
   },
   {
@@ -508,6 +547,38 @@ const kpiData = [
           </div>
         </div>
 
+        {/* {user && (
+          <div className="grid sm:grid-cols-3 gap-3">
+            
+            <div className="bg-white rounded border border-gray-200 px-5 py-4 sm:col-span-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Usage this month</p>
+              <CreditsBar used={user.credits_remaining} limit={100} />
+              {user.credits_remaining <= 2 && (
+                <a href="/dashboard/billing"
+                  className="inline-block mt-3 text-xs text-white bg-[#00A4C6] hover:bg-[#0093B2] px-3 py-1.5 rounded font-semibold transition-colors">
+                  Upgrade for more credits →
+                </a>
+              )}
+            </div>
+
+            
+            <div className="bg-white rounded border border-gray-200 px-5 py-4 flex flex-col justify-between">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Current plan</p>
+                <p className={cls('text-2xl font-black capitalize', planColors[user.plan] ?? planColors.free)}>
+                  {user.plan}
+                </p>
+              </div>
+              {user.plan === 'free' && (
+                <a href="/dashboard/billing"
+                  className="mt-3 text-xs text-[#00A4C6] hover:underline font-semibold">
+                  Upgrade to Pro →
+                </a>
+              )}
+            </div>
+          </div>
+        )} */}
+
         {/* KPI Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
           {kpiData.map((kpi, i) => {
@@ -572,7 +643,7 @@ const kpiData = [
                   Audit Trend
                 </h3>
                 <p className="text-xs mt-0.5" style={{ color: '#44576a' }}>
-                  Audits generated & average SEO score over time
+                  Audits generated & average overall score over time
                 </p>
               </div>
               <div className="flex items-center gap-4 text-xs">
@@ -610,8 +681,8 @@ const kpiData = [
                     boxShadow: '0px 10px 20px rgba(0,0,0,0.08)',
                   }}
                 />
-                <Area type="monotone" dataKey="audits" stroke="#00a4c6" strokeWidth={2} fill="url(#auditGradient)" name="Audits" />
-                <Area type="monotone" dataKey="score" stroke="#6366f1" strokeWidth={2} fill="url(#scoreGradient)" name="Avg Score" />
+                <Area type="monotone" dataKey="count" stroke="#00a4c6" strokeWidth={2} fill="url(#auditGradient)" name="Audits" />
+                <Area type="monotone" dataKey="avg_score" stroke="#6366f1" strokeWidth={2} fill="url(#scoreGradient)" name="Avg Score" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -687,13 +758,13 @@ const kpiData = [
             onChange={(e) => {handleSiteSelect(e.target.value || null)}}
             className="text-sm p-2 border rounded"
           >
-            <option value="">All sites</option>
+            <option value="">Select a site</option>
             {Array.from(new Set(recentAudits.map(a => a.url))).map((url) => (
               <option key={url} value={url}>{url}</option>
             ))}
           </select>
 
-          <div className="ml-auto text-sm text-[#44576a]">Showing: {selectedSite || 'All sites'}</div>
+          <div className="ml-auto text-sm text-[#44576a]">Showing: {selectedSite || 'No site selected'}</div>
         </div>
 
         {/* Site Health + Latest Recommendations row (moved down) */}

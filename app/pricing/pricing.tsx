@@ -29,7 +29,7 @@ export default function Pricing() {
 
   useEffect(() => {
     const today = new Date()
-    const priceChangeDate = new Date(2026, 7, 20) // July 1, 2026
+    const priceChangeDate = new Date(2026, 8, 1) // August 1, 2026
     const diffTime = priceChangeDate.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
     setDaysUntilPriceChange(diffDays)
@@ -97,7 +97,7 @@ export default function Pricing() {
       price: '$0',
       period: '/month',
       description: 'Perfect for freelancers and small teams',
-      credits: 20,
+      credits: 10,
       features: [
         'Basic website audits',
         'Performance scoring',
@@ -115,8 +115,8 @@ export default function Pricing() {
     },
     {
       name: 'Pro',
-      price: '$19',
-      originalPrice: '$39',
+      price: '$13',
+      originalPrice: '$33',
       period: '/month',
       description: 'For agencies scaling their SEO services',
       credits: 'Unlimited',
@@ -135,7 +135,7 @@ export default function Pricing() {
       cta: 'Start Free Trial',
       highlighted: true,
       link: '/register',
-      badge: `Save $20/mo until July 20th`,
+      badge: `Save $20/mo until August 1st`,
       badgeColor: 'bg-green-100 text-green-800',
     },
     {
@@ -167,7 +167,7 @@ export default function Pricing() {
     {
       name: 'Price',
       free: '$0',
-      pro: '$19/mo*',
+      pro: '$13/mo*',
       agency: '$99/mo',
       category: 'pricing',
     },
@@ -332,7 +332,7 @@ export default function Pricing() {
             <div className="inline-flex items-center gap-2 px-4 py-3 rounded-full bg-[#141e27] text-white text-sm font-medium mb-8">
               <TrendingDown className="w-4 h-4" />
               <span>
-                Pro plan is <strong className="text-[#00a4c6]">$19/month</strong> until July 20th (then $39/month). Save $20/mo while you can!
+                Pro plan is <strong className="text-[#00a4c6]">$13/month</strong> until August 1st (then $33/month). Save $20/mo while you can!
               </span>
             </div>
           )}

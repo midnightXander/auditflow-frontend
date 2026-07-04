@@ -28,8 +28,8 @@ const plans = [
   {
     name: 'Pro',
     description: 'For growing agencies with multiple clients.',
-    monthlyPrice: 19,
-    annualPrice: 15,
+    monthlyPrice: 13,
+    annualPrice: 9,
     features: [
         'Everything in Free',
         'Unlimited Audits',

@@ -29,11 +29,13 @@ import gsap from 'gsap';
 import Link from 'next/link'
 import DashboardLayout from '@/components/dashboardLayout'
 import EmptyState from '@/components/emptyState'
+import { UpgradeToProModal } from '@/components/upgrade-to-pro-modal'
 
 
 export default function EmbedWidgetPage() {
   const { user } = useAuth()
   const { isProtected } = useProtectedRoute()
+  const [showUpgradePro, setShowUpgradePro] = useState(false)
   const [apiKey, setApiKey] = useState('')
   const [copied, setCopied] = useState(false)
   const [selectedLead, setSelectedLead] = useState<any>(null)
@@ -186,6 +188,9 @@ export default function EmbedWidgetPage() {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       })
+      if(response.status == 403){
+        setShowUpgradePro(true)
+      }
       const data = await response.json()
       setApiKey(data.api_key)
     } catch (error) {
@@ -1183,6 +1188,12 @@ function darkenHex(hex: string, percent: number = 20): string {
         </Tabs>
       </div>
       </main>
+
+      <UpgradeToProModal 
+        isOpen={showUpgradePro} 
+        onClose={() => setShowUpgradePro(false)}
+        currentPlan={user?.plan || 'free'}
+      />
     </DashboardLayout>  
   )
 }

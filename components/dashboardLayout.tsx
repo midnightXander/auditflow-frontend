@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   FileSearch,
   Globe,
-  Search,
   Users,
   BarChart3,
   Settings,
@@ -20,11 +19,186 @@ import {
   ChevronRight,
   Code,
   TrendingUp,
-  createLucideIcon,
+  Settings2Icon,
   LucideCreditCard
 } from 'lucide-react';
 
 import { Badge } from './badge';
+
+const PRIMARY = '#00A4C6'
+const ACCENT  = '#0DD3B6'
+
+function authHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${localStorage.getItem('access_token') ?? ''}`,
+  }
+}
+
+
+// ── Checklist progress ring ────────────────────────────────────────────────────
+function ChecklistRing({ done, total }: { done: number; total: number }) {
+  const r   = 10
+  const circ = 2 * Math.PI * r
+  const pct  = total > 0 ? done / total : 0
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" className="-rotate-90">
+      <circle cx="13" cy="13" r={r} fill="none" stroke="#E5E7EB" strokeWidth="3"/>
+      <circle cx="13" cy="13" r={r} fill="none" stroke={ACCENT} strokeWidth="3"
+        strokeLinecap="round"
+        strokeDasharray={circ}
+        strokeDashoffset={circ - pct * circ}
+        className="transition-all duration-500"/>
+    </svg>
+  )
+}
+
+// ── Floating checklist widget ──────────────────────────────────────────────────
+interface ChecklistState {
+  audit_done: boolean; crawl_done: boolean
+  compare_done: boolean; tracking_done: boolean,
+  settings_done: boolean,
+  dismissed: boolean; all_done: boolean
+}
+
+function cls(...a: (string | false | null | undefined)[]) { return a.filter(Boolean).join(' ') }
+
+function Checklist({ state, onDismiss, onAction }: {
+  state: ChecklistState
+  onDismiss(): void
+  onAction(href: string): void
+}) {
+  const [open, setOpen] = useState(true)
+  const router          = useRouter()
+
+  const steps = [
+    {
+      key:   'audit_done',
+      done:  state.audit_done,
+      label: 'Run your first audit',
+      sub:   'Get your Lighthouse score & SEO issues',
+      icon:  FileSearch,
+      href:  '/audit',
+    },
+    {
+      key:   'crawl_done',
+      done:  state.crawl_done,
+      label: 'Run your first crawl',
+      sub:   'Find missing H1s, broken links & more',
+      icon:  Globe,
+      href:  '/crawl',
+    },
+    {
+      key:   'compare_done',
+      done:  state.compare_done,
+      label: 'Compare a competitor',
+      sub:   'See where you win and where you lag',
+      icon:  Users,
+      href:  '/compare',
+    },
+    {
+      key:   'tracking_done',
+      done:  state.tracking_done,
+      label: 'Track your rankings',
+      sub:   'Monitor keywords daily on Search Engines',
+      icon:  TrendingUp,
+      href:  '/rank-tracking',
+    },
+    {
+      key:   'settings_done',
+      done:  state.settings_done,
+      label: 'Add your agency settings',
+      sub:   'White label your reports for clients and team members',
+      icon:  Settings2Icon,
+      href:  '/settings',
+    },
+  ]
+
+  const doneCount = steps.filter(s => s.done).length
+  const allDone   = doneCount === steps.length
+
+  if (state.dismissed || allDone) return null
+
+  return (
+    <div className="fixed bottom-5 right-5 z-40 w-80 shadow-2xl">
+      {/* Header bar */}
+      <div
+        className="bg-gray-900 rounded-t flex items-center justify-between px-4 py-3 cursor-pointer"
+        onClick={() => setOpen(o => !o)}
+      >
+        <div className="flex items-center gap-2.5">
+          <ChecklistRing done={doneCount} total={steps.length} />
+          <div>
+            <p className="text-white text-xs font-bold leading-none">Get started</p>
+            <p className="text-gray-400 text-xs mt-0.5">{doneCount}/{steps.length} complete</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={e => { e.stopPropagation(); onDismiss() }}
+            className="text-gray-500 hover:text-gray-300 text-xs px-1 transition-colors"
+            title="Dismiss checklist"
+          >✕</button>
+          <span className="text-gray-400 text-xs">{open ? '▼' : '▲'}</span>
+        </div>
+      </div>
+
+      {/* Steps */}
+      {open && (
+        <div className="bg-white rounded-b border border-t-0 border-gray-200 divide-y divide-gray-100">
+          {steps.map(step => {
+          const Icon = step.icon
+          return (
+            <div
+              key={step.key}
+              onClick={() => !step.done && onAction(step.href)}
+              className={cls(
+                'flex items-start gap-3 px-4 py-3 transition-colors',
+                step.done ? 'opacity-60' : 'hover:bg-gray-50 cursor-pointer'
+              )}
+            >
+              {/* Checkbox */}
+              <div className={cls(
+                'mt-0.5 w-4 h-4 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
+                step.done
+                  ? 'bg-[#0DD3B6] border-[#0DD3B6]'
+                  : 'border-gray-300'
+              )}>
+                {step.done && (
+                  <svg width="8" height="6" viewBox="0 0 8 6" fill="none">
+                    <path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <Icon className="w-[18px] h-[18px] flex-shrink-0" />
+                  <span className={cls(
+                    'text-xs font-semibold',
+                    step.done ? 'text-gray-400 line-through' : 'text-gray-900'
+                  )}>{step.label}</span>
+                </div>
+                {!step.done && (
+                  <p className="text-xs text-gray-400 mt-0.5 leading-tight">{step.sub}</p>
+                )}
+              </div>
+
+              {!step.done && (
+                <span className="text-[#00A4C6] text-xs font-semibold shrink-0">Go →</span>
+              )}
+            </div>
+          )
+        })}
+        </div>
+      )}
+    </div>
+  )
+}
+
+
+
+
 
 const sidebarLinks = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
@@ -33,24 +207,60 @@ const sidebarLinks = [
   { icon: Users, label: 'Competitors', path: '/compare' },
   { icon: TrendingUp, label: 'Rank Tracking', path: '/rank-tracking', badge: 'New' },
   { icon: Code, label: 'Widget', path: '/audit/embed', badge: 'New' },
-  { icon: BarChart3, label: 'Reports', path: '#' },
+  // { icon: BarChart3, label: 'Reports', path: '#' },
   { icon: LucideCreditCard, label: 'Billing', path: '/account/billing' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { user, loading, logout } = useAuth()
+  const { user, loading, refreshToken, logout } = useAuth()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [notifications, setNotifications] = useState<any[]>([])
   const panelRef = useRef<HTMLDivElement | null>(null)
+  const [checklist, setChecklist] = useState<ChecklistState | null>(null)
 
   const pathname = usePathname()
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/')
 
   const creditsDisplay = user ? (user.plan === 'pro' || user.plan === 'agency' ? 'Unlimited' : user.credits_remaining) : '-'
 
+  // const loadUser = async () => {
+  //   const token = localStorage.getItem('access_token')
+    
+  //   if (!token) {
+  //     return
+  //   }
+
+  //   try {
+  //     const response = await fetch(`${API_URL}/auth/me`, {
+  //       headers: {
+  //         'Authorization': `Bearer ${token}`
+  //       }
+  //     })
+
+  //     if (response.ok) {
+  //       const userData = await response.json()
+  //       user = userData
+  //       console.log(userData)
+  //     } else {
+  //       // Token invalid, try to refresh
+  //       const refreshed = await refreshToken()
+  //       if (!refreshed) {
+  //         localStorage.removeItem('access_token')
+  //         localStorage.removeItem('refresh_token')
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Failed to load user:', error)
+  //   } finally {
+      
+  //   }
+  // }
+  
   useEffect(() => {
       function onClick(e: MouseEvent) {
         if (!panelRef.current) return
@@ -59,13 +269,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       document.addEventListener('click', onClick)
       return () => document.removeEventListener('click', onClick)
     }, [open])
+
   
     useEffect(() => {
       if (!open) return
       let mounted = true;
       (async () => {
         try {
-          const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/notifications`, { method: 'GET' })
+          const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/notifications?unread=true`, { method: 'GET' })
           if (!res.ok) return
           const data = await res.json()
           if (mounted) setNotifications(data.items || [])
@@ -80,6 +291,58 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     logout()
   }
 
+  // Fetch notifications and Load checklist state
+    useEffect(() => {
+
+      if (!user) return
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/summary`, { headers: authHeaders() })
+        .then(r => r.json())
+        .then(d => setChecklist(d.checklist))
+        .catch(() => {})
+
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications?unread=true`, { headers: authHeaders() })
+        .then(r => r.json())
+        .then(d => setNotifications(d.items || []))
+        .catch(() => {})
+      
+        //loadUser()
+
+    }, [user])
+
+    const gotoFromNotificatiion = async (id: number, href:string) =>{
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/notifications/${id}/mark-read`, {
+        method: 'POST', headers: authHeaders()
+      }).catch(() => {})
+      if(href) router.push(href)
+    }
+  
+    const dismissChecklist = async () => {
+      setChecklist(prev => prev ? { ...prev, dismissed: true } : prev)
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/dashboard/checklist/dismiss`, {
+        method: 'POST', headers: authHeaders()
+      }).catch(() => {})
+    }
+  
+    const handleChecklistAction = (href: string) => {
+      setSidebarOpen(false)
+      router.push(href)
+    }
+  
+    if (loading || !user) {
+      return (
+        <div className="min-h-screen bg-[#F4F6FA] flex items-center justify-center">
+          <div className="w-8 h-8 border-2 border-gray-200 border-t-[#00A4C6] rounded-full animate-spin" />
+        </div>
+      )
+    }
+
+    const planColors: Record<string, string> = {
+    free:   'bg-gray-100 text-gray-600',
+    pro:    'bg-[#00A4C6]/10 text-[#00A4C6]',
+    agency: 'bg-[#0DD3B6]/10 text-[#0DD3B6]',
+  }
+
+
   return (
     <div className="flex h-screen overflow-hidden" style={{ fontFamily: "'DM Sans', sans-serif" }}>
       {/* Mobile overlay */}
@@ -92,7 +355,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Sidebar */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 w-64 flex flex-col transition-transform duration-300 ${
+        className={`fixed lg:static inset-y-0 left-0 z-50 w-72 flex flex-col transition-transform duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
         style={{ backgroundColor: '#0d1318' }}
@@ -170,7 +433,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
              
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">{user?.full_name || user?.email.split('@')[0]}</p>
-              <p className="text-xs text-[#44576a] truncate">{user?.plan === 'pro' ? '⭐ Pro Plan' : user?.plan || 'Free Plan'}</p>
+              {/* <p className="text-xs text-[#44576a] truncate">{user?.plan === 'pro' ? '⭐ Pro Plan' : user?.plan || 'Free Plan'}</p> */}
+              <span className={cls(
+                'inline-block text-xs px-1.5 py-0.5 rounded font-semibold capitalize',
+                planColors[user.plan] ?? planColors.free
+              )}>{user.plan}</span>
             </div>
             
             {/* <button
@@ -273,15 +540,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                           <div className="p-4 text-sm text-gray-500">No notifications</div>
                         ) : (
                           notifications.map((n, i) =>{
-                            const href = ['audit','crawl','compare'].includes(n.type) ? `/${n.type}/${n.meta.job_id}`:"#" 
+                            const href = ['audit','crawl','compare'].includes(n.type) ? `/${n.type}/${n.meta.job_id}`:"" 
                             console.log(href, n.type)                            
                             return (
-                            <Link key={i}  href={href}>
-                            <div  className="relative px-4 py-3 hover:bg-gray-50 border-b z-50 last:border-b-0">
+                            
+                            <div key= {i} onClick={() => gotoFromNotificatiion(n.id, href)}  className="relative cursor-pointer px-4 py-3 hover:bg-gray-50 border-b z-50 last:border-b-0">
                               <div className="text-sm font-medium text-gray-900 truncate">{n.title || n.message}</div>
                               <div className="text-xs text-gray-500 mt-1">{n.message || formatTime(n.created_at)}</div>
                             </div>
-                            </Link>
+                            
                           )} 
                             )
                         )}
@@ -314,6 +581,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {children}
         </main>
       </div>
+
+      {/* ── Floating checklist ───────────────────────────────────── */}
+      {checklist && !checklist.dismissed && (
+        <Checklist
+          state={checklist}
+          onDismiss={dismissChecklist}
+          onAction={handleChecklistAction}
+        />
+      )}
     </div>
   );
 }

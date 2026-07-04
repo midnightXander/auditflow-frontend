@@ -187,7 +187,7 @@ export default function RecentAudits({recentAudits}: {recentAudits: any[]}) {
                     </td>
                     <td className="py-3 pr-4">
                     <span className="text-sm font-medium" style={{ color: '#141e27' }}>
-                        {audit.url}
+                        {audit.url.replace(/^https?:\/\//, '').split('/')[0]}
                     </span>
                     </td>
                     <td className="py-3 pr-4">

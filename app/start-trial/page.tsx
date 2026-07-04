@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import BaseHeader from '@/components/base-header'
 import Footer from '@/components/footer'
-import { useAuth } from '@/lib/auth-context'
+import { fetchWithAuth, useAuth } from '@/lib/auth-context'
 import { CheckCircle } from 'lucide-react'
 
 function StartTrialContent() {
@@ -31,11 +31,10 @@ function StartTrialContent() {
     setError(null)
     setLoading(true)
     try {
-      const res = await fetch('/api/start-trial', {
+      const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/billing/start-trial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
-        credentials: 'include',
       })
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
@@ -54,7 +53,7 @@ function StartTrialContent() {
   const plans: Record<string, any> = {
     pro: {
       name: 'Professional',
-      price: '$49/mo',
+      price: '$13/mo',
       trial: '14-day free trial',
       bullets: [
         'Unlimited audits',
@@ -65,7 +64,7 @@ function StartTrialContent() {
     },
     agency: {
       name: 'Agency',
-      price: '$149/mo',
+      price: '$99/mo',
       trial: '14-day free trial',
       bullets: [
         'Everything in Pro',
@@ -78,7 +77,7 @@ function StartTrialContent() {
       name: 'Starter',
       price: '$0',
       trial: 'Free forever',
-      bullets: ['5 audits / month', 'Basic reports', 'Community support'],
+      bullets: ['10 audits credits / month', 'Crawls', 'Basic reports', 'Community support'],
     },
   }
 
@@ -86,7 +85,7 @@ function StartTrialContent() {
 
   return (
     <div className="min-h-screen relative bg-white text-slate-900">
-      <BaseHeader />
+      {/* <BaseHeader /> */}
 
       <main className="py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -163,7 +162,7 @@ function StartTrialContent() {
         </div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </div>
   )
 }

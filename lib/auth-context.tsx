@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from 'react
 import { useRouter } from 'next/navigation'
 import Cookies from 'js-cookie'
 
-interface User {
+export interface User {
   id: number
   email: string
   full_name: string | null
@@ -18,6 +18,10 @@ interface User {
   accent_color: string
   is_active: boolean
   is_admin: boolean
+  trial_started_at : string | null
+  trial_ends_at : string | null
+  trial_used : boolean
+
 }
 
 interface AuthContextType {
@@ -58,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     if (!token) {
       setLoading(false)
+      router.push('/')
       return
     }
 
@@ -71,16 +76,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (response.ok) {
         const userData = await response.json()
         setUser(userData)
+        // console.log(userData)
       } else {
         // Token invalid, try to refresh
         const refreshed = await refreshToken()
         if (!refreshed) {
           localStorage.removeItem('access_token')
           localStorage.removeItem('refresh_token')
+          router.push('/')
         }
       }
     } catch (error) {
       console.error('Failed to load user:', error)
+      router.push('/')
     } finally {
       setLoading(false)
     }

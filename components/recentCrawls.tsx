@@ -174,7 +174,7 @@ export default function RecentSiteCrawls({crawls}: {crawls: Crawl[]}) {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
                         <Globe className="w-3.5 h-3.5 flex-shrink-0" style={{ color: '#8896a4' }} />
-                        <span className="text-sm font-medium truncate max-w-[160px]" style={{ color: '#141e27' }}>{crawl.url}</span>
+                        <span className="text-sm font-medium truncate max-w-[160px]" style={{ color: '#141e27' }}>{crawl.url.replace(/^https?:\/\//, '').split('/')[0]}</span>
                       </div>
                     </td>
                     <td className="py-3 px-4">

@@ -115,11 +115,13 @@ function SignupGate({ url, token }: { url: string; token: string }) {
   const [loading, setLoading]   = useState(false)
   const [err, setErr]           = useState('')
 
+
   const register = async () => {
     if (!email || !password) return setErr('Email and password required')
     if (password.length < 8) return setErr('Password must be at least 8 characters')
 
     setLoading(true); setErr('')
+
     try {
       // Register
       const res = await fetch(`${API}/auth/register`, {
@@ -131,19 +133,25 @@ function SignupGate({ url, token }: { url: string; token: string }) {
         const e = await res.json()
         throw new Error(e.detail ?? 'Registration failed')
       }
-      const { access_token, refresh_token } = await res.json()
+      const { access_token, refresh_token, user_id } = await res.json()
       localStorage.setItem('access_token', access_token)
       localStorage.setItem('refresh_token', refresh_token)
 
+      console.log(user_id)
+
       // Claim the anonymous audit
-      await fetch(`${API}/anon/claim`, {
+      const res2 = await fetch(`${API}/anon/claim`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${access_token}`,
         },
-        body: JSON.stringify({ session_token: token }),
+        body: JSON.stringify({ session_token: token, user_id: user_id }),
       })
+      if (res2.status === 422) {
+        const errorDetail = await res.json();
+        console.error("Validation Error Details:", errorDetail);
+      }
 
       localStorage.removeItem('anon_token')
       router.push('/dashboard')

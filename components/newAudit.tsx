@@ -85,6 +85,7 @@ export default function NewAuditModal({ onClose }: NewAuditModalProps) {
       if (data.job_id) {
         //router.push(`/audit/${data.job_id}`)
         toast.success("Audit started")
+        onClose()
       }
       
     } catch (err) {

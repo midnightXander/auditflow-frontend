@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/dashboardLayout'
+import { UpgradeToProModal } from '@/components/upgrade-to-pro-modal'
+import { useAuth } from '@/lib/auth-context'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api'
 const PRIMARY = '#00A4C6'
@@ -17,7 +19,6 @@ function authHeaders() {
 async function apiFetch(path: string, opts?: RequestInit) {
   const r = await fetch(`${API}${path}`, { ...opts, headers: authHeaders() })
   if (!r.ok) throw new Error(await r.text())
-  console.log(r)
   return r.json()
 }
 function cls(...a: (string | false | null | undefined)[]) { return a.filter(Boolean).join(' ') }
@@ -55,7 +56,7 @@ function Stat({ label, value, accent }: { label: string; value: string | number;
 }
 
 // ── New tracking modal (same as before, self-contained) ────────────────────────
-function NewTrackingModal({ onClose, onCreated }: { onClose(): void; onCreated(jobId: string): void }) {
+function NewTrackingModal({ onClose, onCreated, onError }: { onClose(): void; onCreated(jobId: string): void; onError(error: string): void }) {
   const [domain, setDomain] = useState('')
   const [name, setName] = useState('')
   const [rawKws, setRawKws] = useState('')
@@ -88,9 +89,16 @@ function NewTrackingModal({ onClose, onCreated }: { onClose(): void; onCreated(j
         method: 'POST',
         body: JSON.stringify({ domain: domain.trim(), name: name.trim() || domain.trim(), keywords, engines, country, frequency: freq, is_scheduled: scheduled }),
       })
+      //check response status
+      // if(data.error && data.error == "upgrade_required"){
+      //   onClose()
+      //   setShowUpgradePro(true)
+      // }
+
       onCreated(data.job_id)
     } catch (e: any) {
-      setErr(e.message ?? 'Failed to create tracking')
+      setErr(e.detail ?? 'Failed to create campaign, try relaoding the page')
+      onError(e.message ?? 'Failed to create tracking')
       setLoading(false)
     }
   }
@@ -322,6 +330,8 @@ function CampaignCard({ c, onClick }: { c: any; onClick(): void }) {
 
 // ── Page ───────────────────────────────────────────────────────────────────────
 export default function RankTrackingIndexPage() {
+  const { user } = useAuth()  
+  const [showUpgradePro, setShowUpgradePro] = useState(false)
   const router = useRouter()
   const [campaigns, setCampaigns] = useState<any[]>([])
   const [total, setTotal] = useState(0)
@@ -448,8 +458,14 @@ export default function RankTrackingIndexPage() {
               setShowModal(false)
               router.push(`/rank-tracking/${jobId}`)
             }}
+            onError={(e)=>{ if(e.includes("Pro or Agency plan")){ setShowUpgradePro(true) } }}
           />
         )}
+        <UpgradeToProModal 
+                isOpen={showUpgradePro} 
+                onClose={() => setShowUpgradePro(false)}
+                currentPlan={user?.plan || 'free'}
+        />
       </div>
     </DashboardLayout>
   )
