@@ -267,6 +267,10 @@ export default function DashboardPage() {
       
             const data = await response.json()
       setRecentAudits(data.items)
+      if(!selectedSite){
+        handleSiteSelect(data.items.length > 0 ? data.items[0].url : null)
+      }
+      
       setTotalAudits(data.total)
       
       const monthlyAudits = data.metadata.monthly_audits.map((a: any) => ({ month: new Date(`${a.month}-01`).toLocaleString('en-US',{month:'short'}), avg_score: a.avg_score, count: a.count }))

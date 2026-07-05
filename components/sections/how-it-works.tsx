@@ -104,7 +104,7 @@ export default function HowItWorks() {
             Simple Process
           </span>
           <h2 className="mt-6 text-4xl sm:text-5xl font-black text-slate-900">
-            How It Works in 6 Steps
+            How Our {''} <span style={{ color: '#00a4c6' }}>Embedded Widget</span>  Works 
           </h2>
           <p className="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
             From setup to lead capture, you're generating qualified leads in minutes. Here's the workflow.

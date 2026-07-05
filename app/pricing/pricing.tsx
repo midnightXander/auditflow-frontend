@@ -173,7 +173,7 @@ export default function Pricing() {
     },
     {
       name: 'Monthly Credits',
-      free: '20',
+      free: '10',
       pro: 'Unlimited',
       agency: 'Unlimited',
       category: 'pricing',
@@ -281,28 +281,28 @@ export default function Pricing() {
   const competitors = [
     {
       feature: 'Price',
-      auditflow: '$0-$99/mo',
+      outaudits: '$0-$99/mo',
       ahrefs: '$99-$999/mo',
       semrush: '$19-$449/mo',
       moz: '$99-$599/mo',
     },
     {
       feature: 'White-Label',
-      auditflow: true,
+      outaudits: true,
       ahrefs: false,
       semrush: false,
       moz: false,
     },
     {
       feature: 'API Access',
-      auditflow: true,
+      outaudits: true,
       ahrefs: '$899+',
       semrush: '$449+',
       moz: '$299+',
     },
     {
       feature: 'Self-Hosted',
-      auditflow: true,
+      outaudits: true,
       ahrefs: false,
       semrush: false,
       moz: false,
@@ -310,7 +310,7 @@ export default function Pricing() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen pt-24 bg-gradient-to-b from-gray-50 to-white">
       {/* Header */}
       <BaseHeader />
 
@@ -358,7 +358,7 @@ export default function Pricing() {
                 )}
                 
                 <Card
-                  className={`flex flex-col h-full transition-all duration-300 ${
+                  className={`flex flex-col rounded h-full transition-all duration-300 ${
                     plan.highlighted
                       ? 'md:scale-105 shadow-2xl border-2 border-[#00a4c6] bg-[#00a4c6]  text-white'
                       : 'shadow-lg hover:shadow-xl border-gray-200'
@@ -398,7 +398,7 @@ export default function Pricing() {
 
                     {/* CTA */}
                       <Button onClick={()=>{handleUpgrade(plan.name.toLocaleLowerCase())}} disabled={loading} size="lg"
-                        className={`w-full h-12 mb-8 text-base font-semibold ${
+                        className={`w-full h-12 mb-8 rounded text-base font-semibold ${
                           plan.highlighted
                             ? 'bg-white text-[#072026] hover:opacity-95'
                             : 'bg-[#00a4c6] hover:bg-[#00a4c6cc] text-white'
@@ -430,8 +430,8 @@ export default function Pricing() {
           {/* Info Text */}
           <div className="text-center mt-12">
             <p className="text-gray-600 text-sm max-w-2xl mx-auto">
-              * Pro plan pricing: <strong>$19/month until July 20th, 2026</strong>, then increases to $39/month.
-              Lock in the special price now and keep it forever if you subscribe before July 20th!
+              * Pro plan pricing: <strong>$13/month until July 20th, 2026</strong>, then increases to $33/month.
+              Lock in the special price now and keep it forever if you subscribe before August 1st!
             </p>
           </div>
         </div>
@@ -588,9 +588,9 @@ export default function Pricing() {
                     <th className="text-center py-4 px-6 font-bold">
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center text-white text-xs font-bold">
-                          AF
+                          OA
                         </div>
-                        <span className="text-gray-900">AuditFlow</span>
+                        <span className="text-gray-900">OUTAUDITS</span>
                       </div>
                     </th>
                     <th className="text-center py-4 px-6 font-bold text-gray-900">Ahrefs</th>
@@ -605,14 +605,14 @@ export default function Pricing() {
                         {comp.feature}
                       </td>
                       <td className="text-center py-4 px-6">
-                        {typeof comp.auditflow === 'boolean' ? (
-                          comp.auditflow ? (
+                        {typeof comp.outaudits === 'boolean' ? (
+                          comp.outaudits ? (
                             <Check className="w-6 h-6 text-green-500 mx-auto" />
                           ) : (
                             <X className="w-6 h-6 text-gray-300 mx-auto" />
                           )
                         ) : (
-                          <span className="font-bold text-primary-600">{comp.auditflow}</span>
+                          <span className="font-bold text-primary-600">{comp.outaudits}</span>
                         )}
                       </td>
                       <td className="text-center py-4 px-6 text-gray-700">
@@ -661,10 +661,10 @@ export default function Pricing() {
                   <h4 className="font-bold text-lg text-gray-900 mb-4">{comp.feature}</h4>
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-xs text-gray-600 font-semibold mb-2">AUDITFLOW</p>
+                      <p className="text-xs text-gray-600 font-semibold mb-2">OUTAUDITS</p>
                       <p className="font-semibold text-primary-600">
-                        {typeof comp.auditflow === 'boolean' ? (
-                          comp.auditflow ? (
+                        {typeof comp.outaudits === 'boolean' ? (
+                          comp.outaudits ? (
                             <span className="flex items-center gap-1">
                               <Check className="w-5 h-5" /> Yes
                             </span>
@@ -674,7 +674,7 @@ export default function Pricing() {
                             </span>
                           )
                         ) : (
-                          comp.auditflow
+                          comp.outaudits
                         )}
                       </p>
                     </div>
@@ -704,7 +704,7 @@ export default function Pricing() {
                   White-label + self-hosted at a fraction of the cost
                 </p>
                 <p className="text-gray-600">
-                  Unlike Ahrefs, SEMrush, and Moz, AuditFlow offers full white-label and self-hosted capabilities starting at just
+                  Unlike Ahrefs, SEMrush, and Moz, OUTAUDITS offers full white-label and self-hosted capabilities starting at just
                   $99/month. Competitors charge $299-$999/month and don't provide white-label options.
                 </p>
               </div>
@@ -750,7 +750,7 @@ export default function Pricing() {
                 a: 'We accept all major credit cards (Visa, Mastercard, American Express) and offer monthly billing.',
               },
             ].map((item, index) => (
-              <Card key={index} className="border-gray-200">
+              <Card key={index} className="rounded border-gray-200">
                 <CardContent className="p-6">
                   <h3 className="font-bold text-lg text-gray-900 mb-3">{item.q}</h3>
                   <p className="text-gray-600">{item.a}</p>

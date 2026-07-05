@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/dashboardLayout'
 import { UpgradeToProModal } from '@/components/upgrade-to-pro-modal'
 import { useAuth } from '@/lib/auth-context'
+import { toast } from 'sonner'
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api'
 const PRIMARY = '#00A4C6'
@@ -455,7 +456,8 @@ export default function RankTrackingIndexPage() {
           <NewTrackingModal
             onClose={() => setShowModal(false)}
             onCreated={(jobId) => {
-              setShowModal(false)
+              setShowModal(false);
+              toast.success("Tracking started")
               router.push(`/rank-tracking/${jobId}`)
             }}
             onError={(e)=>{ if(e.includes("Pro or Agency plan")){ setShowUpgradePro(true) } }}

@@ -153,7 +153,7 @@ export default function EmbedWidgetPage() {
       if (data.width) setConfig(s => ({ ...s, width: data.width }))
       if (data.shadow) setConfig(s => ({ ...s, shadow: data.shadow }))
         
-      console.log(data)  
+      
     } catch (error) {
       console.error('Failed to load settings:', error)
     }
@@ -169,7 +169,7 @@ export default function EmbedWidgetPage() {
       })
       const data = await response.json()
       setLeads(data.leads || [])
-      console.log('Leads data:', data)
+      
       setStats({
         totalAudits: data.total_audits || 0,
         leadsCapture: data.leads_captured || 0,

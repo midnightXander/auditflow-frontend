@@ -533,7 +533,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {notifications.length > 0 ? <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-[#00a4c6]" /> : ""}
             </button>
             {open && (
-                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
+                    <div className="absolute z-40 right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
                       <div className="px-4 py-2 border-b border-gray-100 text-sm font-semibold">Notifications</div>
                       <div className="max-h-64 overflow-y-auto">
                         {notifications.length === 0 ? (
