@@ -166,7 +166,7 @@ export function UpgradeToProModal({ isOpen, onClose, currentPlan = 'free' }: Upg
           >
             Maybe later
           </button>
-          <Link href="/dashboard/billing" className="flex-1">
+          <Link href="/account/billing" className="flex-1">
             <button
               className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded text-sm font-medium text-white transition-all duration-200 hover:opacity-90"
               style={{ backgroundColor: '#00a4c6' }}

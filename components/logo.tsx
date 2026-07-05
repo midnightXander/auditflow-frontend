@@ -18,9 +18,9 @@ export default function Logo({variant = 'default'}: {variant?: 'default' | 'dark
         </div> */}
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
         <rect width="28" height="28" rx="6" fill={PRIMARY} />
-        <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="2.5"
+        <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="4"
           strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx="21" cy="8" r="2.5" fill={ACCENT} />
+        <circle cx="21" cy="8" r="3" fill={ACCENT} />
       </svg>
         <span className={`text-xl font-bold ${VARIANTS[variant]}`}>
           OUTAUDITS

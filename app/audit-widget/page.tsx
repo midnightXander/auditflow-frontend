@@ -8,7 +8,7 @@ import {
   Code, Globe, Search, Users, ArrowRight, CheckCircle,
   Zap, BarChart3, Mail, Shield, Star, ChevronDown,
   Copy, Check, MousePointerClick, Palette, TrendingUp,
-  Clock, Target, Settings, Eye,
+  Clock, Target, Settings, Eye
 } from 'lucide-react'
 import BaseHeader from '@/components/base-header'
 import Footer from '@/components/footer'

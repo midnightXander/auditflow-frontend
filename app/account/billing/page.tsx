@@ -6,6 +6,8 @@ import { useAuth, fetchWithAuth } from '@/lib/auth-context'
 import { formatDate, formatDateDistanceToNow } from '@/lib/utils'
 import { Check, Download, ArrowUpRight, ArrowDownRight, CreditCard, Calendar, TrendingUp, FileText } from 'lucide-react'
 import DashboardLayout from '@/components/dashboardLayout'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 
 interface Subscription {
   plan: string
@@ -25,6 +27,7 @@ interface Invoice {
 }
 
 export default function BillingManagementPage() {
+  const router = useRouter()
   const { user } = useAuth()
   const [subscription, setSubscription] = useState<Subscription | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
@@ -62,6 +65,39 @@ export default function BillingManagementPage() {
       setLoading(false)
     }
   }
+
+  const handleUpgrade = async (planTier: string) => {
+      if (!user || currentPlan === planTier) {
+        // Redirect to login
+        router.push('/signin');
+        return;
+      }
+  
+      setLoading(true);
+      try {
+        const response = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/billing/checkout-link`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan_tier: planTier })
+        });
+  
+        if (!response.ok) {
+          const error = await response.json();
+          toast.error(`Error: ${error.detail}`,{ position: "top-center"  });
+          return;
+        }
+  
+        const data = await response.json();
+        toast.success("You are being redirected to checkout")
+        // Redirect to Whop checkout
+        router.push(data.checkout_url);
+      } catch (error) {
+        console.error('Error creating checkout:', error);
+        alert('Failed to create checkout. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const planDetails: Record<string, { color: string; features: string[]; price: number }> = {
     free: {
@@ -315,24 +351,25 @@ export default function BillingManagementPage() {
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3">
                     {currentPlan === 'free' && (
-                      <Link href="/dashboard/billing" className="flex-1">
+                      // <Link href="/dashboard/billing" className="flex-1">
                         <button
+                         onClick={()=>{handleUpgrade('pro')}}
                           className="w-full px-4 py-2.5 rounded text-sm font-medium transition-all duration-200 hover:opacity-90"
                           style={{ backgroundColor: '#00a4c6', color: '#ffffff' }}
                         >
                           Upgrade to Pro
                         </button>
-                      </Link>
+                      // </Link>
                     )}
                     {currentPlan === 'pro' && (
-                      <Link href="/dashboard/billing" className="flex-1">
+                      <a href="mailto:sales@outaudits.com" className="flex-1">
                         <button
                           className="w-full px-4 py-2.5 rounded text-sm font-medium transition-all duration-200 hover:opacity-90"
                           style={{ backgroundColor: '#0dd3b6', color: '#ffffff' }}
                         >
                           Upgrade to Agency
                         </button>
-                      </Link>
+                      </a>
                     )}
                     {currentPlan !== 'free' && (
                       <button

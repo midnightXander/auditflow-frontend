@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="400" height="400" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0" style="stop-color:#00a4c6;stop-opacity:1"/>
       <stop offset="1" style="stop-color:#00a4c6;stop-opacity:1"/>
     </linearGradient>
   </defs>
-  <rect width="40" height="40" rx="8" fill="url(#logoGradient)" x="-0.098" y="0.098"/>
-  <g transform="matrix(1.03682, 0, 0, 1.03861, 5.797582, 6.678196)" style="">
-  <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="2.5"
-          strokeLinecap="round" strokeLinejoin="round" />
-  <circle cx="21" cy="8" r="2.5" fill="#0DD3B6" />
+  <rect width="40" height="40" rx="8" fill="url(#logoGradient)" x="0" y="0"/>
+  <!-- Adjusted matrix to scale the group up and adjusted coordinates for a larger, bolder, more rounded path -->
+  <g transform="matrix(1.2, 0, 0, 1.2, 4, 4)">
+    <path d="M5 22 L11 10 L16 16 L22 6" stroke="white" stroke-width="6"
+          stroke-linecap="round" stroke-linejoin="round" />
+    <circle cx="21.5" cy="7" r="4.5" fill="#0DD3B6" />
   </g>
 </svg>
