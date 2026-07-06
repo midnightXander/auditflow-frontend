@@ -428,7 +428,7 @@ function darkenHex(hex: string, percent: number = 20): string {
             <TabsTrigger className="rounded" value="setup">Setup</TabsTrigger>
             <TabsTrigger className="rounded" value="customize">Customize</TabsTrigger>
             <TabsTrigger className="rounded" value="leads">Leads ({leads.length})</TabsTrigger>
-            <TabsTrigger className="rounded" value="analytics">Analytics</TabsTrigger>
+        
           </TabsList>
 
           {/* Setup Tab */}
@@ -478,9 +478,9 @@ function darkenHex(hex: string, percent: number = 20): string {
 
             {/* Embed Code */}
             {apiKey && (
-              <Card>
+              <Card >
                 <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="text-lg  flex items-center gap-2">
                     <Code className="w-5 h-5 text-[#00a4c6]"/>
                     Embed Code
                   </CardTitle>
@@ -494,7 +494,7 @@ function darkenHex(hex: string, percent: number = 20): string {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="absolute top-2 right-2"
+                      className="absolute rounded top-2 right-2"
                       onClick={() => copyToClipboard(embedCode)}
                     >
                       {copied ? <Check className="w-4 h-4"/> : <Copy className="w-4 h-4"/>}
@@ -520,7 +520,7 @@ function darkenHex(hex: string, percent: number = 20): string {
 
             {/* Preview */}
             {apiKey && (
-              <Card>
+              <Card >
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
                     <Eye className="w-5 h-5 text-[#00a4c6]"/>
@@ -884,307 +884,345 @@ function darkenHex(hex: string, percent: number = 20): string {
 
           {/* Leads Tab */}
           <TabsContent value="leads" className="space-y-6">
-            {/* Lead Filters */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex gap-2 flex-wrap">
+            {/* Header info / Stats at the top right */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-6 rounded border border-gray-200">
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  variant={statusFilter === 'all' ? 'default' : 'outline'} 
+                  size="sm"
+                  onClick={() => setStatusFilter('all')}
+                  className="rounded"
+                >
+                  All ({leads.length})
+                </Button>
+                {['new', 'contacted', 'qualified', 'converted'].map((status) => (
                   <Button 
-                    variant={statusFilter === 'all' ? 'default' : 'outline'} 
+                    key={status}
+                    variant={statusFilter === status ? 'default' : 'outline'} 
                     size="sm"
-                    onClick={() => setStatusFilter('all')}
+                    onClick={() => setStatusFilter(status)}
+                    className="capitalize rounded"
                   >
-                    All ({leads.length})
+                    {status}
                   </Button>
-                  <Button 
-                    variant={statusFilter === 'new' ? 'default' : 'outline'} 
-                    size="sm"
-                    onClick={() => setStatusFilter('new')}
-                  >
-                    New
-                  </Button>
-                  <Button 
-                    variant={statusFilter === 'contacted' ? 'default' : 'outline'} 
-                    size="sm"
-                    onClick={() => setStatusFilter('contacted')}
-                  >
-                    Contacted
-                  </Button>
-                  <Button 
-                    variant={statusFilter === 'qualified' ? 'default' : 'outline'} 
-                    size="sm"
-                    onClick={() => setStatusFilter('qualified')}
-                  >
-                    Qualified
-                  </Button>
-                  <Button 
-                    variant={statusFilter === 'converted' ? 'default' : 'outline'} 
-                    size="sm"
-                    onClick={() => setStatusFilter('converted')}
-                  >
-                    Converted
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Leads List */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Leads Column */}
-              <div className="lg:col-span-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Users className="w-5 h-5 text-main"/>
-                      Captured Leads
-                    </CardTitle>
-                    <CardDescription>Click on a lead to view and manage details</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {filteredLeads.length === 0 ? (
-                      <div className="text-center py-12">
-                        <Mail className="w-12 h-12 text-gray-400 mx-auto mb-4"/>
-                        <h3 className="text-lg font-semibold text-gray-900 mb-2">No leads yet</h3>
-                        <p className="text-gray-600">Leads will appear here when visitors use your embedded widget</p>
-                      </div>
-                    ) : (
-                      <div className="space-y-2">
-                        {filteredLeads.map((lead: any) => (
-                          <div 
-                            key={lead.id} 
-                            onClick={() => {
-                              setSelectedLead(lead)
-                              setNotes(lead.notes || '')
-                              setIsEditingNotes(false)
-                            }}
-                            className={`p-4 border rounded cursor-pointer transition-colors ${
-                              selectedLead?.id === lead.id 
-                                ? 'bg-blue-50 border-blue-300' 
-                                : 'hover:bg-gray-50'
-                            }`}
-                          >
-                            <div className="flex items-center justify-between">
-                              <div className="flex-1">
-                                <p className="font-semibold text-gray-900">{lead.email}</p>
-                                <p className="text-sm text-gray-600">{lead.website}</p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  {new Date(lead.created_at).toLocaleString()}
-                                </p>
-                              </div>
-                              <Badge variant={
-                                lead.status === 'converted' ? 'default' : 
-                                lead.status === 'qualified' ? 'secondary' : 
-                                'outline'
-                              }>
-                                {lead.status}
-                              </Badge>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                ))}
               </div>
 
-              {/* Lead Details Sidebar */}
-              {selectedLead && (
-                <div className="space-y-3">
-                  {/* Status Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm">Status</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <div className="grid grid-cols-2 gap-2">
+              {/* Top right stats */}
+              <div className="flex items-center gap-6">
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mb-0.5">Total Leads</p>
+                  <p className="text-lg font-bold text-gray-900">{leads.length}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mb-0.5">Converted</p>
+                  <p className="text-lg font-bold text-emerald-600">
+                    {leads.filter((l: any) => l.status === 'converted').length}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mb-0.5">Conversion %</p>
+                  <p className="text-lg font-bold text-[#00a4c6]">
+                    {leads.length > 0 ? ((leads.filter((l: any) => l.status === 'converted').length / leads.length) * 100).toFixed(1) : 0}%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Leads Table */}
+            <div className="bg-white border border-gray-200 rounded overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-gray-200 bg-gray-50">
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Email
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Website
+                      </th>
+                      <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Score
+                      </th>
+                      <th className="px-6 py-4 text-center text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {filteredLeads.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                          <Mail className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                          <p className="text-sm font-medium">No leads found</p>
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredLeads.map((lead: any) => (
+                        <tr key={lead.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                            {lead.name || '-'}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-600">
+                            {lead.email}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            {lead.website}
+                          </td>
+                          <td className="px-6 py-4 text-center text-sm font-semibold text-[#00a4c6]">
+                            {lead.score ?? '-'}
+                          </td>
+                          <td className="px-6 py-4 text-center">
+                            <span
+                              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                                lead.status === 'new'
+                                  ? 'bg-blue-50 text-blue-600 border border-blue-100'
+                                  : lead.status === 'contacted'
+                                  ? 'bg-amber-50 text-amber-600 border border-amber-100'
+                                  : lead.status === 'qualified'
+                                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                  : 'bg-cyan-50 text-cyan-600 border border-cyan-100'
+                              }`}
+                            >
+                              {lead.status.charAt(0).toUpperCase() + lead.status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500">
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => {
+                                  setSelectedLead(lead)
+                                  setEmailSubject('SEO Audit Report Follow-up')
+                                  setEmailBody(`Hi,\n\nI reviewed your website ${lead.website} and wanted to follow up on your recent SEO audit.`)
+                                  setShowEmailModal(true)
+                                }}
+                                className="w-8 h-8 rounded border border-gray-200 bg-white text-gray-500 hover:text-[#00a4c6] hover:border-[#00a4c6] transition-colors flex items-center justify-center cursor-pointer"
+                                title="Send email"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setSelectedLead(lead)
+                                  setNotes(lead.notes || '')
+                                  setIsEditingNotes(false)
+                                }}
+                                className="w-8 h-8 rounded border border-gray-200 bg-white text-gray-500 hover:text-[#00a4c6] hover:border-[#00a4c6] transition-colors flex items-center justify-center cursor-pointer"
+                                title="View details"
+                              >
+                                <Eye className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Lead Details Modal / Slide-out Panel */}
+            {selectedLead && !showEmailModal && (
+              <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="bg-white rounded border border-gray-200 shadow-xl max-w-lg w-full overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">Lead Details</h3>
+                      <p className="text-xs text-gray-500 mt-0.5">{selectedLead.website}</p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedLead(null)}
+                      className="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-full hover:bg-gray-100"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto">
+                    {/* Basic Info */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Name</p>
+                        <p className="text-sm font-semibold text-gray-900">{selectedLead.name || '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Email</p>
+                        <p className="text-sm font-semibold text-gray-900">{selectedLead.email}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Audit Score</p>
+                        <p className="text-sm font-semibold text-[#00a4c6]">{selectedLead.score ?? '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-400 font-medium">Captured Date</p>
+                        <p className="text-sm font-semibold text-gray-900">
+                          {new Date(selectedLead.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Status Management */}
+                    <div className="space-y-2">
+                      <p className="text-sm font-semibold text-gray-700">Lead Status</p>
+                      <div className="grid grid-cols-4 gap-2">
                         {['new', 'contacted', 'qualified', 'converted'].map((status) => (
                           <Button
                             key={status}
                             variant={selectedLead.status === status ? 'default' : 'outline'}
                             size="sm"
-                            className="capitalize"
+                            className="capitalize text-xs py-1"
                             onClick={() => updateLead(selectedLead.id, undefined, status)}
                           >
                             {status}
                           </Button>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
+                    </div>
 
-                  {/* Notes Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm flex items-center justify-between">
-                        <span className="flex items-center gap-2">
-                          <MessageSquare className="w-4 h-4"/>
+                    {/* Notes Section */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+                          <MessageSquare className="w-4 h-4" />
                           Notes
-                        </span>
+                        </p>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => setIsEditingNotes(!isEditingNotes)}
+                          className="h-8 px-2 text-xs"
                         >
-                          <Edit2 className="w-4 h-4"/>
+                          <Edit2 className="w-3.5 h-3.5 mr-1" />
+                          {isEditingNotes ? 'Cancel' : 'Edit'}
                         </Button>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
+                      </div>
+
                       {isEditingNotes ? (
-                        <>
+                        <div className="space-y-2">
                           <textarea
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             placeholder="Add notes about this lead..."
-                            className="w-full h-24 p-2 border rounded text-sm"
+                            className="w-full h-24 p-3 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-[#00a4c6] focus:border-[#00a4c6] outline-none"
                           />
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              onClick={() => updateLead(selectedLead.id, notes) }
+                              onClick={() => {
+                                updateLead(selectedLead.id, notes)
+                                setIsEditingNotes(false)
+                              }}
                             >
-                              Save
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => setIsEditingNotes(false)}
-                            >
-                              Cancel
+                              Save Notes
                             </Button>
                           </div>
-                        </>
+                        </div>
                       ) : (
-                        <p className="text-sm text-gray-600 whitespace-pre-wrap">
-                          {notes || 'No notes added'}
-                        </p>
+                        <div className="p-3 bg-gray-50 rounded border border-gray-100 text-sm text-gray-600 min-h-[60px] whitespace-pre-wrap">
+                          {selectedLead.notes || 'No notes added yet.'}
+                        </div>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
 
-                  {/* Actions Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-sm">Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                      <Button 
-                        className="w-full"
-                        variant="outline"
-                        onClick={() => setShowEmailModal(true)}
-                      >
-                        <Mail className="w-4 h-4 mr-2"/>
-                        Send Email
-                      </Button>
+                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => deleteLead(selectedLead.id)}
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete Lead
+                    </Button>
+                    <div className="flex gap-2">
                       <Link href={`/audit/${selectedLead.job_id}`} target="_blank">
-                        <Button className="w-full" variant="outline">
-                          <Eye className="w-4 h-4 mr-2"/>
+                        <Button variant="outline" size="sm">
+                          <Eye className="w-4 h-4 mr-2" />
                           View Report
                         </Button>
                       </Link>
                       <Button
-                        className="w-full mt-2"
-                        variant="destructive"
-                        onClick={() => deleteLead(selectedLead.id)}
+                        size="sm"
+                        onClick={() => {
+                          setEmailSubject('SEO Audit Report Follow-up')
+                          setEmailBody(`Hi,\n\nI reviewed your website ${selectedLead.website} and wanted to follow up on your recent SEO audit.`)
+                          setShowEmailModal(true)
+                        }}
                       >
-                        <Trash2 className="w-4 h-4 mr-2"/>
-                        Delete Lead
+                        <Mail className="w-4 h-4 mr-2" />
+                        Email Lead
                       </Button>
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </div>
                 </div>
-              )}
-              {!selectedLead && (
-                <Card className="bg-gray-50">
-                  <CardContent className="p-12 text-center">
-                    <Globe className="w-12 h-12 text-gray-400 mx-auto mb-4"/>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Select a lead to view details</h3>
-                    <p className="text-gray-600">Click on a lead from the list to see more information and manage it</p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Email Modal */}
             {showEmailModal && selectedLead && (
-              <Card className="border-2 border-blue-500">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Mail className="w-5 h-5"/>
-                      Email {selectedLead.email}
-                    </CardTitle>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowEmailModal(false)}
-                    >
-                      <X className="w-4 h-4"/>
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label>Subject</Label>
-                    <Input
-                      value={emailSubject}
-                      onChange={(e) => setEmailSubject(e.target.value)}
-                      placeholder="Email subject"
-                    />
-                  </div>
-                  <div>
-                    <Label>Message</Label>
-                    <textarea
-                      value={emailBody}
-                      onChange={(e) => setEmailBody(e.target.value)}
-                      placeholder="Your message..."
-                      className="w-full h-32 p-2 border rounded text-sm"
-                    />
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      onClick={() => sendEmail(selectedLead.id)}
-                      className="flex-1"
-                    >
-                      <Send className="w-4 h-4 mr-2"/>
-                      Send Email
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowEmailModal(false)}
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <Card className="max-w-lg w-full">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <Mail className="w-5 h-5 text-[#00a4c6]" />
+                        Email {selectedLead.email}
+                      </CardTitle>
+                      <button
+                        onClick={() => setShowEmailModal(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label>Subject</Label>
+                      <Input
+                        value={emailSubject}
+                        onChange={(e) => setEmailSubject(e.target.value)}
+                        placeholder="Email subject"
+                      />
+                    </div>
+                    <div>
+                      <Label>Message</Label>
+                      <textarea
+                        value={emailBody}
+                        onChange={(e) => setEmailBody(e.target.value)}
+                        placeholder="Your message..."
+                        className="w-full h-32 p-3 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-[#00a4c6] focus:border-[#00a4c6] outline-none"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => sendEmail(selectedLead.id)}
+                        className="flex-1"
+                      >
+                        <Send className="w-4 h-4 mr-2" />
+                        Send Email
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => setShowEmailModal(false)}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             )}
           </TabsContent>
 
-          {/* Analytics Tab */}
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="grid md:grid-cols-3 gap-4">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-gray-900">{stats.totalAudits}</div>
-                  <div className="text-sm text-gray-600">Total Audits</div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-blue-600">{stats.leadsCapture}</div>
-                  <div className="text-sm text-gray-600">Leads Captured</div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="text-3xl font-bold text-emerald-600">{stats.conversionRate}%</div>
-                  <div className="text-sm text-gray-600">Conversion Rate</div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+         
         </Tabs>
       </div>
       </main>
