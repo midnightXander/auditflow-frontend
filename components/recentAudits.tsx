@@ -102,7 +102,7 @@ export default function RecentAudits({recentAudits}: {recentAudits: any[]}) {
               return
             }
             const data = await r.json()
-            console.log(data)
+            
             setSelectedAudit(data.results)
             setSelectedAuditId(AuditId)
             // if (data.status === 'completed' && data.results) { setResults(data.results); setLoading(false) }

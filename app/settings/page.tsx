@@ -112,7 +112,6 @@ export default function SettingsPage() {
     e.preventDefault()
     try {
       handleSaveBranding()
-      console.log('Saving profile:', formData)
       setSaveStatus('success')
       setTimeout(() => setSaveStatus('idle'), 2000)
     } catch (error) {

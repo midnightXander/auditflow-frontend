@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import DashboardLayout from '@/components/dashboardLayout'
+import { toast } from 'sonner'
 
 const API     = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
 const PRIMARY = '#00A4C6'
@@ -455,7 +456,8 @@ export default function ComparisonsIndexPage() {
           onClose={() => setShowModal(false)}
           onCreated={(jobId) => {
             setShowModal(false)
-            router.push(`/compare/${jobId}`)
+            // router.push(`/compare/${jobId}`)
+            toast.success('Comparison started! It may take a few minutes to complete.')
           }}
         />
       )}

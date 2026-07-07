@@ -20,7 +20,8 @@ import {
   Code,
   TrendingUp,
   Settings2Icon,
-  LucideCreditCard
+  LucideCreditCard,
+  Code2
 } from 'lucide-react';
 
 import { Badge } from './badge';
@@ -57,7 +58,7 @@ function ChecklistRing({ done, total }: { done: number; total: number }) {
 interface ChecklistState {
   audit_done: boolean; crawl_done: boolean
   compare_done: boolean; tracking_done: boolean,
-  settings_done: boolean,
+  settings_done: boolean, apikey_generated: boolean,
   dismissed: boolean; all_done: boolean
 }
 
@@ -112,6 +113,15 @@ function Checklist({ state, onDismiss, onAction }: {
       icon:  Settings2Icon,
       href:  '/settings',
     },
+    {
+      key:   'apikey_generated',
+      done:  state.apikey_generated,
+      label: 'Get your Embed Key',
+      sub:   'Generate Qualified Leads with our Embedded Widget on your site',
+      icon:  Code2,
+      href:  '/audit/embed',
+    },
+
   ]
 
   const doneCount = steps.filter(s => s.done).length
@@ -276,9 +286,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       let mounted = true;
       (async () => {
         try {
-          const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/notifications?unread=true`, { method: 'GET' })
+          const res = await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/notifications?page_size=15`, { method: 'GET' })
           if (!res.ok) return
           const data = await res.json()
+          // await fetchWithAuth(`${process.env.NEXT_PUBLIC_API_URL}/notifications/mark-read-all`,
+          //   {method: 'POST'})
           if (mounted) setNotifications(data.items || [])
         } catch (e) {
           console.error('Failed to load notifications', e)
@@ -367,9 +379,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="w-10 h-10 bg-[#00a4c6] rounded-lg flex items-center justify-center">
                 <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
                   <rect width="28" height="28" rx="6" fill="#00A4C6" />
-                  <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="2.5"
+                  <path d="M6 20 L11 12 L16 16 L21 8" stroke="white" strokeWidth="4"
                     strokeLinecap="round" strokeLinejoin="round" />
-                  <circle cx="21" cy="8" r="2.5" fill='#0DD3B6' />
+                  <circle cx="21" cy="8" r="3" fill='#0DD3B6' />
                 </svg>
                 </div>
                 <span className="text-xl font-bold text-white">
@@ -544,7 +556,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             console.log(href, n.type)                            
                             return (
                             
-                            <div key= {i} onClick={() => gotoFromNotificatiion(n.id, href)}  className="relative cursor-pointer px-4 py-3 hover:bg-gray-50 border-b z-50 last:border-b-0">
+                            <div key= {i} onClick={() => gotoFromNotificatiion(n.id, href)}  className="relative cursor-pointer px-4 py-3 hover:bg-gray-50 border-b z-50 last:border-b-0"
+                             style= {{ backgroundColor: `${n.read ? '': 'rgba(0,164,198,0.1)'}` }}
+                            >
                               <div className="text-sm font-medium text-gray-900 truncate">{n.title || n.message}</div>
                               <div className="text-xs text-gray-500 mt-1">{n.message || formatTime(n.created_at)}</div>
                             </div>
@@ -583,7 +597,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </div>
 
       {/* ── Floating checklist ───────────────────────────────────── */}
-      {checklist && !checklist.dismissed && (
+      {checklist && 
+      !checklist.dismissed &&
+       (
         <Checklist
           state={checklist}
           onDismiss={dismissChecklist}

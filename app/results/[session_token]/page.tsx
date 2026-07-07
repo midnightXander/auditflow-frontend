@@ -137,7 +137,6 @@ function SignupGate({ url, token }: { url: string; token: string }) {
       localStorage.setItem('access_token', access_token)
       localStorage.setItem('refresh_token', refresh_token)
 
-      console.log(user_id)
 
       // Claim the anonymous audit
       const res2 = await fetch(`${API}/anon/claim`, {
@@ -236,7 +235,7 @@ function SignupGate({ url, token }: { url: string; token: string }) {
 // ── Main results page ──────────────────────────────────────────────────────────
 export default function ResultsPage() {
   const { session_token } = useParams() as { session_token: string }
-  console.log(session_token)
+  
 
   const [data, setData]           = useState<any>(null)
   const [loading, setLoading]     = useState(true)
@@ -251,7 +250,7 @@ export default function ResultsPage() {
         if (!res.ok) throw new Error('Results not found or expired')
         const json = await res.json()
         setData(json)
-        console.log(json)
+        
 
         // Show signup gate after 8 seconds — user has had time to see value
         if (!json.claimed) {
