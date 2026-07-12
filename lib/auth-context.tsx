@@ -32,6 +32,8 @@ interface AuthContextType {
   loginWithGoogle: (token: string) => Promise<void>
   logout: () => void
   refreshToken: () => Promise<boolean>
+  /** Re-fetch the current user from /auth/me and update context state */
+  refreshUser: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -176,6 +178,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/')
   }
 
+  const refreshUser = async (): Promise<void> => {
+    const token = localStorage.getItem('access_token')
+    if (!token) return
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData)
+      }
+      
+
+    } catch (error) {
+      console.error('Failed to refresh user:', error)
+    }
+  }
+
   const refreshToken = async (): Promise<boolean> => {
     const refresh = localStorage.getItem('refresh_token')
     
@@ -213,7 +233,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       loginWithGoogle,
       logout,
-      refreshToken
+      refreshToken,
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>

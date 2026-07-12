@@ -3,10 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '@/lib/auth-context'
 import gsap from 'gsap'
-import { DashboardSidebar } from '@/components/dashboard-sidebar'
-import DashboardHeader from '@/components/dashboard-header'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import {
   Settings,
@@ -33,7 +29,7 @@ import DashboardLayout from '@/components/dashboardLayout'
 
 
 export default function SettingsPage() {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
@@ -95,6 +91,7 @@ export default function SettingsPage() {
 
     }
     saveWhiteLabelToDatabase(config)
+    
   }
 
   
@@ -111,7 +108,7 @@ export default function SettingsPage() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      handleSaveBranding()
+      await handleSaveBranding()
       setSaveStatus('success')
       setTimeout(() => setSaveStatus('idle'), 2000)
     } catch (error) {
@@ -173,12 +170,12 @@ export default function SettingsPage() {
     return () => ctx.revert();
   }, [activeTab]);
 
-  const handleSave = () => {
-    console.log('Saving profile:', settings)
+  const handleSave = async () => {
     handleSaveBranding()
     setSaveStatus('success')
     setSaved(true);
-    // setTimeout(() => setSaved(false), 2500);
+    await refreshUser()
+    
   };
 
   const tabs = [
@@ -362,7 +359,7 @@ export default function SettingsPage() {
 
               <div className="space-y-5">
                 <div className="flex items-center gap-4 pb-5" style={{ borderBottom: '1px solid #f5f7fa' }}>
-                  <img src="/images/testimonial-avatar-1.jpg" alt="Profile" className="w-14 h-14 rounded-full object-cover" />
+                  <img src="/images/default-avatar.png" alt="Profile" className="w-14 h-14 rounded-full object-cover" />
                   <div>
                     <p className="text-sm font-semibold" style={{ color: '#141e27' }}>{settings.name}</p>
                     <p className="text-xs" style={{ color: '#8896a4' }}>{settings.email}</p>

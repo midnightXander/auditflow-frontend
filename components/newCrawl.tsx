@@ -24,7 +24,7 @@ interface NewCrawlModalProps {
 }
 
 export default function NewCrawlModal({ onClose }: NewCrawlModalProps) {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const [url, setUrl] = useState('')
   const [clientName, setClientName] = useState('')
   const { config, setConfig } = useWhiteLabel()
@@ -85,6 +85,8 @@ export default function NewCrawlModal({ onClose }: NewCrawlModalProps) {
       
       if (data.job_id) {
         //router.push(`/audit/${data.job_id}`)
+        // Refresh user so the credits counter updates in the dashboard header
+        await refreshUser()
         toast.success("Crawl started! Check Notifications for results.")
         resetCrawlFlow()
         onClose()

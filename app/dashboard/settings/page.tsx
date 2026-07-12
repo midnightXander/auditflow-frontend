@@ -21,7 +21,7 @@ import DashboardLayout from '@/components/dashboardLayout'
 
 
 export default function SettingsPage() {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [formData, setFormData] = useState({
@@ -52,8 +52,21 @@ export default function SettingsPage() {
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      // API call to save profile
-      console.log('Saving profile:', formData)
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          full_name: formData.fullName,
+          agency_name: formData.agencyName,
+        }),
+      })
+      if (!response.ok) throw new Error('Save failed')
+      // Refresh the global user state so the dashboard header updates immediately
+      await refreshUser()
       setSaveStatus('success')
       setTimeout(() => setSaveStatus('idle'), 2000)
     } catch (error) {

@@ -21,9 +21,9 @@ export default function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr] gap-10">
           {/* Brand column */}
           <div>
-            <a href="#" className="flex items-center gap-0 text-white text-xl">
+            <div  className="flex items-center gap-0 text-white text-xl">
               <Logo />
-            </a>
+            </div>
             <p
               className="mt-4"
               style={{

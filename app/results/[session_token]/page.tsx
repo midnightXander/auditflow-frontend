@@ -254,7 +254,7 @@ export default function ResultsPage() {
 
         // Show signup gate after 8 seconds — user has had time to see value
         if (!json.claimed) {
-          gateTimerRef.current = setTimeout(() => setShowGate(true), 8000)
+          // gateTimerRef.current = setTimeout(() => setShowGate(true), 8000)
         }
       } catch (e: any) {
         setError(e.message)

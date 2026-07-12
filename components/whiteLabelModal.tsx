@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { useWhiteLabel, WhiteLabelConfig } from '@/lib/whitelabel'
+ import { useAuth } from '@/lib/auth-context'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { X, Building2, Upload, Palette, User, Briefcase } from 'lucide-react'
@@ -12,6 +13,7 @@ interface WhiteLabelModalProps {
 
 export function WhiteLabelModal({ onClose }: WhiteLabelModalProps) {
   const { config, setConfig } = useWhiteLabel()
+  const { refreshUser } = useAuth()
   const [form, setForm] = useState<WhiteLabelConfig>({ ...config })
   const fileRef = useRef<HTMLInputElement>(null)
   console.log(config)
@@ -30,8 +32,10 @@ export function WhiteLabelModal({ onClose }: WhiteLabelModalProps) {
     reader.readAsDataURL(file)
   }
 
-  const save = () => {
+  const save = async () => {
     setConfig(form)
+    // Refresh user so the header agency name/logo updates immediately
+    await refreshUser()
     onClose()
   }
 

@@ -27,7 +27,7 @@ interface NewAuditModalProps {
 }
 
 export default function NewAuditModal({ onClose }: NewAuditModalProps) {
-  const { user } = useAuth()
+  const { user, refreshUser } = useAuth()
   const { isProtected } = useProtectedRoute()
   const [url, setUrl] = useState('')
   const [clientName, setClientName] = useState('')
@@ -84,6 +84,8 @@ export default function NewAuditModal({ onClose }: NewAuditModalProps) {
       
       if (data.job_id) {
         //router.push(`/audit/${data.job_id}`)
+        // Refresh user so the credits counter updates in the dashboard header
+        await refreshUser()
         toast.success("Audit started")
         onClose()
       }
