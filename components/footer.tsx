@@ -55,6 +55,11 @@ export default function Footer() {
                 </a>
               ))}
             </div>
+            <div className = "mt-6">
+            <a href="https://launchstag.com" target="_blank" rel="noopener">
+              <img src="https://launchstag.com/badge-light.svg" alt="Featured on Launchstag" width="198" height="62" />
+            </a>
+            </div>
           </div>
 
           {/* Product */}
