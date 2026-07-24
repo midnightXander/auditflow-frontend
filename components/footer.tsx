@@ -180,7 +180,7 @@ export default function Footer() {
         {/* Bottom bar */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <p style={{ fontSize: 12, color: '#44576a' }}>
-            2025 OUTAudits. All rights reserved.
+            2026 OUTAudits. All rights reserved.
           </p>
           <div className="flex items-center gap-3" style={{ fontSize: 12, color: '#44576a' }}>
             <a href="/privacy" className="hover:text-[#00a4c6] transition-colors">

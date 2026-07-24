@@ -33,6 +33,10 @@ type Stats = {
     total: number
     this_month: number
   }
+  anonymous_audits: {
+    total: number
+    this_month: number
+  }
   features: {
     crawls: number
     comparisons: number
@@ -259,9 +263,9 @@ export default function AdminDashboardPage() {
 
           <Card>
             <CardContent>
-              <p className="text-sm text-gray-500">Crawls</p>
-              <div className="text-3xl font-bold">{loadingStats ? '—' : stats?.features.crawls ?? 0}</div>
-              <p className="text-sm text-gray-500">Comparisons: {stats?.features.comparisons ?? '—'}</p>
+              <p className="text-sm text-gray-500">Anonymous Audits</p>
+              <div className="text-3xl font-bold">{loadingStats ? '—' : stats?.anonymous_audits.total ?? 0}</div>
+              <p className="text-sm text-gray-500">This month: {stats?.anonymous_audits.this_month ?? '—'}</p>
             </CardContent>
           </Card>
 

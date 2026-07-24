@@ -20,6 +20,7 @@ function ScreenshotPlaceholder({ label = 'Report', size = 'md' }: { label?: stri
   )
 }
 
+
 export default function InteractivePreview() {
   const router = useRouter()
   const [agencyName, setAgencyName] = useState('Pulse Media Agency')
@@ -49,12 +50,12 @@ export default function InteractivePreview() {
   }
 
   const reportScreenshots = [
-    { title: 'Executive Summary', desc: 'High-level overview' },
-    { title: 'Performance Metrics', desc: 'Speed & Core Web Vitals' },
-    { title: 'SEO Analysis', desc: 'On-page optimization' },
-    { title: 'Technical Issues', desc: 'Crawl & indexability' },
-    { title: 'Recommendations', desc: 'Prioritized fixes' },
-    { title: 'Competitor Comparison', desc: 'Competitive analysis' },
+    { title: 'Executive Summary', desc: 'High-level overview', src : '/images/reports/metrics.png' },
+    { title: 'Performance Metrics', desc: 'Speed & Core Web Vitals', src : '' },
+    { title: 'SEO Analysis', desc: 'On-page optimization', src : '' },
+    { title: 'Technical Issues', desc: 'Crawl & indexability', src : '' },
+    { title: 'Recommendations', desc: 'Prioritized fixes', src : '' },
+    { title: 'Competitor Comparison', desc: 'Competitive analysis', src : '' },
   ]
 
   return (
@@ -330,7 +331,7 @@ export default function InteractivePreview() {
         </div>
 
         {/* Report Showcase Grid */}
-        <div className="mt-20">
+        {/* <div className="mt-20">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-white mb-2">Report Examples</h3>
             <p className="text-[#c1cfda]">Your clients receive beautifully formatted, comprehensive audit reports</p>
@@ -339,7 +340,10 @@ export default function InteractivePreview() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reportScreenshots.map((report, index) => (
               <div key={index} className="group">
-                <ScreenshotPlaceholder label={report.title} size="md" />
+                
+
+                { report.src ? <img src={report.src} alt={report.title} className="w-full h-full object-cover" /> : <ScreenshotPlaceholder label={report.title} size="md" /> }
+                
                 <div className="mt-3">
                   <h4 className="font-semibold text-white group-hover:text-[#00a4c6] transition-colors">
                     {report.title}
@@ -349,7 +353,7 @@ export default function InteractivePreview() {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* CTA */}
         <div className="text-center mt-16">
