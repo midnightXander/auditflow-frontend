@@ -18,6 +18,7 @@ import Pricing from '../components/sections/pricing'
 import WidgetHighlight from '../components/sections/embed-widget'
 import InteractivePreview from '../components/sections/interactive-preview'
 import HowItWorks from '../components/sections/how-it-works'
+import RecentArticles from '@/components/sections/recentArticles'
 import { trackVisitor } from '@/lib/tracking'
 
 export default function HomePage() {
@@ -415,6 +416,7 @@ export default function HomePage() {
             </div>
           </div>
         </section> */}
+        <RecentArticles />
         <FAQ />
 
         {/* FINAL CTA */}

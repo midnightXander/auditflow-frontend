@@ -1,11 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { formatDate } from '@/lib/utils'
 import Link from 'next/link'
-import BaseHeader from '@/components/base-header'
-import { Metadata } from 'next'
-import gsap from 'gsap';
 import { ArrowRight, Search, Mail } from 'lucide-react';
 
 const categories = ['All', 'Technical SEO', 'Strategy', 'Agency Tips', 'Performance'];
