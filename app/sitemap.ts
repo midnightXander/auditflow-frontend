@@ -25,6 +25,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/use-cases`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/audit`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
@@ -61,18 +73,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     },
     {
-      url: `${BASE_URL}/blog`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/use-cases`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
       url: `${BASE_URL}/terms`,
       lastModified: new Date(),
       changeFrequency: 'yearly',
@@ -104,7 +104,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = await getAllPosts('blog-posts')
     blogPosts = posts.map((post) => ({
       url: `${BASE_URL}/blog/${post.slug}`,
-      lastModified: new Date(post.publishedAt || new Date()),
+      lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }))
@@ -118,7 +118,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = await getAllPosts('use-cases')
     useCasePages = posts.map((post) => ({
       url: `${BASE_URL}/use-cases/${post.slug}`,
-      lastModified: new Date(post.publishedAt || new Date()),
+      lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     }))
