@@ -15,7 +15,7 @@ import rehypeRaw from 'rehype-raw'
 import rehypeSanitize from 'rehype-sanitize'
 
 export const generateStaticParams = async () => {
-    const posts = await getAllPosts()
+    const posts = await getAllPosts('use-cases')
     return posts.map((post) => ({
         slug: post.slug,
     }))
@@ -45,7 +45,7 @@ import MDXContent from "@/components/mdxContent"
 export default async function Post({params} : {params: {slug: string}} ){
     const {slug} = await params
     const post = await getPostBySlug(slug, 'use-cases')
-    console.log('Fetched post for slug:', slug, post)
+    console.log('Fetched post for slug:', slug)
 
     if(!post){
         console.log('Post not found:', slug)

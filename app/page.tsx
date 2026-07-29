@@ -417,6 +417,7 @@ export default function HomePage() {
           </div>
         </section> */}
         <RecentArticles />
+        {/* <iframe src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7487136134901293056?collapsed=1" height="559" width="504" frameBorder="0"  title="Embedded post"></iframe> */}
         <FAQ />
 
         {/* FINAL CTA */}

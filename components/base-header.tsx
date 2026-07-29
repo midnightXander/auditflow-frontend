@@ -47,7 +47,7 @@ import gsap from 'gsap';
 import { useRouter } from 'next/navigation'
 import Link from 'next/link';
 const navLinks = [
-  { label: 'Features', href: '/#features' },
+  // { label: 'Features', href: '/#features' },
   { label: 'Rank Tracker', href: '/use-cases/rank-tracker' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Embed', href: '/audit-widget' },

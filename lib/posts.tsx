@@ -32,6 +32,7 @@ export type PostMetaData = {
     readTime?: string
 }
 
+
 export async function getPostBySlug(slug: string, type: string = 'blog-posts') : Promise<Post | null> {
     try{
         const filepath = path.join(postsDirectory, type, `${slug}.mdx`)

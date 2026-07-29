@@ -102,12 +102,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPosts: MetadataRoute.Sitemap = []
   try {
     const posts = await getAllPosts('blog-posts')
-    blogPosts = posts.map((post) => ({
-      url: `${BASE_URL}/blog/${post.slug}`,
-      lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }))
+    // blogPosts = posts.map((post) => ({
+    //   url: `${BASE_URL}/blog/${post.slug}`,
+    //   lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+    //   changeFrequency: 'monthly' as const,
+    //   priority: 0.7,
+    // }))
+    // for (const post of posts) {
+    //   console.log(post.slug, post.publishedAt)
+
+    //   const d = new Date(post.publishedAt ?? "")
+
+    //   console.log(d, isNaN(d.getTime()))
+    // }
+    blogPosts = posts.map((post) => {
+      const d = new Date(post.publishedAt ?? "")
+
+      return {
+        url: `${BASE_URL}/blog/${post.slug}`,
+        lastModified: isNaN(d.getTime()) ? new Date() : d,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      }
+    })
   } catch (error) {
     console.error('Error fetching blog posts for sitemap:', error)
   }
@@ -116,12 +133,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let useCasePages: MetadataRoute.Sitemap = []
   try {
     const posts = await getAllPosts('use-cases')
-    useCasePages = posts.map((post) => ({
-      url: `${BASE_URL}/use-cases/${post.slug}`,
-      lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    }))
+    // useCasePages = posts.map((post) => ({
+    //   url: `${BASE_URL}/use-cases/${post.slug}`,
+    //   lastModified: post.publishedAt ? new Date(post.publishedAt) : new Date(),
+    //   changeFrequency: 'monthly' as const,
+    //   priority: 0.7,
+    // }))
+    for (const post of posts) {
+      console.log(post.slug, post.publishedAt)
+
+      const d = new Date(post.publishedAt ?? "")
+
+      console.log(d, isNaN(d.getTime()))
+    }
+    useCasePages = posts.map((post) => {
+      const d = new Date(post.publishedAt ?? "")
+
+      return {
+        url: `${BASE_URL}/use-cases/${post.slug}`,
+        lastModified: isNaN(d.getTime()) ? new Date() : d,
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+      }
+    })
+
   } catch (error) {
     console.error('Error fetching use cases for sitemap:', error)
   }
