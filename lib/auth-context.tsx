@@ -64,7 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     if (!token) {
       setLoading(false)
-      router.push('/')
+      // router.push('/')
       return
     }
 
@@ -85,12 +85,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!refreshed) {
           localStorage.removeItem('access_token')
           localStorage.removeItem('refresh_token')
-          router.push('/')
+          // router.push('/')
         }
       }
     } catch (error) {
       console.error('Failed to load user:', error)
-      router.push('/')
+      // router.push('/')
     } finally {
       setLoading(false)
     }
