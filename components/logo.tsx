@@ -22,7 +22,7 @@ export default function Logo({variant = 'default'}: {variant?: 'default' | 'dark
           strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="21" cy="8" r="3" fill={ACCENT} />
       </svg>
-        <span className={`text-xl font-bold ${VARIANTS[variant]}`}>
+        <span className={`text-xl font-bold inter-bold ${VARIANTS[variant]}`}>
           OUTAUDITS
         </span>
     </div>

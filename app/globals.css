@@ -325,6 +325,12 @@
     transform: scale(1.02);
   }
 
+  .inter-bold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    color : '#00a4c6';
+  }
+
 
 .stagger-children > *:nth-child(1) { animation-delay: 0.1s; }
 .stagger-children > *:nth-child(2) { animation-delay: 0.2s; }

@@ -3,31 +3,84 @@
 import { useState } from 'react'
 import { Upload, Copy, Check, Palette, Building2 } from 'lucide-react'
 import { ImageIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-function ScreenshotPlaceholder({ label = 'Report', size = 'md' }: { label?: string; size?: 'sm' | 'md' | 'lg' }) {
-  const sizeClasses = size === 'lg' ? 'w-full h-64 md:h-96' : size === 'sm' ? 'w-40 h-24' : 'w-full h-48'
-  return (
-    <div className={`rounded border-2 border-dashed border-[#374c63] bg-gradient-to-r from-[#1a2a38] to-[#263747] p-4 flex items-center justify-center ${sizeClasses}`}>
-      <div className="text-center">
-        <div className="mx-auto mb-3 w-12 h-12 rounded-md bg-[#263747] flex items-center justify-center text-[#44576a]">
-          <ImageIcon className="w-6 h-6" />
-        </div>
-        <div className="text-sm text-[#c1cfda]">{label}</div>
-      </div>
-    </div>
-  )
-}
-
+const reportPages = [
+  {
+    title: 'Executive Summary',
+    subtitle: 'A concise overview of the current site, growth opportunities, and what to prioritize first.',
+    metrics: [
+      { label: 'Overall SEO score', value: '72 / 100' },
+      { label: 'Visibility opportunity', value: '+18%' },
+      { label: 'Top priority', value: 'Content relevance & page speed' },
+    ],
+    bullets: [
+      'Homepage and service pages have strong structure, but content lacks keyword focus.',
+      'Technical setup is healthy overall; a few crawl issues are holding back rankings.',
+      'Competitors are outpacing on local visibility and backlink-driven category pages.',
+    ],
+  },
+  {
+    title: 'Technical SEO',
+    subtitle: 'Crawlability, indexing, speed, and secure delivery explained in plain language.',
+    metrics: [
+      { label: 'Crawl issues found', value: '12' },
+      { label: 'Core Web Vitals', value: 'Good / Needs improvement' },
+      { label: 'Broken links', value: '5' },
+    ],
+    bullets: [
+      'Redirect chains and duplicate canonical tags are affecting page rankings.',
+      'Mobile performance is strong, but desktop speed needs a 2s improvement.',
+      'Sitemap and robots rules are correct, no major index blockers detected.',
+    ],
+  },
+  {
+    title: 'Content & Relevance',
+    subtitle: 'How client messaging, page structure, and search intent compare to competitors.',
+    metrics: [
+      { label: 'Content quality score', value: '68 / 100' },
+      { label: 'Keyword mix', value: 'Balanced brand + conversion' },
+      { label: 'Missing page types', value: '3' },
+    ],
+    bullets: [
+      'Service pages need clearer benefits, outcomes, and case study examples.',
+      'Several landing pages are missing strong calls to action for sales-ready visitors.',
+      'Competitors win on feature detail and keyword-rich subheaders.',
+    ],
+  },
+  {
+    title: 'Rankings & Competitors',
+    subtitle: 'Search visibility, keyword position gaps, and where rivals are stronger.',
+    table: {
+      columns: ['Keyword', 'Your Rank', 'Top Competitor', 'Opportunity'],
+      rows: [
+        ['SEO audit agency', '5', '1', 'Improve page copy'],
+        ['technical SEO services', '8', '2', 'Add case studies'],
+        ['content audit tool', '12', '4', 'Build resource page'],
+      ],
+    },
+  },
+  {
+    title: 'Recommendations',
+    subtitle: 'Client-ready action steps that turn insight into faster wins.',
+    bullets: [
+      'Prioritize speed fixes on the homepage and two highest-traffic landing pages.',
+      'Refresh service page content with clear outcomes and keywords the buyer uses.',
+      'Use the competitor gap report to show clients where rivals are outperforming them.',
+      'Deliver this report as a branded audit summary in every pitch.',
+    ],
+  },
+]
 
 export default function InteractivePreview() {
-  const router = useRouter()
   const [agencyName, setAgencyName] = useState('Pulse Media Agency')
   const [brandColor, setBrandColor] = useState('#00a4c6')
   const [clientName, setClientName] = useState('Tech Startup Inc.')
   const [logoUrl, setLogoUrl] = useState('/logo.svg')
   const [copied, setCopied] = useState(false)
+  const [activePage, setActivePage] = useState(0)
+
+  const page = reportPages[activePage]
 
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -41,339 +94,220 @@ export default function InteractivePreview() {
   }
 
   const handleCopyCode = () => {
-    const embedCode = `<!-- Embed Widget Code -->
-<script src="https://app.outaudits.io/embed.js" data-api-key="YOUR_API_KEY"></script>
-<div id="outaudits-widget"></div>`
+    const embedCode = `<!-- Embed Widget Code -->\n<script src="https://app.outaudits.io/embed.js" data-api-key="YOUR_API_KEY"></script>\n<div id="outaudits-widget"></div>`
     navigator.clipboard.writeText(embedCode)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const reportScreenshots = [
-    { title: 'Executive Summary', desc: 'High-level overview', src : '/images/reports/metrics.png' },
-    { title: 'Performance Metrics', desc: 'Speed & Core Web Vitals', src : '' },
-    { title: 'SEO Analysis', desc: 'On-page optimization', src : '' },
-    { title: 'Technical Issues', desc: 'Crawl & indexability', src : '' },
-    { title: 'Recommendations', desc: 'Prioritized fixes', src : '' },
-    { title: 'Competitor Comparison', desc: 'Competitive analysis', src : '' },
-  ]
-
   return (
     <section className="py-20 bg-gradient-to-b from-[#141e27] to-[#0d1318]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-16">
           <span className="section-label text-[#00a4c6] font-semibold text-sm block mb-4">INTERACTIVE PREVIEW</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            See Reports Your Way
-          </h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Agency-ready reports, ready to share</h2>
           <p className="text-lg text-[#c1cfda] max-w-2xl mx-auto">
-            Customize branding in real-time and preview how your audits look to clients
+            Preview a five-page audit report that combines technical SEO, content insight, rankings and competitor gaps in client-friendly language.
           </p>
         </div>
 
-        {/* Main Preview Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20">
-          {/* Left - Customization Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-12">
           <div className="space-y-6">
-            <div className="bg-[#1a2a38] border border-[#374c63] rounded p-8">
-              <h3 className="text-xl font-bold text-white mb-6">Customize Your Branding</h3>
+            <div className="bg-[#1a2a38] border border-[#374c63] rounded p-8 shadow-xl">
+              <h3 className="text-xl font-bold text-white mb-6">Customize your report</h3>
 
-              {/* Logo Upload */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#c1cfda] mb-3">Agency Logo</label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                    id="logo-upload"
-                  />
-                  <label
-                    htmlFor="logo-upload"
-                    className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-[#374c63] rounded cursor-pointer hover:border-[#00a4c6] transition-colors bg-[#141e27]"
-                  >
-                    <Upload className="w-4 h-4 text-[#44576a]" />
-                    <span className="text-sm text-[#c1cfda]">Upload logo</span>
-                  </label>
-                </div>
-                {logoUrl && (
-                  <div className="mt-3 flex items-center justify-center w-16 h-16 bg-white rounded border border-[#374c63]">
-                    <img src={logoUrl} alt="Preview" className="w-14 h-14 object-contain" />
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-semibold text-[#c1cfda] mb-2">Agency logo</label>
+                  <div className="flex items-center gap-4">
+                    <input id="logo-upload" type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
+                    <label htmlFor="logo-upload" className="flex items-center gap-2 px-4 py-3 border border-[#374c63] rounded cursor-pointer hover:border-[#00a4c6] transition-colors bg-[#0f172a] text-[#c1cfda]">
+                      <Upload className="w-4 h-4" /> Upload logo
+                    </label>
+                    <div className="w-16 h-16 rounded-lg bg-white/5 border border-[#374c63] flex items-center justify-center">
+                      <img src={logoUrl} alt="Logo preview" className="w-14 h-14 object-contain" />
+                    </div>
                   </div>
-                )}
-              </div>
+                </div>
 
-              {/* Agency Name */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#c1cfda] mb-2">Agency Name</label>
-                <input
-                  type="text"
-                  value={agencyName}
-                  onChange={(e) => setAgencyName(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#141e27] border border-[#374c63] rounded text-white placeholder-[#44576a] focus:border-[#00a4c6] focus:outline-none focus:ring-2 focus:ring-[#00a4c6]/20 transition-all"
-                  placeholder="Your agency name"
-                />
-              </div>
-
-              {/* Client Name */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#c1cfda] mb-2">Client Name</label>
-                <input
-                  type="text"
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#141e27] border border-[#374c63] rounded text-white placeholder-[#44576a] focus:border-[#00a4c6] focus:outline-none focus:ring-2 focus:ring-[#00a4c6]/20 transition-all"
-                  placeholder="Client company name"
-                />
-              </div>
-
-              {/* Brand Color */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#c1cfda] mb-2 flex items-center gap-2">
-                  <Palette className="w-4 h-4" />
-                  Brand Color
-                </label>
-                <div className="flex items-center gap-3">
+                <div>
+                  <label className="block text-sm font-semibold text-[#c1cfda] mb-2">Agency name</label>
                   <input
-                    type="color"
-                    value={brandColor}
-                    onChange={(e) => setBrandColor(e.target.value)}
-                    className="w-16 h-12 rounded cursor-pointer border border-[#374c63]"
+                    value={agencyName}
+                    onChange={(e) => setAgencyName(e.target.value)}
+                    className="w-full rounded-2xl border border-[#374c63] bg-[#0f172a] px-4 py-3 text-white focus:border-[#00a4c6] focus:outline-none"
+                    placeholder="Pulse Media Agency"
                   />
-                  <div className="flex-1">
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#c1cfda] mb-2">Client name</label>
+                  <input
+                    value={clientName}
+                    onChange={(e) => setClientName(e.target.value)}
+                    className="w-full rounded-2xl border border-[#374c63] bg-[#0f172a] px-4 py-3 text-white focus:border-[#00a4c6] focus:outline-none"
+                    placeholder="Tech Startup Inc."
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#c1cfda] mb-2 flex items-center gap-2">
+                    <Palette className="w-4 h-4" /> Brand color
+                  </label>
+                  <div className="flex items-center gap-3">
+                    <input type="color" value={brandColor} onChange={(e) => setBrandColor(e.target.value)} className="w-16 h-12 rounded-lg border border-[#374c63]" />
                     <input
-                      type="text"
                       value={brandColor}
                       onChange={(e) => setBrandColor(e.target.value)}
-                      className="w-full px-3 py-2 bg-[#141e27] border border-[#374c63] rounded text-white text-sm focus:border-[#00a4c6] focus:outline-none"
+                      className="flex-1 rounded-2xl border border-[#374c63] bg-[#0f172a] px-4 py-3 text-white focus:border-[#00a4c6] focus:outline-none"
                       placeholder="#00a4c6"
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Preset Colors */}
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-[#c1cfda] mb-3">Preset Colors</label>
-                <div className="grid grid-cols-6 gap-2">
-                  {['#00a4c6', '#0dd3b6', '#00d9ff', '#7c3aed', '#ec4899', '#f59e0b'].map((color) => (
-                    <button
-                      key={color}
-                      onClick={() => setBrandColor(color)}
-                      className="w-full h-10 rounded border-2 transition-all hover:scale-110"
-                      style={{
-                        backgroundColor: color,
-                        borderColor: brandColor === color ? '#ffffff' : '#374c63',
-                        borderWidth: brandColor === color ? '3px' : '2px',
-                      }}
-                      title={color}
-                    />
-                  ))}
+                <div>
+                  <div className="grid grid-cols-6 gap-2">
+                    {['#00a4c6', '#0dd3b6', '#00d9ff', '#7c3aed', '#ec4899', '#f59e0b'].map((color) => (
+                      <button
+                        key={color}
+                        onClick={() => setBrandColor(color)}
+                        className="h-10 rounded-xl border transition-transform hover:-translate-y-0.5"
+                        style={{
+                          backgroundColor: color,
+                          borderColor: brandColor === color ? '#ffffff' : '#334155',
+                          borderWidth: brandColor === color ? '3px' : '1px',
+                        }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Copy Embed Code */}
               <button
                 onClick={handleCopyCode}
-                className="w-full px-4 py-3 rounded font-semibold flex items-center justify-center gap-2 transition-all"
-                style={{
-                  backgroundColor: brandColor,
-                  color: '#ffffff',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = '0.9'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = '1'
-                }}
+                className="mt-8 w-full rounded-2xl px-5 py-3 font-semibold text-white transition-all"
+                style={{ backgroundColor: brandColor }}
               >
-                {copied ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-4 h-4" />
-                    Copy Embed Code
-                  </>
-                )}
+                {copied ? 'Embed code copied' : 'Copy embed code'}
               </button>
             </div>
           </div>
 
-          {/* Right - Live Preview */}
-          <div className="space-y-4">
-            <div className="bg-[#1a2a38] border border-[#374c63] rounded overflow-hidden shadow-2xl">
-              {/* Header */}
-              <div
-                className="p-6 text-white"
-                style={{ backgroundColor: brandColor }}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    {logoUrl ? (
-                      <img src={logoUrl} alt={agencyName} className="w-10 h-10 object-contain" />
-                    ) : (
-                      <div className="w-10 h-10 bg-white/20 rounded flex items-center justify-center">
-                        <Building2 className="w-5 h-5" />
-                      </div>
-                    )}
-                    <span className="font-bold text-lg">{agencyName}</span>
-                  </div>
-                  <span className="text-sm font-semibold opacity-90">SEO AUDIT REPORT</span>
+          <div className="space-y-6">
+            <div className="rounded border border-[#334155] bg-[#0f172a] p-6 shadow-2xl">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-[#334155]">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Preview report</p>
+                  <h3 className="mt-3 text-3xl font-extrabold text-white">Five-page audit report</h3>
+                  <p className="mt-3 text-sm leading-6 text-[#c1cfda] max-w-2xl">
+                    This mock report follows the workflow agencies use to turn audit findings into a client-ready recommendation package.
+                  </p>
                 </div>
+                <div className="rounded-full border border-[#334155] bg-[#111827] px-4 py-2 text-sm text-[#cbd5e1]">{clientName}</div>
               </div>
 
-              {/* Body */}
-              <div className="p-8 space-y-6">
-                {/* Score Card */}
-                <div>
-                  <h2 className="text-2xl font-bold text-white mb-2">SEO Score</h2>
-                  <div className="flex items-end gap-4">
-                    <div className="relative w-20 h-20">
-                      <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 100 100">
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke="#374c63"
-                          strokeWidth="8"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          fill="none"
-                          stroke={brandColor}
-                          strokeWidth="8"
-                          strokeDasharray={`${282 * 0.72} 282`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-white">72</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-[#c1cfda] text-sm">Good Performance</p>
-                      <p className="text-white font-semibold mt-1">For: {clientName}</p>
-                    </div>
+              <div className="mt-6 flex flex-wrap gap-2">
+                {reportPages.map((pageItem, index) => (
+                  <button
+                    key={pageItem.title}
+                    onClick={() => setActivePage(index)}
+                    className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${activePage === index ? 'bg-white text-slate-950' : 'bg-slate-900 text-slate-400 hover:bg-slate-800'}`}
+                  >
+                    {index + 1}. {pageItem.title}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-8 rounded bg-[#111827] border border-[#334155] p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Page {activePage + 1} of 5</p>
+                    <h4 className="mt-2 text-2xl font-semibold text-white">{page.title}</h4>
                   </div>
+                  <p className="text-sm text-[#cbd5e1] max-w-xl">{page.subtitle}</p>
                 </div>
 
-                {/* Metrics */}
-                <div className="grid grid-cols-2 gap-4">
-                  {[
-                    { label: 'Mobile Ready', value: '85%' },
-                    { label: 'Page Speed', value: '78%' },
-                    { label: 'SEO', value: '72%' },
-                    { label: 'Accessibility', value: '88%' },
-                  ].map((metric) => (
-                    <div key={metric.label} className="bg-[#263747] p-4 rounded">
-                      <p className="text-sm text-[#c1cfda]">{metric.label}</p>
-                      <p className="text-2xl font-bold mt-1" style={{ color: brandColor }}>
-                        {metric.value}
-                      </p>
+                <div className="mt-8 grid gap-4">
+                  {page.metrics && (
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {page.metrics.map((metric) => (
+                        <div key={metric.label} className="rounded bg-[#0f172a] border border-[#334155] p-4">
+                          <p className="text-xs uppercase tracking-[0.25em] text-[#94a3b8]">{metric.label}</p>
+                          <p className="mt-3 text-xl font-semibold text-white">{metric.value}</p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
 
-                {/* SEO Opportunities */}
-                <div className="border-t border-gray-200 pt-8">
-                  <h4 className="font-bold text-white text-lg mb-4">SEO Opportunities</h4>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 bg-[#263747]  rounded border border-amber-200">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full mt-1.5 shrink-0" />
-                      <div className="flex-1">
-                        <p className="font-bold text-amber-100">Add missing meta descriptions</p>
-                        <p className="text-sm text-[#c1cfda]">23 pages missing optimized meta tags</p>
-                      </div>
+                  {page.bullets && (
+                    <div className="space-y-3 rounded bg-[#0f172a] border border-[#334155] p-5 text-sm text-[#cbd5e1]">
+                      {page.bullets.map((item) => (
+                        <div key={item} className="flex gap-3">
+                          <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-[#00a4c6]" />
+                          <p>{item}</p>
+                        </div>
+                      ))}
                     </div>
-                    <div className="flex items-start gap-3 p-3 bg-[#263747]  rounded border border-amber-200">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full mt-1.5 shrink-0" />
-                      <div className="flex-1">
-                        <p className="font-bold text-amber-100">Improve internal linking strategy</p>
-                        <p className="text-sm text-[#c1cfda]">Strengthen topical authority with better links</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3 bg-[#263747]  rounded border border-amber-200">
-                      <div className="w-2 h-2 bg-amber-500 rounded-full mt-1.5 shrink-0" />
-                      <div className="flex-1">
-                        <p className="font-bold text-amber-100">Fix broken backlinks</p>
-                        <p className="text-sm text-[#c1cfda]">127 broken links detected - recover lost authority</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3 p-3 bg-[#263747]  rounded border border-emerald-200">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-1.5 shrink-0" />
-                      <div className="flex-1">
-                        <p className="font-bold text-emerald-100">Sitemap & robots.txt optimized</p>
-                        <p className="text-sm text-[#c1cfda]">Crawlability fully optimized</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  )}
 
-                {/* Footer */}
-                <div className="pt-4 border-t border-[#374c63]">
-                  <p className="text-xs text-[#44576a]">Report generated by {agencyName} • {new Date().toLocaleDateString()}</p>
+                  {page.table && (
+                    <div className="overflow-hidden rounded border border-[#334155] bg-[#0f172a]">
+                      <table className="w-full border-collapse text-sm text-[#cbd5e1]">
+                        <thead className="bg-[#111827] text-[11px] uppercase tracking-[0.3em] text-[#94a3b8]">
+                          <tr>
+                            {page.table.columns.map((column) => (
+                              <th key={column} className="px-4 py-3 text-left">{column}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {page.table.rows.map((row, rowIndex) => (
+                            <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-[#121827]' : 'bg-[#0f172a]'}>
+                              {row.map((cell, cellIndex) => (
+                                <td key={cellIndex} className="px-4 py-3">{cell}</td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            <p className="text-sm text-[#c1cfda] text-center">
-              ✨ Changes update instantly • Your clients see branded reports
-            </p>
+            <p className="text-sm text-[#c1cfda] text-center">✨ Pages update instantly as you customize branding and client details.</p>
           </div>
         </div>
 
-        {/* Report Showcase Grid */}
-        {/* <div className="mt-20">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-white mb-2">Report Examples</h3>
-            <p className="text-[#c1cfda]">Your clients receive beautifully formatted, comprehensive audit reports</p>
+        <div className="mt-16 rounded border border-[#334155] bg-[#0f172a] p-8 shadow-2xl">
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="rounded bg-[#111827] border border-[#334155] p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Technical SEO</p>
+              <h4 className="mt-4 text-xl font-semibold text-white">Fix issues that hurt crawl and speed</h4>
+              <p className="mt-3 text-sm text-[#cbd5e1]">Mocked findings include redirect cleanup, improved structured data, and faster page loads for the pages that matter most.</p>
+            </div>
+            <div className="rounded bg-[#111827] border border-[#334155] p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Content</p>
+              <h4 className="mt-4 text-xl font-semibold text-white">Make content more persuasive</h4>
+              <p className="mt-3 text-sm text-[#cbd5e1]">Jargon-free recommendations highlight gaps in case studies, service messaging, and buying-stage content.</p>
+            </div>
+            <div className="rounded bg-[#111827] border border-[#334155] p-6">
+              <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Rankings</p>
+              <h4 className="mt-4 text-xl font-semibold text-white">Spot keyword and competitor gaps</h4>
+              <p className="mt-3 text-sm text-[#cbd5e1]">The mock report shows where competitors own the top spots and what to fix next.</p>
+            </div>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reportScreenshots.map((report, index) => (
-              <div key={index} className="group">
-                
-
-                { report.src ? <img src={report.src} alt={report.title} className="w-full h-full object-cover" /> : <ScreenshotPlaceholder label={report.title} size="md" /> }
-                
-                <div className="mt-3">
-                  <h4 className="font-semibold text-white group-hover:text-[#00a4c6] transition-colors">
-                    {report.title}
-                  </h4>
-                  <p className="text-sm text-[#c1cfda]">{report.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div> */}
-
-        {/* CTA */}
         <div className="text-center mt-16">
-          <p className="text-[#c1cfda] mb-6">
-            Try creating your own branded reports today
-          </p>
+          <p className="text-[#c1cfda] mb-6">Launch a client-ready competitor comparison and turn findings into a revenue-driving proposal.</p>
           <Link
             href="/register"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded font-semibold text-white transition-all hover:scale-105"
-            style={{
-              backgroundColor: '#00a4c6',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#00a4c6cc'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#00a4c6'
-            }}
+            className="inline-flex items-center justify-center rounded-2xl bg-[#00a4c6] px-8 py-4 text-sm font-semibold text-white shadow-xl transition hover:bg-[#0093B2]"
           >
-            Start Free Trial
+            Start creating reports
           </Link>
         </div>
       </div>

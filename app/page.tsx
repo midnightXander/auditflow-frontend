@@ -20,6 +20,8 @@ import InteractivePreview from '../components/sections/interactive-preview'
 import HowItWorks from '../components/sections/how-it-works'
 import RecentArticles from '@/components/sections/recentArticles'
 import { trackVisitor } from '@/lib/tracking'
+import AnimatedSearchDemo from '@/components/animated-demo'
+
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -183,6 +185,8 @@ export default function HomePage() {
           </div>
         </section> */}
         <FeatureGrid />
+
+        
 
         {/* SEE IT IN ACTION */}
         <InteractivePreview />
