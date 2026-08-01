@@ -21,6 +21,7 @@ import HowItWorks from '../components/sections/how-it-works'
 import RecentArticles from '@/components/sections/recentArticles'
 import { trackVisitor } from '@/lib/tracking'
 import AnimatedSearchDemo from '@/components/animated-demo'
+import Footer2 from '@/components/sections/footer2'
 
 
 export default function HomePage() {
@@ -506,7 +507,7 @@ export default function HomePage() {
             <span>Made with ♥ for agencies worldwide</span>
           </div>
         </footer> */}
-        <Footer />
+        <Footer2 />
       </main>
     </div>
   )

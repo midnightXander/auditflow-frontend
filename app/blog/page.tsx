@@ -3,6 +3,7 @@ import Footer from '@/components/footer'
 import Logo from '@/components/logo'
 import { Metadata } from 'next'
 import BlogComponent from './blogComponent';
+import Footer2 from '@/components/sections/footer2';
 
 export const metadata: Metadata = {
   title: 'Blog - OUTAudits',
@@ -15,7 +16,7 @@ export default async function Blog() {
     <>
       <BaseHeader />
       <BlogComponent />
-      <Footer />
+      <Footer2 />
     </>
   );
 }

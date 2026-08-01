@@ -355,9 +355,12 @@ export default function AuditWidgetLanding() {
                   <Link href="/register" className="btn-primary glow-ring">
                     Start Free — Get Your Widget
                   </Link>
-                  <a href="#how-it-works" className="btn-outline">
+                  {/* <a href="#how-it-works" className="btn-outline">
                     See How It Works
-                  </a>
+                  </a> */}
+                  <Link href="/audit-widget/live-demo" className="btn-outline">
+                    Live Demo
+                  </Link>
                 </div>
                 <div className="mt-6 flex items-center gap-3 opacity-70" style={{ fontSize: 13, color: '#44576a' }}>
                   <div className="flex items-center gap-1">

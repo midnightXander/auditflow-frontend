@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Loader2, Search, Mail, Lock, User } from 'lucide-react'
 import Link from 'next/link'
 import GoogleSignInButton from '@/components/googleSigninButton'
-
+import Logo from '@/components/logo'
 export default function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -64,23 +64,17 @@ export default function Register() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-block mb-6">
-            <div className="inline-flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#00a4c6]  rounded-lg flex items-center justify-center">
-                <Search className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-2xl font-bold text-white">
-                OUTAUDITS
-              </span>
-            </div>
-          </Link>
+          <div className="inline-flex items-center mb-4 gap-2">
+            <Logo />
+          </div>
+          
           <p className="text-[#c1cfda]">Create your free account</p>
         </div>
 
         <Card className="shadow-xl border-[#374c63] bg-[#1a2a38]">
           <CardHeader>
             <CardTitle className="text-white">Get started</CardTitle>
-            <CardDescription className="text-[#c1cfda]">20 free audit credits every month for any domain, no credit card required</CardDescription>
+            <CardDescription className="text-[#c1cfda]">Free audits for any domain, no credit card required</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">

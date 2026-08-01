@@ -136,11 +136,11 @@ export default function InteractivePreview() {
             INTERACTIVE PREVIEW
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Brand first, then preview the full report
+           See Reports your way
           </h2>
           <p className="text-lg text-[#c1cfda] max-w-2xl mx-auto">
-            Set your agency logo, client name, and primary color first. When you hit
-            save, the mock five-page report appears with your branding front and center.
+            Set your agency logo, client name, and primary color first. then hit
+            save.
           </p>
         </div>
 
@@ -155,8 +155,7 @@ export default function InteractivePreview() {
                   Start with your agency identity
                 </h3>
                 <p className="mt-3 text-slate-300 max-w-2xl mx-auto">
-                  The report preview remains hidden until branding is saved, then it
-                  appears cleanly with your logo, color, and agency name.
+                  Enter Agency Settings
                 </p>
               </div>
 
@@ -303,191 +302,191 @@ export default function InteractivePreview() {
                   </button>
                 </div>
 
-                <div className="mt-6 rounded-3xl border border-[#334155] bg-[#111827] p-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">
-                        Branding preview
-                      </p>
-                      <p className="mt-1 text-lg font-semibold text-white">
-                        {agencyName} · {clientName}
-                      </p>
-                    </div>
-                    <div
-                      className="rounded-2xl px-4 py-2 text-sm font-semibold text-white"
-                      style={{ backgroundColor: brandColor }}
-                    >
-                      Primary brand color
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="rounded-[2rem] border border-[#334155] bg-[#0f172a] p-8 shadow-2xl transition-all duration-700">
-                <div className="">
-                  <div className="space-y-6">
-                    <div className="bg-[#0f172a] p-6 shadow-2xl">
-                      <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-[#334155]">
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">
-                            Preview report
-                          </p>
-                          <h3 className="mt-3 text-3xl font-extrabold text-white">
-                            Five-page audit report
-                          </h3>
-                          <p className="mt-3 text-sm leading-6 text-[#c1cfda] max-w-2xl">
-                            This mock report follows the workflow agencies use to turn audit findings into a client-ready recommendation package.
-                          </p>
-                        </div>
-                        <div className="rounded-full border border-[#334155] bg-[#111827] px-4 py-2 text-sm text-[#cbd5e1]">
-                          {clientName}
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex flex-wrap gap-2">
-                        {reportPages.map((pageItem, index) => (
-                          <button
-                            key={pageItem.title}
-                            onClick={() => setActivePage(index)}
-                            className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
-                              activePage === index
-                                ? 'bg-white text-slate-950'
-                                : 'bg-slate-900 text-slate-400 hover:bg-slate-800'
-                            }`}
-                          >
-                            {index + 1}. {pageItem.title}
-                          </button>
-                        ))}
-                      </div>
-
-                      <div className="mt-8  bg-[#111827] py-6">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">
-                              Page {activePage + 1} of 5
-                            </p>
-                            <h4 className="mt-2 text-2xl font-semibold text-white">
-                              {page.title}
-                            </h4>
-                          </div>
-                          <p className="text-sm text-[#cbd5e1] max-w-xl">{page.subtitle}</p>
-                        </div>
-
-                        <div className="mt-8 grid gap-4">
-                          {page.metrics && (
-                            <div className="grid gap-3 sm:grid-cols-3">
-                              {page.metrics.map((metric) => (
-                                <div
-                                  key={metric.label}
-                                  className="rounded bg-[#0f172a] border border-[#334155] p-4"
-                                >
-                                  <p className="text-xs uppercase tracking-[0.25em] text-[#94a3b8]">
-                                    {metric.label}
-                                  </p>
-                                  <p className="mt-3 text-xl font-semibold text-white">
-                                    {metric.value}
-                                  </p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {page.bullets && (
-                            <div className="space-y-3 rounded bg-[#0f172a] border border-[#334155] p-5 text-sm text-[#cbd5e1]">
-                              {page.bullets.map((item) => (
-                                <div key={item} className="flex gap-3">
-                                  <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-[#00a4c6]" />
-                                  <p>{item}</p>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-
-                          {page.table && (
-                            <div className="overflow-hidden rounded border border-[#334155] bg-[#0f172a]">
-                              <table className="w-full border-collapse text-sm text-[#cbd5e1]">
-                                <thead className="bg-[#111827] text-[11px] uppercase tracking-[0.3em] text-[#94a3b8]">
-                                  <tr>
-                                    {page.table.columns.map((column) => (
-                                      <th key={column} className="px-4 py-3 text-left">
-                                        {column}
-                                      </th>
-                                    ))}
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {page.table.rows.map((row, rowIndex) => (
-                                    <tr
-                                      key={rowIndex}
-                                      className={
-                                        rowIndex % 2 === 0 ? 'bg-[#121827]' : 'bg-[#0f172a]'
-                                      }
-                                    >
-                                      {row.map((cell, cellIndex) => (
-                                        <td key={cellIndex} className="px-4 py-3">
-                                          {cell}
-                                        </td>
-                                      ))}
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="text-center text-sm text-[#c1cfda]">
-                      ✨ Pages update instantly as you customize branding and client details.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8 py-6">
-                  <div className="grid gap-6 lg:grid-cols-3">
-                    <div className="rounded bg-[#0f172a] border border-[#334155] p-6">
-                      <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Technical SEO</p>
-                      <h4 className="mt-4 text-xl font-semibold text-white">
-                        Fix issues that hurt crawl and speed
-                      </h4>
-                      <p className="mt-3 text-sm text-[#cbd5e1]">
-                        Mocked findings include redirect cleanup, improved structured data, and faster page loads.
-                      </p>
-                    </div>
-                    <div className="rounded bg-[#0f172a] border border-[#334155] p-6">
-                      <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Content</p>
-                      <h4 className="mt-4 text-xl font-semibold text-white">
-                        Make content more persuasive
-                      </h4>
-                      <p className="mt-3 text-sm text-[#cbd5e1]">
-                        Jargon-free recommendations highlight gaps in case studies, service messaging, and buying-stage content.
-                      </p>
-                    </div>
-                    <div className="rounded bg-[#0f172a] border border-[#334155] p-6">
-                      <p className="text-xs uppercase tracking-[0.3em] text-[#94a3b8]">Rankings</p>
-                      <h4 className="mt-4 text-xl font-semibold text-white">
-                        Spot keyword and competitor gaps
-                      </h4>
-                      <p className="mt-3 text-sm text-[#cbd5e1]">
-                        The mock report shows where competitors own the top spots and what to fix next.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="text-center mt-8">
-                  <p className="text-[#c1cfda] mb-4">
-                    This preview is fully branded for agency positioning and built to feel like a polished client deliverable.
+                <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                    Branding preview
                   </p>
-                  <Link
-                    href="/register"
-                    className="inline-flex items-center justify-center rounded-2xl bg-[#00a4c6] px-8 py-4 text-sm font-semibold text-white shadow-xl transition hover:bg-[#0093B2]"
-                  >
-                    Start creating reports
-                  </Link>
+                  <p className="mt-1 text-lg font-semibold text-slate-900">
+                    {agencyName} · {clientName}
+                  </p>
+                </div>
+                <div
+                  className="rounded-2xl px-4 py-2 text-sm font-semibold text-white"
+                  style={{ backgroundColor: brandColor }}
+                >
+                  Primary brand color
                 </div>
               </div>
+            </div>
+              </div>
+
+              <div className="rounded-[2rem] border border-slate-200 bg-slate-50 p-8 shadow-xl transition-all duration-700">
+            <div className="">
+              <div className="space-y-6">
+                <div className="bg-white p-6 shadow-md rounded-2xl border border-slate-200">
+                  <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-slate-200">
+                    <div>
+                      <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                        Preview report
+                      </p>
+                      <h3 className="mt-3 text-3xl font-extrabold text-slate-900">
+                        Five-page audit report
+                      </h3>
+                      <p className="mt-3 text-sm leading-6 text-slate-600 max-w-2xl">
+                        Upload your logo and enter agency name, brand colors and hit Save
+                      </p>
+                    </div>
+                    <div className="rounded-full border border-slate-200 bg-slate-100 px-4 py-2 text-sm text-slate-700">
+                      {clientName}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {reportPages.map((pageItem, index) => (
+                      <button
+                        key={pageItem.title}
+                        onClick={() => setActivePage(index)}
+                        className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
+                          activePage === index
+                            ? 'bg-slate-900 text-white'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        {index + 1}. {pageItem.title}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 bg-slate-50 border border-slate-200 rounded-2xl p-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
+                          Page {activePage + 1} of 5
+                        </p>
+                        <h4 className="mt-2 text-2xl font-semibold text-slate-900">
+                          {page.title}
+                        </h4>
+                      </div>
+                      <p className="text-sm text-slate-600 max-w-xl">{page.subtitle}</p>
+                    </div>
+
+                    <div className="mt-8 grid gap-4">
+                      {page.metrics && (
+                        <div className="grid gap-3 sm:grid-cols-3">
+                          {page.metrics.map((metric) => (
+                            <div
+                              key={metric.label}
+                              className="rounded-xl bg-white border border-slate-200 p-4 shadow-sm"
+                            >
+                              <p className="text-xs uppercase tracking-[0.25em] text-slate-500">
+                                {metric.label}
+                              </p>
+                              <p className="mt-3 text-xl font-semibold text-slate-900">
+                                {metric.value}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {page.bullets && (
+                        <div className="space-y-3 rounded-xl bg-white border border-slate-200 p-5 text-sm text-slate-700 shadow-sm">
+                          {page.bullets.map((item) => (
+                            <div key={item} className="flex gap-3">
+                              <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-[#00a4c6]" />
+                              <p>{item}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {page.table && (
+                        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                          <table className="w-full border-collapse text-sm text-slate-700">
+                            <thead className="bg-slate-100 text-[11px] uppercase tracking-[0.3em] text-slate-500">
+                              <tr>
+                                {page.table.columns.map((column) => (
+                                  <th key={column} className="px-4 py-3 text-left font-semibold">
+                                    {column}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {page.table.rows.map((row, rowIndex) => (
+                                <tr
+                                  key={rowIndex}
+                                  className={
+                                    rowIndex % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'
+                                  }
+                                >
+                                  {row.map((cell, cellIndex) => (
+                                    <td key={cellIndex} className="px-4 py-3 border-t border-slate-100">
+                                      {cell}
+                                    </td>
+                                  ))}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="text-center text-sm text-slate-500">
+                  ✨ Pages update instantly as you customize branding and client details.
+                </div>
+              </div>
+            </div>
+
+            {/* <div className="mt-8 py-6">
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Technical SEO</p>
+                  <h4 className="mt-4 text-xl font-semibold text-slate-900">
+                    Fix issues that hurt crawl and speed
+                  </h4>
+                  <p className="mt-3 text-sm text-slate-600">
+                    Mocked findings include redirect cleanup, improved structured data, and faster page loads.
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Content</p>
+                  <h4 className="mt-4 text-xl font-semibold text-slate-900">
+                    Make content more persuasive
+                  </h4>
+                  <p className="mt-3 text-sm text-slate-600">
+                    Jargon-free recommendations highlight gaps in case studies, service messaging, and buying-stage content.
+                  </p>
+                </div>
+                <div className="rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+                  <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Rankings</p>
+                  <h4 className="mt-4 text-xl font-semibold text-slate-900">
+                    Spot keyword and competitor gaps
+                  </h4>
+                  <p className="mt-3 text-sm text-slate-600">
+                    The mock report shows where competitors own the top spots and what to fix next.
+                  </p>
+                </div>
+              </div>
+            </div> */}
+
+            <div className="text-center mt-8">
+              <p className="text-slate-600 mb-4">
+                This preview is fully branded for agency positioning and built to feel like a polished client deliverable.
+              </p>
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center rounded-2xl bg-[#00a4c6] px-8 py-4 text-sm font-semibold text-white shadow-lg transition hover:bg-[#0093B2]"
+              >
+                Start creating reports
+              </Link>
+            </div>
+          </div>
             </div>
           )}
         </div>
