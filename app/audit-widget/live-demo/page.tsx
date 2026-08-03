@@ -85,7 +85,7 @@ function BrowserMockup() {
   const barColor = `linear-gradient(90deg, ${PRIMARY}, ${ACCENT})`
 
   return (
-    <div className="relative w-full max-w-[680px] mx-auto select-none">
+    <div className="relative  w-full max-w-[680px] mx-auto select-none">
 
       {/* Glow beneath */}
       <div
@@ -96,7 +96,6 @@ function BrowserMockup() {
       {/* Browser chrome */}
       <div className="relative rounded-xl overflow-hidden border border-white/10 shadow-2xl"
            style={{ background: '#1A2035' }}>
-
         {/* Tab bar */}
         <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5"
              style={{ background: '#111827' }}>
@@ -305,7 +304,7 @@ function LiveWidget() {
     setPhase('running'); setProgress(0); setStageLabel('Starting…'); setError('')
 
     try {
-      const res = await fetch(`${API}/api/anon/start`, {
+      const res = await fetch(`${API}/anon/start`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: raw }),
@@ -736,7 +735,7 @@ export default function DemoPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] pointer-events-none"
              style={{ background: `radial-gradient(ellipse at center top, rgba(0,164,198,0.12), transparent 70%)` }} />
 
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-6xl pb-10 overflow-y-hidden  mx-auto">
 
           {/* Eyebrow */}
           <div className="text-center mb-10">
@@ -796,6 +795,7 @@ export default function DemoPage() {
         <div className="max-w-6xl mx-auto">
 
           <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* <div className="space-y-16 items-center"> */}
 
             {/* Left: copy */}
             <div>
@@ -811,7 +811,7 @@ export default function DemoPage() {
                 goes straight to your dashboard.
               </p>
 
-              <div className="space-y-4">
+              {/* <div className="space-y-4">
                 {[
                   { icon: '⚡', title: 'Light speed audit',    sub: 'Performance, SEO, accessibility, best practices' },
                   { icon: '🗺️', title: '50-page deep crawl',  sub: 'Missing H1s, broken links, thin content, duplicate titles' },
@@ -828,7 +828,7 @@ export default function DemoPage() {
                     </div>
                   </div>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             {/* Right: live widget */}
