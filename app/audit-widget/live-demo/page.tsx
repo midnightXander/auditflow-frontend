@@ -315,7 +315,7 @@ function LiveWidget() {
       localStorage.setItem('anon_token', session_token)
 
       const poll = async () => {
-        const s = await fetch(`${API}/api/anon/status/${session_token}`)
+        const s = await fetch(`${API}/anon/status/${session_token}`)
         const d = await s.json()
         setProgress(d.progress ?? 0)
         setStageLabel(d.stage_label ?? '')
