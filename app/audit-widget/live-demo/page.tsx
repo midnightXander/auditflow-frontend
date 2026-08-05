@@ -821,8 +821,10 @@ export default function DemoPage() {
               </p>
             </div>  
           <Script 
-                src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119">
+                // src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119"
+                src="https://auditflow-backend-production-461d.up.railway.app/api/embed/widget.js?api_key=af_embed_8ead404d6ac44eebbcdeb8b37fe6740b">
           </Script>
+          
           <div id="auditflow-widget"></div> 
 
           {/* <div className="grid lg:grid-cols-2 gap-16 items-center">

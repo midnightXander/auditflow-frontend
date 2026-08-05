@@ -247,7 +247,7 @@ export default function InteractivePreview() {
                       <button
                         key={color}
                         onClick={() => setBrandColor(color)}
-                        className="h-10 rounded-xl border transition duration-200 hover:-translate-y-0.5"
+                        className="h-10 rounded border transition duration-200 hover:-translate-y-0.5"
                         style={{
                           backgroundColor: color,
                           borderColor: brandColor === color ? '#ffffff' : '#334155',
@@ -359,7 +359,7 @@ export default function InteractivePreview() {
                     ))}
                   </div>
 
-                  <div className="mt-8 bg-slate-50 border border-slate-200 rounded-2xl p-6">
+                  <div className="mt-8">
                     <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                       <div>
                         <p className="text-xs uppercase tracking-[0.3em] text-slate-500">
@@ -378,7 +378,7 @@ export default function InteractivePreview() {
                           {page.metrics.map((metric) => (
                             <div
                               key={metric.label}
-                              className="rounded-xl bg-white border border-slate-200 p-4 shadow-sm"
+                              className="rounded bg-white border border-slate-200 p-4 shadow-sm"
                             >
                               <p className="text-xs uppercase tracking-[0.25em] text-slate-500">
                                 {metric.label}
@@ -392,7 +392,7 @@ export default function InteractivePreview() {
                       )}
 
                       {page.bullets && (
-                        <div className="space-y-3 rounded-xl bg-white border border-slate-200 p-5 text-sm text-slate-700 shadow-sm">
+                        <div className="space-y-3 rounded bg-white border border-slate-200 p-5 text-sm text-slate-700 shadow-sm">
                           {page.bullets.map((item) => (
                             <div key={item} className="flex gap-3">
                               <span className="mt-1 inline-flex h-2.5 w-2.5 rounded-full bg-[#00a4c6]" />
@@ -403,7 +403,7 @@ export default function InteractivePreview() {
                       )}
 
                       {page.table && (
-                        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <div className="overflow-hidden rounded border border-slate-200 bg-white shadow-sm">
                           <table className="w-full border-collapse text-sm text-slate-700">
                             <thead className="bg-slate-100 text-[11px] uppercase tracking-[0.3em] text-slate-500">
                               <tr>
