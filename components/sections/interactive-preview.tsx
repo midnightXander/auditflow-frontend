@@ -332,7 +332,7 @@ export default function InteractivePreview() {
                         Preview report
                       </p>
                       <h3 className="mt-3 text-3xl font-extrabold text-slate-900">
-                        Five-page audit report
+                        Prioritized audit report
                       </h3>
                       <p className="mt-3 text-sm leading-6 text-slate-600 max-w-2xl">
                         Upload your logo and enter agency name, brand colors and hit Save
@@ -477,7 +477,7 @@ export default function InteractivePreview() {
 
             <div className="text-center mt-8">
               <p className="text-slate-600 mb-4">
-                This preview is fully branded for agency positioning and built to feel like a polished client deliverable.
+                {/* This preview is fully branded for agency positioning and built to feel like a polished client deliverable. */}
               </p>
               <Link
                 href="/register"
