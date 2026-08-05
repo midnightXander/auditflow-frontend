@@ -6,6 +6,10 @@ const links = [
     href: '/blog',
   },
   {
+    name: 'Pricing',
+    href: '/pricing',
+  },
+  {
     name: 'Signin',
     href: '/signin',
   },

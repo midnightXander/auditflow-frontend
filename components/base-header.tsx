@@ -99,7 +99,7 @@ export default function BaseHeader({user}:any) {
           borderBottom: scrolled ? '1px solid #374c63' : '1px solid transparent',
         }}
       >
-        <div className="container flex items-center justify-between mx-auto h-full">
+        <div className="container flex items-center justify-around mx-auto h-full">
           {/* Logo */}
           {/* <Link href="/" className="flex items-center gap-0 text-white text-xl">
             <Logo /> */}

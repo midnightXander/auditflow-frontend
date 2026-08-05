@@ -3,7 +3,7 @@ import BlogArticleComponent from "./articleComponent";
 import { getAllPosts, getPostBySlug, getRelatedArticles } from '@/lib/posts'
 import Link from 'next/link';
 import BaseHeader from '@/components/base-header'
-import Footer from '@/components/footer'
+import Footer2 from '@/components/sections/footer2'
 import Logo from '@/components/logo'
 export const generateStaticParams = async () => {
     const posts = await getAllPosts('blog-posts')
@@ -55,7 +55,7 @@ export default async function BlogArticle({params} : {params: {slug: string}} ) 
             Back to Blog
           </Link>
         </div>
-        <Footer />
+        <Footer2 />
       </div>
     );
   }
@@ -64,7 +64,7 @@ export default async function BlogArticle({params} : {params: {slug: string}} ) 
         <>
         <BaseHeader />
         <BlogArticleComponent article={post} related={related} />
-        <Footer />
+        <Footer2 />
         </>
     )
 }

@@ -66,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        
       </head>
       <body className={dmSans.className}>
         <AuthProvider>

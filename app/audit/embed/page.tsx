@@ -995,7 +995,7 @@ function darkenHex(hex: string, percent: number = 20): string {
                           </td>
                           <td className="px-6 py-4 text-sm text-gray-500">
                             <div className="flex items-center gap-2">
-                              <button
+                              {/* <button
                                 onClick={() => {
                                   setSelectedLead(lead)
                                   setEmailSubject('SEO Audit Report Follow-up')
@@ -1006,7 +1006,14 @@ function darkenHex(hex: string, percent: number = 20): string {
                                 title="Send email"
                               >
                                 <Mail className="w-4 h-4" />
-                              </button>
+                              </button> */}
+                              <a
+                                href= {`mailto:${lead.email}`}
+                                className="w-8 h-8 rounded border border-gray-200 bg-white text-gray-500 hover:text-[#00a4c6] hover:border-[#00a4c6] transition-colors flex items-center justify-center cursor-pointer"
+                                title="Send email"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </a>
                               <button
                                 onClick={() => {
                                   setSelectedLead(lead)
@@ -1148,7 +1155,7 @@ function darkenHex(hex: string, percent: number = 20): string {
                           View Report
                         </Button>
                       </Link>
-                      <Button
+                      {/* <Button
                         size="sm"
                         onClick={() => {
                           setEmailSubject('SEO Audit Report Follow-up')
@@ -1158,7 +1165,14 @@ function darkenHex(hex: string, percent: number = 20): string {
                       >
                         <Mail className="w-4 h-4 mr-2" />
                         Email Lead
-                      </Button>
+                      </Button> */}
+                      <a
+                      className='rounded px-3 py-1.5 text-sm border border-gray-200 bg-main text-gray-500 hover:text-[#00a4c6] hover:border-[#00a4c6] transition-colors flex items-center justify-center cursor-pointer'
+                        href = {`mailto:${selectedLead.email}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`}
+                      >
+                        <Mail className="w-4 h-4 mr-2" />
+                        Email Lead
+                      </a>
                     </div>
                   </div>
                 </div>

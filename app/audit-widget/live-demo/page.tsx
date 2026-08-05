@@ -3,6 +3,9 @@ import { useEffect, useRef, useState } from 'react'
 import Logo from '@/components/logo'
 import Footer2 from '@/components/sections/footer2'
 import Link from 'next/link'
+import Script from 'next/script'
+
+
 const API     = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000'
 const PRIMARY = '#00A4C6'
 const ACCENT  = '#00A4C6'
@@ -297,6 +300,7 @@ function LiveWidget() {
   const pollRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => () => { if (pollRef.current) clearTimeout(pollRef.current) }, [])
+    // const text = passed ? `Valid ${{check.title}}\` : \`Missing ${{check.title}}\`;
 
   const start = async () => {
     const raw = url.trim()
@@ -711,11 +715,13 @@ export default function DemoPage() {
             <Link href="/register"
                className="px-4 py-2 rounded text-sm font-bold text-white transition-all hover:opacity-90"
                style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${ACCENT})` }}>
-              Get your embed code →
+              Get embed code →
             </Link>
           </div>
         </div>
       </nav>
+
+      
 
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 1 — HERO
@@ -752,6 +758,11 @@ export default function DemoPage() {
 
           {/* Main animated mockup */}
           <BrowserMockup />
+          {/* <Script 
+                src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119">
+          </Script>
+          <div id="auditflow-widget"></div> */}
+
 
           {/* Hero copy — BELOW the mockup intentionally */}
           <div className="text-center mt-14 max-w-2xl mx-auto">
@@ -783,21 +794,39 @@ export default function DemoPage() {
                 Try it live ↓
               </a>
             </div>
+            
           </div>
+          
         </div>
       </section>
-
+    
+      
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 2 — LIVE WIDGET (functional)
           ══════════════════════════════════════════════════════════════════════ */}
       <section id="try-it" className="py-24 px-6 relative"
                style={{ background: 'linear-gradient(180deg, #0A0E1A 0%, #111827 100%)' }}>
         <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+              <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: ACCENT }}>
+                Try it yourself
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-black leading-tight mb-5">
+                This is exactly what your clients see.
+              </h2>
+              <p className="text-white/40 text-base leading-relaxed mb-8">
+                Enter your own website URL below. The same audit runs, the same results
+                appear, the same email gets captured — except in your version, the lead
+                goes straight to your dashboard.
+              </p>
+            </div>  
+          <Script 
+                src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119">
+          </Script>
+          <div id="auditflow-widget"></div> 
 
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* <div className="space-y-16 items-center"> */}
-
-            {/* Left: copy */}
+          {/* <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left: copy  
             <div>
               <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: ACCENT }}>
                 Try it yourself
@@ -811,7 +840,7 @@ export default function DemoPage() {
                 goes straight to your dashboard.
               </p>
 
-              {/* <div className="space-y-4">
+              <div className="space-y-4">
                 {[
                   { icon: '⚡', title: 'Light speed audit',    sub: 'Performance, SEO, accessibility, best practices' },
                   { icon: '🗺️', title: '50-page deep crawl',  sub: 'Missing H1s, broken links, thin content, duplicate titles' },
@@ -828,16 +857,21 @@ export default function DemoPage() {
                     </div>
                   </div>
                 ))}
-              </div> */}
-            </div>
+              </div> 
+            </div> 
 
-            {/* Right: live widget */}
+            {/* Right: live widget 
             <div>
-              <LiveWidget />
+              {/* <LiveWidget /> 
+               {/* <Script 
+                src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119">
+            </Script>
+            <div id="auditflow-widget"></div>  
             </div>
-          </div>
+          </div> */}
+
         </div>
-      </section>
+      </section> 
 
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 3 — WHAT CLIENTS SEE (annotated result preview)
