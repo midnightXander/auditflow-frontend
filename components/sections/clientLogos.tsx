@@ -44,7 +44,7 @@ export default function ClientLogos() {
           className="text-center section-label"
           style={{ letterSpacing: 1.5, color: '#44576a' }}
         >
-          TRUSTED BY 15,000+ AGENCIES WORLDWIDE
+          TRUSTED BY 100+ AGENCIES WORLDWIDE
         </p>
         <div className="flex flex-wrap justify-center md:justify-between items-center gap-6 md:gap-4 mt-8 max-w-[1000px] mx-auto">
           {logos.map((name) => (

@@ -250,7 +250,7 @@ export default function Hero() {
             ))}
           </div>
           <span className="text-sm" style={{ color: '#c1cfda' }}>
-            4.7/5 from 650+ reviews
+            4.7/5 from 150+ reviews
           </span>
         </div>
       </div>
