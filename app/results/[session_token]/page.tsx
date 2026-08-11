@@ -12,6 +12,79 @@ const ACCENT  = '#0DD3B6'
 
 function cls(...a: (string | false | null | undefined)[]) { return a.filter(Boolean).join(' ') }
 
+type Finding = {
+  theme: string
+  headline: string
+  business_impact: string
+  recommended_action: string
+  weight?: number
+}
+
+type BusinessTranslation = {
+  priority?: 'low' | 'medium' | 'high' | string
+  headline?: string
+  summary?: string
+  business_score?: number
+  findings?: Finding[]
+  next_steps?: string[]
+}
+
+function BusinessTranslationPanel({ bt }: { bt?: BusinessTranslation }) {
+  if (!bt) return null
+
+  const priorityColor = bt.priority === 'high' ? 'bg-red-500 text-white' : bt.priority === 'medium' ? 'bg-amber-400 text-white' : 'bg-gray-200 text-gray-800'
+
+  return (
+    <div className="bg-white rounded border border-gray-200 px-6 py-5 space-y-4">
+      <div className="flex items-start gap-4">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-3 mb-1">
+            <span className={`text-xs font-semibold px-2 py-1 rounded ${priorityColor}`}>
+              {bt.priority?.toUpperCase() ?? 'UNKNOWN'}
+            </span>
+            <h3 className="text-lg font-bold text-gray-900 truncate">{bt.headline}</h3>
+          </div>
+          {bt.summary && <p className="text-sm text-gray-500">{bt.summary}</p>}
+        </div>
+
+        <div className="flex flex-col items-center gap-2">
+          <div className="text-xs text-gray-400">Business score</div>
+          <div className="inline-flex items-center justify-center">
+            <ScoreRing score={Math.round(bt.business_score ?? 0)} />
+          </div>
+        </div>
+      </div>
+
+      {bt.findings && bt.findings.length > 0 && (
+        <div className="space-y-3">
+          <div className="text-sm font-bold text-gray-900">Key findings</div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {bt.findings.map((f, i) => (
+              <div key={i} className="p-3 rounded border bg-white">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-gray-500 uppercase tracking-wide">{f.theme}</div>
+                  {typeof f.weight === 'number' && <div className="text-xs text-gray-400">weight {f.weight}</div>}
+                </div>
+                <div className="text-sm font-semibold text-gray-900 mb-1">{f.headline}</div>
+                <div className="text-xs text-gray-500 mb-2">{f.business_impact}</div>
+                <div className="text-xs text-[#00A4C6] font-medium">{f.recommended_action}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {bt.next_steps && bt.next_steps.length > 0 && (
+        <div>
+          <div className="text-sm font-bold text-gray-900 mb-2">Next steps</div>
+          <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
+            {bt.next_steps.map((s, i) => <li key={i}>{s}</li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+  )
+}
 
 
 // ── Score ring ─────────────────────────────────────────────────────────────────
@@ -249,6 +322,7 @@ export default function ResultsPage() {
         const res = await fetch(`${API}/anon/results/${session_token}`)
         if (!res.ok) throw new Error('Results not found or expired')
         const json = await res.json()
+        console.log(json)
         setData(json)
         
 
@@ -270,6 +344,9 @@ export default function ResultsPage() {
   const auditCategories = (data?.audit_results?.lighthouse?.categories ?? {})
   const crawlIssues     = data?.crawl_results?.issues ?? {}
   const crawlSummary    = data?.crawl_results?.summary ?? {}
+  
+  //new addition
+  const business_translation = data?.audit_results?.business_translation
 
   // Collect crawl issues into a flat display list
   const crawlIssueList: { sev: 'critical' | 'warning' | 'info'; label: string; count: number; urls: string[] }[] = []
@@ -429,6 +506,9 @@ export default function ResultsPage() {
           </div>
         </div>
 
+        {business_translation && <BusinessTranslationPanel bt={business_translation} />}
+        
+        <h2 className="text-xl font-black text-gray-900 truncate">Advanced</h2>
         {/* ── Two-column body ──────────────────────────────────────── */}
         <div className="grid lg:grid-cols-[1fr_340px] gap-5 items-start">
 

@@ -16,8 +16,9 @@ import Footer from '@/components/footer'
 import Hero from '../components/sections/hero'
 import Pricing from '../components/sections/pricing'
 import WidgetHighlight from '../components/sections/embed-widget'
-import InteractivePreview from '../components/sections/interactive-preview'
-import HowItWorks from '../components/sections/how-it-works'
+import ReportSamples from '@/components/sections/report-samples'
+import InteractivePreview from '@/components/sections/interactive-preview'
+import HowItWorks from '@/components/sections/how-it-works'
 import RecentArticles from '@/components/sections/recentArticles'
 import { trackVisitor } from '@/lib/tracking'
 import AnimatedSearchDemo from '@/components/animated-demo'
@@ -187,10 +188,10 @@ export default function HomePage() {
         </section> */}
         <FeatureGrid />
 
-        
+        {/* <ReportSamples /> */}
 
         {/* SEE IT IN ACTION */}
-        <InteractivePreview />
+        {/* <InteractivePreview /> */}
 
         {/* HOW IT WORKS */}
         <HowItWorks />

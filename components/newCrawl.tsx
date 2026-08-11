@@ -217,7 +217,7 @@ export default function NewCrawlModal({ onClose }: NewCrawlModalProps) {
             <div className="bg-blue-50 rounded border border-blue-200 my-4 p-6">
             <h3 className="font-semibold text-blue-900 mb-2">💡 Tip</h3>
             <p className="text-sm text-blue-800">
-              Crawling fewer pages uses fewer credits. Start with 50-100 pages to get an overview of your site.
+              Crawling fewer pages uses fewer credits. Start with 50-100 pages to get an overview of the target site.
             </p>
           </div>
             

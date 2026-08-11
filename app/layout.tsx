@@ -66,6 +66,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             `,
           }}
         />
+        {/* <Script 
+              // src="http://localhost:8000/api/embed/widget.js?api_key=af_embed_adbcba82164245ed879ad52982363119"
+              src="https://auditflow-backend-production-461d.up.railway.app/api/embed/widget.js?api_key=af_embed_8ead404d6ac44eebbcdeb8b37fe6740b">
+        </Script> */}
         
       </head>
       <body className={dmSans.className}>
