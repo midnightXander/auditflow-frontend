@@ -175,6 +175,9 @@ export default function BlogArticleComponent({ article, related }: { article: an
                         h3 : ({node, ...props}) => (
                             <h3 {...props} className="text-xl text-[#00a4c6] font-bold mt-2 mb-2" />
                         ), 
+                        h4 : ({node, ...props}) => (
+                            <h4 {...props} className="text-lg text-[#00a4c6] font-bold mt-2 mb-2" />
+                        ), 
                         thead: ({node, ...props}) => <thead className="bg-gradient-to-r from-slate-900 to-slate-800 text-white" {...props} />,
                         th: ({node, ...props}) => <th className="px-2 py-2 text-left font-bold" {...props} />,
                         tr: ({node, ...props}) => <tr className="px-2 py-4 font-bold border-b-2 border-gray-300" {...props} />,

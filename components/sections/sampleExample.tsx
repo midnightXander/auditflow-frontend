@@ -1,10 +1,8 @@
 'use client'
 
 import { useEffect, useRef, useMemo, useState } from 'react'
-import { Upload, Palette } from 'lucide-react'
 import { ImageIcon, ArrowLeft, ArrowRight } from 'lucide-react'
-import Link from 'next/link'
-import Image from 'next/image'
+
 
 const reportSamples = [
   {
@@ -76,14 +74,7 @@ function ScreenshotPlaceholder({ label = 'Screenshot', src,alt  }: { label?: str
   
   if(src) {
     return (
-      // <img src={src} alt={alt || label} className={`rounded-lg border border-white/20 flex items-center justify-center w-full md:h-96 `} />
-      <Image
-          src={src}
-          alt={alt || label}
-          width={1200}
-          height={800}
-          className="rounded-3xl"
-        />
+      <img src={src} alt={alt || label} className={`rounded-lg border border-white/20 flex items-center justify-center w-full md:h-96 `} />
     )
   }
   return (
@@ -98,7 +89,7 @@ function ScreenshotPlaceholder({ label = 'Screenshot', src,alt  }: { label?: str
   )
 }
 
-export default function InteractivePreview() {
+export default function ExamplePreview() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef<HTMLElement | null>(null)
 
@@ -140,6 +131,7 @@ export default function InteractivePreview() {
 
  
 
+
   return (
     <section
       ref={sectionRef}
@@ -155,41 +147,30 @@ export default function InteractivePreview() {
       >
         <div className="text-center mb-16">
           <span className="section-label text-[#00a4c6] font-semibold text-sm block mb-4">
-            Sample Reports
+            Sample Report
           </span>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
             How Your Clients Will Experience Your Insights
           </h2>
-          <p className="text-lg text-[#c1cfda] max-w-2xl mx-auto">
+          {/* <p className="text-lg text-[#c1cfda] max-w-2xl mx-auto">
             Explore our sample reports to see how your clients will experience the insights and recommendations you provide. Each report is designed to be clear, actionable, and visually appealing, ensuring your clients understand the value of your services.
-          </p>
+          </p> */}
         </div>
 
-        <div className="relative isolate overflow-visible rounded-[3rem] border border-white/10 bg-[#141e27] p-6 shadow-2xl shadow-cyan-500/10 backdrop-blur-2xl">
-          <div className="pointer-events-none absolute inset-0 rounded-[3rem] border border-white/10 opacity-40" />
-          <div className="pointer-events-none absolute border  left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute border  left-1/3 top-16 h-56 w-56 rounded-full bg-fuchsia-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute border  right-12 top-28 h-40 w-40 rounded-full bg-emerald-400/10 blur-3xl" />
-
-          <div className="relative flex justify-center border items-center h-[540px] sm:h-[520px] md:h-[480px]">
-            {reportSamples.map((sample, index) => {
-              const style = getCardTransform(index, activeIndex, total)
-              const isVisible = index === activeIndex || index === prevIndex || index === nextIndex
-
-              return (
+        <div className="relative isolate overflow-hidden rounded-3xl border border-white/10 bg-[#141e27] p-6 shadow-2xl shadow-cyan-500/10 backdrop-blur-2xl">
+          
+          <div className="relative  items-center h-[540px] sm:h-[520px] md:h-[480px]">
+            
                 <div
-                  key={sample.title}
-                  className={`absolute top-1/2 left-1/2  max-w-full -translate-y-15 rounded-3xl border border-white/20 bg-white/10 backdrop-blur-md p-4 shadow-2xl shadow-slate-950/40 transition-all duration-700 ease-out ${
-                    isVisible ? 'opacity-100' : 'opacity-0'
-                  }`}
-                  style={style}
-                >
-                  <ScreenshotPlaceholder label={sample.title} src={sample.src} alt={sample.alt} />
+                  
+                  className={`relative bottom-[-120px] max-w-1/2 -translate-y-0 -translate-x-0 rounded-3xl border border-white/20 bg-white/10 backdrop-blur-md p-4 shadow-2xl shadow-slate-950/40 transition-all duration-700 ease-out 
+                `
+                } >
+                <img src="/images/reports/report2.png"  className={`rounded-3xl border border-white/20 flex items-center justify-center w-full md:h-96 `} />
                 </div>
-              )
-            })}
+              
 
-            <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
+            {/* <div className="absolute inset-x-0 bottom-4 flex justify-center gap-2">
               {reportSamples.map((_, index) => (
                 <button
                   key={index}
@@ -202,10 +183,10 @@ export default function InteractivePreview() {
                   }`}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
           
-          <div className="flex justify-center flex-wrap gap-3">
+          {/* <div className="flex justify-center flex-wrap gap-3">
             <button
               type="button"
               onClick={() => setActiveIndex(prevIndex)}
@@ -222,7 +203,7 @@ export default function InteractivePreview() {
               
               <ArrowRight className="h-4 w-4" />
             </button>
-          </div>
+          </div> */}
         </div>
 
       </div>

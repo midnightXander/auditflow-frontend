@@ -23,6 +23,9 @@ import RecentArticles from '@/components/sections/recentArticles'
 import { trackVisitor } from '@/lib/tracking'
 import AnimatedSearchDemo from '@/components/animated-demo'
 import Footer2 from '@/components/sections/footer2'
+import ExamplePreview from '@/components/sections/sampleExample'
+import MonthlyReport from '@/components/sections/monthlyReport'
+import ReportCarousel from '@/components/sections/reportsCarousel'
 
 
 export default function HomePage() {
@@ -188,10 +191,15 @@ export default function HomePage() {
         </section> */}
         <FeatureGrid />
 
+
+        {/* <ExamplePreview /> */}
+
         {/* <ReportSamples /> */}
+        {/* <ReportCarousel reportImages={['/images/reports/report1.png','/images/reports/report2.png','/images/reports/report3.png']} /> */}
 
         {/* SEE IT IN ACTION */}
         {/* <InteractivePreview /> */}
+
 
         {/* HOW IT WORKS */}
         <HowItWorks />

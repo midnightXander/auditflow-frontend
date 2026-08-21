@@ -341,7 +341,7 @@ export default function BlogComponent() {
             className="mt-2 mx-auto"
             style={{ fontSize: 15, lineHeight: '24px', color: '#c1cfda', maxWidth: 440 }}
           >
-            Join 8,000+ agency professionals who receive our weekly SEO tips,
+            Join 80+ agency professionals who receive our weekly SEO tips,
             strategies, and product updates.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3 mt-6 max-w-md mx-auto">

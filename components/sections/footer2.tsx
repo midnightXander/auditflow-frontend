@@ -10,8 +10,12 @@ const links = [
     href: '/pricing',
   },
   {
-    name: 'Signin',
-    href: '/signin',
+    name: 'About',
+    href: '/about',
+  },
+  {
+    name: 'Contact',
+    href: '/contact',
   },
   {
     name: 'Register',

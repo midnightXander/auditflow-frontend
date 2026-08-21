@@ -87,7 +87,7 @@ export default function CTA() {
             opacity: 0,
           }}
         >
-          Join 1k+ agencies using OUTAUDITS to deliver premium SEO reports.
+          Join 100+ agencies using OUTAUDITS to deliver premium SEO reports.
           Start your free 14-day trial today.
         </p>
         <div className="mt-10">
