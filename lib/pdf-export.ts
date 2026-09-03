@@ -1283,3 +1283,121 @@ export async function exportCrawlPDF(results: CrawlResults, config: WhiteLabelCo
   const safeDate = format(new Date(), 'yyyy-MM-dd')
   doc.save(`${config.agencyName.replace(/\s+/g, '_')}_crawl_${safeClient}_${safeDate}.pdf`)
 }
+
+
+export interface GlossaryEntry {
+  term: string
+  definition: string
+  example?: string
+}
+
+export async function exportGlossary(
+  entries: GlossaryEntry[],
+  config: WhiteLabelConfig,
+): Promise<void> {
+  const logo = await loadLogoData(config.agencyLogo)
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' })
+  const safeDate = format(new Date(), 'yyyy-MM-dd')
+  const filename = `${(config.agencyName || 'glossary').replace(/\s+/g, '_')}_glossary_${safeDate}.pdf`
+
+  const contentStartY = BRAND_H + 12
+  const bottomLimit = PAGE_H - 28
+  const termFontSize = 10
+  const defFontSize = 8
+  const termGap = 4.5
+  const defLineHeight = 4.2
+
+  // --- pagination pass: split entries into pages ---
+  doc.setFont('courier', 'normal') // for splitTextToSize measurement
+  doc.setFontSize(defFontSize)
+
+  const pages: GlossaryEntry[][] = [[]]
+  let y = contentStartY
+
+  const effectiveWidth = COL - 4
+
+  for (const e of entries) {
+    doc.setFont('courier', 'bold')
+    doc.setFontSize(termFontSize)
+    const termLines = doc.splitTextToSize(e.term, effectiveWidth)
+
+    doc.setFont('courier', 'normal')
+    doc.setFontSize(defFontSize)
+    const defLines = doc.splitTextToSize(e.definition, effectiveWidth)
+
+    const needed = termLines.length * termGap + defLines.length * defLineHeight + 8
+
+    if (y + needed > bottomLimit) {
+      pages.push([])
+      y = contentStartY
+    }
+
+    pages[pages.length - 1].push(e)
+    y += needed
+  }
+
+  if (pages.length === 0) pages.push([])
+
+  // --- render pages with proper headers/footers ---
+  for (let p = 0; p < pages.length; p++) {
+    if (p === 0) {
+      // use the initial blank page created by jsPDF
+      doc.setPage(1)
+    } else {
+      doc.addPage()
+    }
+
+    const pageNum = p + 1
+    brandedHeader(doc, config, pageNum, pages.length, logo)
+    footer(doc, config, format(new Date(), 'dd MMM yyyy, HH:mm'))
+
+    let curY = contentStartY
+
+    const pageEntries = pages[p]
+    if (pageEntries.length === 0) {
+      doc.setFontSize(10)
+      doc.setFont('courier', 'bold')
+      doc.setTextColor(60, 60, 60)
+      doc.text('Plain‑English SEO Glossary', MARGIN, curY)
+      curY += 8
+      doc.setFontSize(8)
+      doc.setFont('courier', 'normal')
+      doc.setTextColor(100, 100, 100)
+      doc.text('No entries available.', MARGIN, curY)
+      continue
+    }
+
+    for (const e of pageEntries) {
+      // term
+      doc.setFont('courier', 'bold')
+      doc.setFontSize(termFontSize)
+      doc.setTextColor(30, 30, 30)
+      const termLines = doc.splitTextToSize(e.term, effectiveWidth)
+      doc.text(termLines, MARGIN, curY)
+      curY += termLines.length * termGap
+
+      // definition
+      doc.setFont('courier', 'normal')
+      doc.setFontSize(defFontSize)
+      doc.setTextColor(80, 80, 80)
+      const defLines = doc.splitTextToSize(e.definition, effectiveWidth)
+      doc.text(defLines, MARGIN + 2, curY)
+      curY += defLines.length * defLineHeight
+
+      // optional example (smaller / dim)
+      if (e.example) {
+        doc.setFontSize(defFontSize - 1)
+        doc.setTextColor(120, 120, 120)
+        const exLines = doc.splitTextToSize(`Example: ${e.example}`, effectiveWidth)
+        doc.text(exLines, MARGIN + 2, curY)
+        curY += exLines.length * (defLineHeight - 0.6)
+      }
+
+      curY += 6
+      if (curY > bottomLimit) break
+    }
+  }
+
+  doc.save(filename)
+}
