@@ -33,6 +33,7 @@ const navItems: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: <BarChart3 className="w-5 h-5" />,  },
   { label: 'Website Audit', href: '/audit', icon: <Zap className="w-5 h-5" /> },
   { label: 'Deep Crawl', href: '/crawl', icon: <Globe className="w-5 h-5" /> },
+  { label: 'AI Visibility', href: '/ai-visibility', icon: <Sparkles className="w-5 h-5" /> },
   { label: 'Competitor Compare', href: '/compare', icon: <Trello className="w-5 h-5" /> },
   { label: 'Embed Audit', href: '/audit/embed', icon: <LinkIcon className="w-5 h-5" /> },
   { label: 'Rank Tracking', href: '#rt', icon: <TrendingUp className="w-5 h-5" />, badge: 'Soon' },

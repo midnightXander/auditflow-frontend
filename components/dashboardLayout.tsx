@@ -21,7 +21,8 @@ import {
   TrendingUp,
   Settings2Icon,
   LucideCreditCard,
-  Code2
+  Code2,
+  Sparkles
 } from 'lucide-react';
 
 import { Badge } from './badge';
@@ -213,10 +214,12 @@ function Checklist({ state, onDismiss, onAction }: {
 const sidebarLinks = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
   { icon: FileSearch, label: 'Audits', path: '/audit' },
+  { icon: Sparkles, label: 'AI Visibility', path: '/ai-visibility',  },
   { icon: Globe, label: 'Site Crawls', path: '/crawl' },
   { icon: Users, label: 'Competitors', path: '/compare' },
   { icon: TrendingUp, label: 'Rank Tracking', path: '/rank-tracking', badge: 'New' },
   { icon: Code, label: 'Widget', path: '/audit/embed', badge: 'New' },
+  
   // { icon: BarChart3, label: 'Reports', path: '#' },
   { icon: LucideCreditCard, label: 'Billing', path: '/account/billing' },
   { icon: Settings, label: 'Settings', path: '/settings' },
