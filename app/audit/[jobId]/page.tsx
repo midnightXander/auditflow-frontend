@@ -27,6 +27,7 @@ import rehypeSanitize from 'rehype-sanitize'
 import { ca } from 'date-fns/locale'
 import { fetchWithAuth } from '@/lib/auth-context'
 import ShareAuditModal from '@/components/share-audit-modal'
+import { BusinessTranslationPanel } from '@/app/results/[session_token]/page'
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AuditResults {
@@ -43,6 +44,8 @@ interface AuditResults {
     opportunities?: Array<{ title: string; description: string; savings?: { ms: number } }>
     audits : any
   }
+  ai_visibility : any,
+  business_translation : any,
   broken_links: { total_checked: number; broken_count: number; status: string; broken_links: any[] }
   image_optimization: { total_images: number; score: number; issues: any; recommendations: string[] }
   structured_data: { score: number; status: string; has_json_ld: boolean; has_open_graph: boolean; has_twitter_card: boolean; has_microdata: boolean; json_ld_types: string[]; open_graph_properties: string[]; twitter_card_type: string; recommendations: string[] }
@@ -175,7 +178,7 @@ export default function AuditResultsPage() {
           return
         }
         const data = await r.json()
-        if (data.status === 'completed' && data.results) { setResults(data.results); setLoading(false) }
+        if (data.status === 'completed' && data.results) { console.log(data.results); setResults(data.results); setLoading(false) }
         else if (data.status === 'failed')                { setError(data.error || 'Audit failed'); setLoading(false) }
         else { setProgress(data.progress || 0); if (!dead) setTimeout(poll, 2000) }
       } catch { console.log("error");setError('Cannot reach server'); setLoading(false) }
@@ -262,7 +265,10 @@ export default function AuditResultsPage() {
   const opps  = lighthouse?.opportunities ?? []
   const secH  = sec?.security_headers ?? {}
 
-  console.log(lighthouse)
+  // console.log(lighthouse)
+
+  const business_translation = results.business_translation
+  const ai_visibility = results.ai_visibility
   
 
   // Quick-wins alerts
@@ -399,6 +405,9 @@ export default function AuditResultsPage() {
             ))}
           </div>
         )}
+
+        {/* ── Business translation panel ──────────────────────────────────────────────────────── */}
+        {business_translation && <BusinessTranslationPanel bt={business_translation} />}
 
         {/* ── Tabs ──────────────────────────────────────────────────────── */}
         <Tabs defaultValue="overview">

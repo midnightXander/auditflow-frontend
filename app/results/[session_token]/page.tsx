@@ -20,7 +20,7 @@ type Finding = {
   weight?: number
 }
 
-type BusinessTranslation = {
+export type BusinessTranslation = {
   priority?: 'low' | 'medium' | 'high' | string
   headline?: string
   summary?: string
@@ -29,7 +29,7 @@ type BusinessTranslation = {
   next_steps?: string[]
 }
 
-function BusinessTranslationPanel({ bt }: { bt?: BusinessTranslation }) {
+export function BusinessTranslationPanel({ bt }: { bt?: BusinessTranslation }) {
   if (!bt) return null
 
   const priorityColor = bt.priority === 'high' ? 'bg-red-500 text-white' : bt.priority === 'medium' ? 'bg-amber-400 text-white' : 'bg-gray-200 text-gray-800'
