@@ -28,6 +28,7 @@ import { ca } from 'date-fns/locale'
 import { fetchWithAuth } from '@/lib/auth-context'
 import ShareAuditModal from '@/components/share-audit-modal'
 import { BusinessTranslationPanel } from '@/app/results/[session_token]/page'
+import AiVisibilityPanel from '@/components/aiVisibilityPanel'
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AuditResults {
@@ -269,6 +270,8 @@ export default function AuditResultsPage() {
 
   const business_translation = results.business_translation
   const ai_visibility = results.ai_visibility
+
+  console.log("AI results: ",ai_visibility)
   
 
   // Quick-wins alerts
@@ -333,7 +336,7 @@ export default function AuditResultsPage() {
       <div className="max-w-6xl mx-auto px-4 py-6 space-y-5">
 
         {/* ── Hero card ──────────────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded shadow-sm border border-gray-100 overflow-hidden">
           {/* accent stripe — uses agency colour */}
           <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${config.accentColor}, #8766FF)` }}/>
           <div className="p-6">
@@ -392,14 +395,14 @@ export default function AuditResultsPage() {
 
         {/* ── Quick-wins / all-clear ─────────────────────────────────────── */}
         {alerts.length === 0 ? (
-          <div className="flex items-center gap-3 px-5 py-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+          <div className="flex items-center gap-3 px-5 py-3.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700">
             <CheckCircle2 className="w-5 h-5 shrink-0"/>
             <span className="text-sm font-semibold">No critical issues found — excellent work!</span>
           </div>
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
             {alerts.map((a, i) => (
-              <div key={i} className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium ${a.color}`}>
+              <div key={i} className={`flex items-center gap-2 px-3 py-2.5 rounded border text-sm font-medium ${a.color}`}>
                 {a.icon}{a.label}
               </div>
             ))}
@@ -409,9 +412,14 @@ export default function AuditResultsPage() {
         {/* ── Business translation panel ──────────────────────────────────────────────────────── */}
         {business_translation && <BusinessTranslationPanel bt={business_translation} />}
 
+        {/* ── Ai Visibility panel ──────────────────────────────────────────────────────── */}
+        {ai_visibility && <AiVisibilityPanel summary={ai_visibility} />}
+
+        
+        <h3 className="font-bold text-xl">Advanced</h3>
         {/* ── Tabs ──────────────────────────────────────────────────────── */}
         <Tabs defaultValue="overview">
-          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-7 bg-white border border-gray-100 shadow-sm rounded-xl p-1 pb-2 gap-1 h-auto">
+          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-7 bg-white border border-gray-100 shadow-sm rounded p-1 pb-2 gap-1 h-auto">
             {[
               { v: 'overview',    l: 'Overview',    i: <Zap      className="w-3.5 h-3.5"/> },
               { v: 'performance', l: 'Performance', i: <Zap      className="w-3.5 h-3.5"/> },
@@ -423,7 +431,7 @@ export default function AuditResultsPage() {
               
             ].map(t => (
               <TabsTrigger key={t.v} value={t.v}
-                className="flex items-center gap-1.5 text-xs py-2 rounded-lg data-[state=active]:bg-slate-900 data-[state=active]:text-white">
+                className="flex items-center gap-1.5 text-xs py-2 rounded data-[state=active]:bg-slate-900 data-[state=active]:text-white">
                 {t.i}<span className="hidden sm:inline">{t.l}</span>
               </TabsTrigger>
             ))}
@@ -891,7 +899,7 @@ export default function AuditResultsPage() {
         </Tabs>
 
         {/* ── Bottom export CTA ─────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 rounded-2xl bg-slate-900 text-white">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-5 rounded bg-slate-900 text-white">
           <div>
             <p className="font-bold">Ready to share with your client?</p>
             <p className="text-sm text-slate-400 mt-0.5">

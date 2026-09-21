@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { Download, Search } from 'lucide-react'
 import Logo from '@/components/logo'
 import GoogleSignInButton from '@/components/googleSigninButton'
+import AiVisibilityPanel from '@/components/aiVisibilityPanel'
 
 const API     = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api'
 const PRIMARY = '#00A4C6'
@@ -347,6 +348,7 @@ export default function ResultsPage() {
   
   //new addition
   const business_translation = data?.audit_results?.business_translation
+  const ai_visibility = data?.audit_results?.ai_visibility
 
   // Collect crawl issues into a flat display list
   const crawlIssueList: { sev: 'critical' | 'warning' | 'info'; label: string; count: number; urls: string[] }[] = []
@@ -507,6 +509,9 @@ export default function ResultsPage() {
         </div>
 
         {business_translation && <BusinessTranslationPanel bt={business_translation} />}
+
+        {/* ── Ai Visibility panel ──────────────────────────────────────────────────────── */}
+        {ai_visibility && <AiVisibilityPanel summary={ai_visibility} />}
         
         <h2 className="text-xl font-black text-gray-900 truncate">Advanced</h2>
         {/* ── Two-column body ──────────────────────────────────────── */}
