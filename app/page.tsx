@@ -1,5 +1,6 @@
 'use client'
 
+import Script from 'next/script'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -27,6 +28,18 @@ import ExamplePreview from '@/components/sections/sampleExample'
 import MonthlyReport from '@/components/sections/monthlyReport'
 import ReportCarousel from '@/components/sections/reportsCarousel'
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'Can I really white-label everything?', acceptedAnswer: { '@type': 'Answer', text: 'Yes — your logo, colors, domain, and messaging throughout. Clients will think it\'s your proprietary tool.' } },
+    { '@type': 'Question', name: 'How does the embeddable widget work?', acceptedAnswer: { '@type': 'Answer', text: 'Copy a single script tag into your website. Visitors enter a URL, receive an instant audit preview, and you capture their contact info as a qualified lead.' } },
+    { '@type': 'Question', name: "What's included in the API?", acceptedAnswer: { '@type': 'Answer', text: 'Full REST API with endpoints for audits, crawls, keyword tracking, and report generation. Webhooks for real-time notifications.' } },
+    { '@type': 'Question', name: 'Can I change plans or cancel anytime?', acceptedAnswer: { '@type': 'Answer', text: 'Absolutely. Upgrade, downgrade, or cancel at any time. No contracts, no cancellation fees.' } },
+    { '@type': 'Question', name: 'How accurate are the audits?', acceptedAnswer: { '@type': 'Answer', text: 'Our audits are powered by Google Lighthouse and proprietary crawlers. Results are industry-standard and continuously updated.' } },
+    { '@type': 'Question', name: 'Is there a free trial?', acceptedAnswer: { '@type': 'Answer', text: 'Yes! Start with our free tier or try Professional free for 14 days. No credit card required.' } },
+  ],
+}
 
 export default function HomePage() {
   const { user } = useAuth()
@@ -91,6 +104,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen relative bg-white text-slate-900">
+      <Script
+        id="faq-page-schema"
+        type="application/ld+json"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* NAV */}
       {/* <nav className={`fixed w-full z-30 transition-all ${scrolled ? 'bg-slate-900 shadow-lg' : 'bg-transparent'} `}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
