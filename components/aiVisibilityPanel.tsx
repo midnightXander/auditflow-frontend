@@ -71,7 +71,7 @@ export default function AiVisibilityPanel({ summary }: { summary: AiVisibilitySu
       )}
 
       <div className="mt-4 flex justify-end">
-        <Link href={`/ai-visibility/${jobId}`} className="px-3 py-1.5 bg-[#00a4c6] text-white rounded text-sm hover:opacity-90">
+        <Link href={`/ai-visibility`} className="px-3 py-1.5 bg-[#00a4c6] text-white rounded text-sm hover:opacity-90">
           See full AI visibility audit
         </Link>
       </div>
